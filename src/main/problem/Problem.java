@@ -29,8 +29,18 @@ public class Problem {
         this.environment = environment;
     }
 
+    
+    /** 
+     * Add a new element to the element list.
+     * Fails if this element is already on the list, or
+     * or is part of an assignment in assignments.
+     * 
+     * @param newElement Element to add
+     * @return boolean  Success
+     */
     public boolean addElement(Element newElement) {
-        if (elements.contains(newElement))
+        if (elements.contains(newElement) 
+            || assignments.contains(newElement))
             return false;
         elements.add(newElement);
         return true;

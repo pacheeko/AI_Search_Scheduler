@@ -8,13 +8,19 @@ import main.Validator;
 public class Problem {
 
     ArrayList<Element> elements;
-    ArrayList<Assignment> assignments; 
+    ArrayList<Assignment> assignments;
     Env environment;
 
     public Problem() {
-        elements = new ArrayList<Element>();
-        assignments = new ArrayList<Assignment>();
-        environment = new Env();
+        this.elements = new ArrayList<Element>();
+        this.assignments = new ArrayList<Assignment>();
+        this.environment = new Env();
+    }
+
+    public Problem(Problem problem) {
+        this.elements = problem.elements;
+        this.assignments = problem.assignments;
+        this.environment = problem.environment;
     }
 
     public Problem(ArrayList<Element> elements, ArrayList<Assignment> assignments, Env environment) {
@@ -23,14 +29,23 @@ public class Problem {
         this.environment = environment;
     }
 
-    public boolean addElement(Element element) {
-        boolean success = false;
-
-        return success;
+    public boolean addElement(Element newElement) {
+        if (elements.contains(newElement))
+            return false;
+        elements.add(newElement);
+        return true;
     }
 
     public ArrayList<Element> getElements() {
         return this.elements;
+    }
+
+    public Element nextElement() {
+        if (elements.isEmpty())
+            return null;
+        Element element = elements.get(0);
+        elements.remove(0);
+        return element;
     }
 
     public ArrayList<Assignment> getAssignments() {
@@ -41,10 +56,19 @@ public class Problem {
         if (elements.isEmpty() && Validator.constr(assignments))
             return true;
         if (!Validator.constrPartial(assignments))
-            return true;        
+            return true;
         if (Validator.evalPartial(assignments) > this.environment.getMinPenalty())
             return true;
         return false;
-    }    
+    }
+
+    public boolean assign(Element element, Slot slot) {
+        Assignment newAssignment = new Assignment(element, slot);
+        if (assignments.contains(newAssignment) || !elements.contains(element))
+            return false;
+        assignments.add(newAssignment);
+        elements.remove(element);
+        return true;
+    }
 
 }

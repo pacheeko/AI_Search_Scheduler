@@ -2,7 +2,6 @@ package main.model;
 
 import java.util.ArrayList;
 
-import main.problem.Assignment;
 import main.problem.Element;
 import main.problem.Problem;
 import main.problem.Slot;
@@ -20,12 +19,13 @@ public class SearchModel {
     }
 
     public ArrayList<Problem> Div(Problem prob) {
-        ArrayList<Element> elements = prob.getElements();
-        ArrayList<Assignment> assignments = prob.getAssignments();        
+        Element nextElement = prob.nextElement();     
         ArrayList<Problem> subProblems = new ArrayList<Problem>();
 
         for(Slot slot: slots) {
-
+            Problem subProblem = new Problem(prob);
+            if (subProblem.assign(nextElement, slot));            
+                subProblems.add(subProblem);
         }
 
         return subProblems;

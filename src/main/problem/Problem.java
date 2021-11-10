@@ -73,9 +73,9 @@ public class Problem {
     }
 
     public boolean assign(Element element, Slot slot) {
-        Assignment newAssignment = new Assignment(element, slot);
-        if (assignments.contains(newAssignment) || !elements.contains(element))
+        if (assignments.contains(element) || !elements.contains(element))        
             return false;
+        Assignment newAssignment = new Assignment(element, slot);
         assignments.add(newAssignment);
         elements.remove(element);
         return true;

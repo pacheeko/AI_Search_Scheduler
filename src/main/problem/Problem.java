@@ -1,27 +1,50 @@
 package main.problem;
 
+import java.util.ArrayList;
+
+import main.Env;
+import main.Validator;
+
 public class Problem {
-    Element[] elements;
-    Assignment[] assignments; 
 
-    private boolean isValid() {
-        boolean valid = isAssignmentsValid() && isElementsValid();
-        for (Assignment assignment : assignments) {
+    ArrayList<Element> elements;
+    ArrayList<Assignment> assignments; 
+    Env environment;
 
-        }
-        return valid;
+    public Problem() {
+        elements = new ArrayList<Element>();
+        assignments = new ArrayList<Assignment>();
+        environment = new Env();
     }
 
-    private boolean isAssignmentsValid() {
-        boolean valid = true;
-
-        return valid;
+    public Problem(ArrayList<Element> elements, ArrayList<Assignment> assignments, Env environment) {
+        this.elements = elements;
+        this.assignments = assignments;
+        this.environment = environment;
     }
 
-    private boolean isElementsValid() {
-        boolean valid = true;
+    public boolean addElement(Element element) {
+        boolean success = false;
 
-        return valid;
+        return success;
     }
+
+    public ArrayList<Element> getElements() {
+        return this.elements;
+    }
+
+    public ArrayList<Assignment> getAssignments() {
+        return this.assignments;
+    }
+
+    public boolean isSolved() {
+        if (elements.isEmpty() && Validator.constr(assignments))
+            return true;
+        if (!Validator.constrPartial(assignments))
+            return true;        
+        if (Validator.evalPartial(assignments) > this.environment.getMinPenalty())
+            return true;
+        return false;
+    }    
 
 }

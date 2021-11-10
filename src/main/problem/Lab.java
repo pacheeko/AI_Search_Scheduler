@@ -18,4 +18,15 @@ public class Lab extends Element {
         return 0;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Lab))
+            return false;
+        Lab other = (Lab) o;
+        return this.course.equals(other.course)
+            && other.number == this.number;            
+    }
+
 }

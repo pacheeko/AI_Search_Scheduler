@@ -3,7 +3,7 @@ package main.problem;
 public class Course extends Element {
 
     int number;
-    int section;    
+    int section;
 
     public Course(String department, int number, int section) {
         super(department);
@@ -23,6 +23,18 @@ public class Course extends Element {
     public int compareTo(Element o) {
         // TODO Auto-generated method stub
         return 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Course))
+            return false;
+        Course other = (Course) o;
+        return other.number == this.number 
+            && other.section == this.section 
+            && other.department == this.department;
     }
 
 }

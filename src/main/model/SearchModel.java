@@ -8,7 +8,7 @@ import main.problem.Slot;
 
 public class SearchModel {
 
-    ArrayList<Slot> slots;
+    ArrayList<Slot> slots;    
 
     public SearchModel() {
         this.slots = new ArrayList<Slot>();
@@ -16,7 +16,7 @@ public class SearchModel {
 
     public SearchModel(ArrayList<Slot> slots) {
         this.slots = slots;
-    }
+    }    
 
     public ArrayList<Problem> Div(Problem prob) {
         Element nextElement = prob.nextElement();     

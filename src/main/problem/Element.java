@@ -1,6 +1,6 @@
 package main.problem;
 
-public abstract class Element implements Comparable<Element>{   
+public abstract class Element {   
     String department;    
 
     public Element(String department) {

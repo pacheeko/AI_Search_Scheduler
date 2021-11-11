@@ -13,12 +13,6 @@ public class Lab extends Element {
     }
 
     @Override
-    public int compareTo(Element o) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (o == this)
             return true;

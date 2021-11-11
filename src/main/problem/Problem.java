@@ -23,6 +23,12 @@ public class Problem {
         this.environment = problem.environment;
     }
 
+    public Problem(ArrayList<Element> elements) {
+        this.elements = elements;
+        this.assignments = new ArrayList<Assignment>();
+        this.environment = new Env();
+    }
+
     public Problem(ArrayList<Element> elements, ArrayList<Assignment> assignments, Env environment) {
         this.elements = elements;
         this.assignments = assignments;
@@ -79,6 +85,6 @@ public class Problem {
         assignments.add(newAssignment);
         elements.remove(element);
         return true;
-    }
+    }    
 
 }

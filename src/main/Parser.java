@@ -5,7 +5,7 @@ import main.problem.*;
 
 public class Parser {
 	//IDEA: have functions to return each type of data present in the input file. ie. slots, course identifiers, pairs, etc.
-	//Each return should be of a data type that coincides with the object being represented
+	//Each return should be of a data type that coincides with the object being represented.
 	
 	public ArrayList<String> parseName() {
 		return null;

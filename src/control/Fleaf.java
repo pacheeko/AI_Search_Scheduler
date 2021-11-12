@@ -1,10 +1,12 @@
-package main.control;
-
-import java.util.ArrayList;
+package control;
 
 import main.TreeNode;
 
+import java.util.ArrayList;
+
+
 public class Fleaf {
+
 
 	public TreeNode selectLeaf(ArrayList<TreeNode> leaves) {
 		// Takes an arrayList of treeNode leaves and decides which leaf to perform the next transition on

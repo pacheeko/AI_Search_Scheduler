@@ -1,7 +1,8 @@
 package main;
 
+import problem.*;
+
 import java.util.ArrayList;
-import main.problem.*;
 
 public class Parser {
 	//IDEA: have functions to return each type of data present in the input file. ie. slots, course identifiers, pairs, etc.

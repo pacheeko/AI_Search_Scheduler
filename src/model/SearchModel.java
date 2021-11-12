@@ -1,10 +1,10 @@
-package main.model;
+package model;
+
+import problem.Element;
+import problem.Problem;
+import problem.Slot;
 
 import java.util.ArrayList;
-
-import main.problem.Element;
-import main.problem.Problem;
-import main.problem.Slot;
 
 public class SearchModel {
 

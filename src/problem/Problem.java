@@ -1,15 +1,18 @@
-package main.problem;
+package problem;
+
+import main.Constr;
+import main.Env;
+import main.Eval;
 
 import java.util.ArrayList;
-
-import main.Env;
-import main.Validator;
 
 public class Problem {
 
     ArrayList<Element> elements;
     ArrayList<Assignment> assignments;
     Env environment;
+    Constr myConstr = new Constr();
+    Eval myEval = new Eval();
 
     public Problem() {
         this.elements = new ArrayList<Element>();
@@ -69,11 +72,11 @@ public class Problem {
     }
 
     public boolean isSolved() {
-        if (elements.isEmpty() && Validator.constr(assignments))
+        if (elements.isEmpty() && myConstr.checkConstraints(assignments))
             return true;
-        if (!Validator.constrPartial(assignments))
+        if (!myConstr.checkPartialConstraints(assignments))
             return true;
-        if (Validator.evalPartial(assignments) > this.environment.getMinPenalty())
+        if (myEval.partialEvaluate(assignments) > this.environment.getMinPenalty())
             return true;
         return false;
     }

@@ -1,4 +1,4 @@
-package main.problem;
+package problem;
 
 public class Assignment {
     Element element;
@@ -26,5 +26,13 @@ public class Assignment {
         if (!(o instanceof Assignment)) return false;
         Assignment other = (Assignment) o;
         return this.element.equals(other.element);
+    }
+
+    public Element getElement() {
+        return element;
+    }
+
+    public Slot getSlot() {
+        return slot;
     }
 }

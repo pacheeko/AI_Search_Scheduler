@@ -1,4 +1,4 @@
-package main.problem;
+package problem;
 
 public enum Day {
     MO, 

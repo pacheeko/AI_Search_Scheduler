@@ -1,4 +1,4 @@
-package main.problem;
+package problem;
 
 public class ProblemState {
 

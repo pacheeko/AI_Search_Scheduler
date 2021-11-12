@@ -1,4 +1,4 @@
-package main.control;
+package control;
 
 import main.TreeNode;
 

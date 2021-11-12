@@ -8,11 +8,15 @@ public abstract class Slot {
     int min;
     int max;
 
-    public Slot(Day day, LocalTime startTime, int max, int min) {
+    //Course = 0, Lab = 1
+    int type;
+
+    public Slot(Day day, LocalTime startTime, int max, int min, int type) {
         this.day = day;
         this.startTime = startTime;
         this.min = min;
-        this.max = max;        
+        this.max = max;
+        this.type = type;
     }
     
     abstract boolean isValid();
@@ -47,6 +51,17 @@ public abstract class Slot {
 
     public void setStartTime(LocalTime time) {
         this.startTime = time;
+    }
+
+    public String getInfo(){
+        String info = "(";
+        info += day.toString() + " at ";
+        info += startTime.toString();
+        return info + ")";
+    }
+
+    public int getType(){
+        return type;
     }
 
 }

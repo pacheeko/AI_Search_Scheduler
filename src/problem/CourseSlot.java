@@ -5,7 +5,7 @@ import java.time.LocalTime;
 public class CourseSlot extends Slot {
 
     public CourseSlot(Day day, LocalTime startTime, int max, int min) {
-        super(day, startTime, max, min);
+        super(day, startTime, max, min, 0);
     }
 
     @Override

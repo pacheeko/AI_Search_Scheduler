@@ -72,7 +72,7 @@ public class Problem {
     }
 
     public boolean isSolved() {
-        if (elements.isEmpty() && myConstr.checkConstraints(assignments))
+        if (elements.isEmpty() && myConstr.checkConstraints(assignments, 0))
             return true;
         if (!myConstr.checkPartialConstraints(assignments))
             return true;

@@ -7,7 +7,7 @@ public class Lab extends Element {
     boolean openToAllSections;
 
     public Lab(Course course, int number, boolean openToAllSections) {
-        super(course.getDepartment());
+        super(course.getDepartment(), 1);
         this.course = course;
         this.openToAllSections = openToAllSections;
     }
@@ -20,7 +20,6 @@ public class Lab extends Element {
             return false;
         Lab other = (Lab) o;
         return this.course.equals(other.course)
-            && other.number == this.number;            
+            && other.number == this.number;
     }
-
 }

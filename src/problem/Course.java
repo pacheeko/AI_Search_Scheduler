@@ -6,7 +6,7 @@ public class Course extends Element {
     int section;
 
     public Course(String department, int number, int section) {
-        super(department);
+        super(department, 0);
         this.number = number;
         this.section = section;
     }

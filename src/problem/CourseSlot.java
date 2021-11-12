@@ -4,8 +4,8 @@ import java.time.LocalTime;
 
 public class CourseSlot extends Slot {
 
-    public CourseSlot(Day day, LocalTime startTime, int min, int max) {
-        super(day, startTime, min, max);
+    public CourseSlot(Day day, LocalTime startTime, int max, int min) {
+        super(day, startTime, max, min);
     }
 
     @Override

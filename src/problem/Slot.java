@@ -8,7 +8,7 @@ public abstract class Slot {
     int min;
     int max;
 
-    public Slot(Day day, LocalTime startTime, int min, int max) {
+    public Slot(Day day, LocalTime startTime, int max, int min) {
         this.day = day;
         this.startTime = startTime;
         this.min = min;

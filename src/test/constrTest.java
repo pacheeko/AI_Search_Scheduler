@@ -34,6 +34,8 @@ public class constrTest {
 
 
         Assignment assign_6 = new Assignment(lab_11, myLabSot);
+        Assignment assign_7 = new Assignment(course_1, myCourseSlot_2);
+        Assignment assign_8 = new Assignment(course_4, myCourseSlot_2);
 
         ArrayList<Assignment> myAssignments_coursemin = new ArrayList<>(Arrays.asList(assign_1, assign_2, assign_4));
         ArrayList<Assignment> myAssignments_coursemax = new ArrayList<>(Arrays.asList(assign_1, assign_2, assign_3, assign_4, assign_5));
@@ -42,10 +44,14 @@ public class constrTest {
         ArrayList<Assignment> myAssignments_labmin = new ArrayList<>(Arrays.asList(assign_1, assign_2, assign_6));
         ArrayList<Assignment> myAssignments_labmax = new ArrayList<>(Arrays.asList(assign_1, assign_2, assign_3, assign_4, assign_5));
 
+        ArrayList<Assignment> myAssignments_courselabconflict = new ArrayList<>(Arrays.asList(assign_8, assign_7, assign_2, assign_6));
+
+
         myConstr.checkConstraints(myAssignments_coursemin, 1);
         myConstr.checkConstraints(myAssignments_coursemax, 2);
         myConstr.checkConstraints(myAssignments_labmin, 3);
         myConstr.checkConstraints(myAssignments_labmax, 4);
+        myConstr.checkConstraints(myAssignments_courselabconflict, 5);
 
     }
 }

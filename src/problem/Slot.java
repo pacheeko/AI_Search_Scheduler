@@ -64,6 +64,27 @@ public abstract class Slot {
         return type;
     }
 
+    public LocalTime getEndTime(){
+        LocalTime endTime = startTime.plusHours(1);
+
+        switch(day){
+            case TU:{
+                if(type == 0) {
+                    endTime = startTime.plusHours(1).plusMinutes(30);
+                }
+            }
+            break;
+            case FR:{
+                if(type == 1){
+                    endTime = startTime.plusHours(2);
+                }
+            }
+            break;
+        }
+        return endTime;
+    }
+
+
 }
 
 

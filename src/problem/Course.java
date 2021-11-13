@@ -4,11 +4,13 @@ public class Course extends Element {
 
     int number;
     int section;
+    private String name;
 
     public Course(String department, int number, int section) {
         super(department, 0);
         this.number = number;
         this.section = section;
+        name = department + " " + number + " " + section;
     }
 
     public int getSection() {
@@ -17,6 +19,10 @@ public class Course extends Element {
 
     public int getNumber() {
         return number;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override

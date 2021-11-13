@@ -13,7 +13,7 @@ public class Constr {
 
 
     private boolean constraintsMet;
-    private int numberOfChecks = 4;
+    private int numberOfChecks = 5;
     private ArrayList<Assignment> myAssignments;
 
     //avoid checking constr of a slot multiple times
@@ -22,6 +22,7 @@ public class Constr {
     private ArrayList<Assignment> checkedLabMin;
     private ArrayList<Assignment> checkedLabMax;
     private ArrayList<Assignment> checkedConflicts;
+    private ArrayList<Assignment> checkedNumber;
     PrintStream output;
 
     public Constr() {}
@@ -37,6 +38,7 @@ public class Constr {
             checkedLabMin = new ArrayList<>();
             checkedLabMax = new ArrayList<>();
             checkedConflicts = new ArrayList<>();
+            checkedNumber = new ArrayList<>();
 
             constraintsMet = true;
             myAssignments = assignments;
@@ -113,17 +115,28 @@ public class Constr {
                 }
             }
             break;
+            //labs and courses in same slot
             case 2:{
                 if(DEBUG)
                     output.println("Checking course and lab conflicts for " + slot.getInfo() + "...");
-                constraintsMet = checkConflictingCourseAndLabs(myAssignments);
+                constraintsMet = checkConflictingCourseAndLabs(assign);
             }
             break;
-//            case 3:{
-//                constraintsMet = true;
-//            }
-//            break;
-            default: break;
+            //courses on tuesday at 11
+            case 3:{
+                if(slotType==0){
+                    if(DEBUG)
+                        output.println("Checking for courses scheduled on Tuesday at 11:00...");
+                    constraintsMet = checkTuesdayCourses(assign);
+                }
+            }
+            break;
+            case 4:{
+                if(slotType == 0) {
+                    constraintsMet = checkCourseNumberRequirements(assign);
+                }
+            }
+            break;
         }
 
     }
@@ -250,58 +263,147 @@ public class Constr {
     }
 
 
-    private boolean checkConflictingCourseAndLabs(ArrayList<Assignment> assignments){
+    private boolean checkConflictingCourseAndLabs(Assignment assign){
 
-        for(Assignment courseAssign : assignments){
-            if(!checkedConflicts.contains(courseAssign)) {
-                Slot courseSlot = courseAssign.getSlot();
-                if(courseSlot.getType() == 0){
-                    checkedConflicts.add(courseAssign);
-                    Course myCourse = (Course) courseAssign.getElement();
-                    Day courseDay = courseSlot.getDay();
-                    LocalTime courseStart = courseSlot.getStartTime();
-                    LocalTime courseEnd = courseSlot.getEndTime();
-//                    System.out.print("Course: ");
-//                    System.out.print(myCourse.getName());
-//                    System.out.print(" on ");
-//                    System.out.println(course.getSlot().getInfo());
-                    for(Assignment labAssign : assignments){
-                        if(!checkedConflicts.contains(labAssign)) {
-                            Slot labSlot = labAssign.getSlot();
-                            if(labSlot.getType() == 1){
-                                Lab myLab = (Lab)labAssign.getElement();
-//                                System.out.print("Lab at: ");
-//                                System.out.print(lab.getSlot().getInfo());
-//                                System.out.print(" of ");
-//                                System.out.println(myLab.getCourse().getName());
+        if(!checkedConflicts.contains(assign)) {
+            Slot courseSlot = assign.getSlot();
+            if (courseSlot.getType() == 0) {
+                checkedConflicts.add(assign);
+                Course myCourse = (Course) assign.getElement();
+                Day courseDay = courseSlot.getDay();
+                LocalTime courseStart = courseSlot.getStartTime();
+                LocalTime courseEnd = courseSlot.getEndTime();
+    //                    System.out.print("Course: ");
+    //                    System.out.print(myCourse.getName());
+    //                    System.out.print(" on ");
+    //                    System.out.println(course.getSlot().getInfo());
+                for (Assignment labAssign : myAssignments) {
+                    if (!checkedConflicts.contains(labAssign)) {
+                        Slot labSlot = labAssign.getSlot();
+                        if (labSlot.getType() == 1) {
+                            Lab myLab = (Lab) labAssign.getElement();
+    //                                System.out.print("Lab at: ");
+    //                                System.out.print(lab.getSlot().getInfo());
+    //                                System.out.print(" of ");
+    //                                System.out.println(myLab.getCourse().getName());
 
-                                if(myCourse.equals(myLab.getCourse())){
-                                    checkedConflicts.add(labAssign);
-                                    Day labDay = labSlot.getDay();
-                                    if(courseDay == labDay){
-                                        LocalTime labStart = labSlot.getStartTime();
-                                        LocalTime labEnd = labSlot.getEndTime();
-                                        if(labStart.equals(courseStart) || (labStart.isAfter(courseStart) && labStart.isBefore(courseEnd))
-                                                || (labEnd.isAfter(courseStart) && labEnd.isBefore(courseEnd))){
-                                            if(DEBUG){
-                                                output.println("Constraint Not Met: Lab slot overlapping with slot of its course");
-                                                output.println("    The course " + myCourse.getName() + " is scheduled on " + courseDay + " from " + courseStart + " to " + courseEnd);
-                                                output.println("    but the lab " + myLab.getName() + " is scheduled on "  + labDay + " from " + labStart + " to " + labEnd);
-                                            }
-                                            return false;
-                                        }
+                            if (myCourse.equals(myLab.getCourse())) {
+                                checkedConflicts.add(labAssign);
+                                Day labDay = labSlot.getDay();
+                                if (slotsOverlap(courseSlot, labSlot)) {
+                                    LocalTime labStart = labSlot.getStartTime();
+                                    LocalTime labEnd = labSlot.getEndTime();
+                                    if (DEBUG) {
+                                        output.println("Constraint Not Met: Lab slot overlapping with slot of its course");
+                                        output.println("    The course " + myCourse.getName() + " is scheduled on " + courseDay + " from " + courseStart + " to " + courseEnd);
+                                        output.println("    but the lab " + myLab.getName() + " is scheduled on " + labDay + " from " + labStart + " to " + labEnd);
                                     }
+                                    return false;
                                 }
                             }
                         }
-
                     }
                 }
             }
         }
-            if(DEBUG)
-                output.println("Constraint Met");
-            return true;
+        if(DEBUG)
+            output.println("Constraint Met");
+        return true;
     }
 
+    private boolean checkTuesdayCourses(Assignment a){
+        Slot slot = a.getSlot();
+
+        if(slot.getDay() == Day.TU && slot.getStartTime().equals(LocalTime.of(11, 0)))
+            return false;
+
+        return true;
+    }
+
+    private boolean checkCourseNumberRequirements(Assignment assign){
+
+        Slot slot = assign.getSlot();
+        if(slot.getType() == 0 && !checkedNumber.contains(assign)) {
+            checkedNumber.add(assign);
+            Course course = (Course) assign.getElement();
+            int firstDigit = getFirstDigit(course.getNumber());
+
+            switch (firstDigit) {
+                case 9: {
+                    if (DEBUG)
+                        output.println("Checking 900-level courses...");
+                    if (slot.getStartTime().isBefore(LocalTime.of(18, 0))) {
+                        //must be evening course
+                        return false;
+                    } else {
+                        //check for 913 scheduled at same time of 413 + its overlap exclusions
+                    }
+                }
+                break;
+                case 8: {
+                    if (DEBUG)
+                        output.println("Checking overlapping courses with CPSC 813...");
+                    //check for 813 scheduled at same time of 313 + its overlap exclusions
+                }
+                break;
+                case 5: {
+                    if (DEBUG)
+                        output.println("Checking for overlapping 500-level courses...");
+                    //no 500-level courses scheduled at same time
+                    for(Assignment assn : myAssignments){
+                        Slot tempSlot = assn.getSlot();
+                        if(tempSlot.getType() ==0 && !checkedNumber.contains(assn)){
+                            checkedNumber.add(assn);
+                            Course tempCourse = (Course) assn.getElement();
+                            int tempFirstDigit = getFirstDigit(tempCourse.getNumber());
+
+                            if(tempFirstDigit == 5){
+                                if(slot.equals(tempSlot)){
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+        }
+        return true;
+    }
+
+    private int getFirstDigit(int courseNumber){
+        int firstDigit = courseNumber;
+
+        while (firstDigit > 9) {
+            firstDigit /= 10;
+        }
+
+        return firstDigit;
+    }
+
+
+    private boolean slotsOverlap(Slot one, Slot two){
+
+        Day dayOne = one.getDay();
+        Day dayTwo = two.getDay();
+
+        if(dayOne == dayTwo){
+            LocalTime startOne = one.getStartTime();
+            LocalTime startTwo = two.getStartTime();
+            if(startOne.equals(startTwo)){
+                return true;
+            }
+            LocalTime endOne = one.getEndTime();
+            LocalTime endTwo = two.getEndTime();
+            if(endOne.equals(endTwo)){
+                return true;
+            }
+            if(startTwo.isAfter(startOne) && startTwo.isBefore(endOne)
+            || endTwo.isAfter(startOne) && endTwo.isBefore(endOne)){
+                return true;
+            }
+
+        }
+        return false;
+    }
 }

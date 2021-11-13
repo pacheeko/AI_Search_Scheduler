@@ -65,6 +65,19 @@ public class Parser {
 		throw new Exception("Invalid course in input file!");
 	}
 	
+	//getLab - Returns a lab object contained in the labs arraylist with the same name as the input string
+	//INPUT: Lab name string of form "<course.getName()> TUT <number>"
+	//RETURNS: A lab object if one is found
+	private Lab getLab(String string) throws Exception {
+		for (Lab lab : labs) {
+			if(lab.getName().equals(string)){
+				return lab;
+			}
+		}
+		throw new Exception("Invalid lab in input file!");
+	}
+	
+	
 	
 	//
 	//PARSE METHODS
@@ -206,28 +219,36 @@ public class Parser {
 		return slots;
 	}
 	
+	/*
+	//Arraylist of Element tuples
 	private ArrayList<Element[]> parseNotCompatible(){
 		return null;
 	}
+	*/
 	
 	/*
+	//Arraylist of Assignments
 	public (Element, Slot) parseUnwanted(){
 		return null;
 	}
 	*/
 	
 	/*
+	//Preference extends Assignment (assignment plus preference weighting)
 	public (Slot, Element, int) parsePreferences(){
 		return null;
 	}
 	*/
 	
-	
+	/*
+	//Arraylist of Element tuples
 	private ArrayList<Element[]> parsePair(){
 		return null;
 	}
+	*/
 	
 	/*
+	//Arraylist of Assignments
 	public (Element, Slot) parsePartialAssignments(){
 		return null;
 	}

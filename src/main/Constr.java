@@ -11,60 +11,98 @@ public class Constr {
 
     private boolean DEBUG = true;
 
-
     private boolean constraintsMet;
-    private int numberOfChecks = 5;
+    private int numberOfChecks = 4;
     private ArrayList<Assignment> myAssignments;
+    private ArrayList<Element> elementCounter;
 
-    //avoid checking constr of a slot multiple times
-    private ArrayList<Assignment> checkedCourseMin;
+    //avoid checking constr of assignment multiple times
     private ArrayList<Assignment> checkedCourseMax;
-    private ArrayList<Assignment> checkedLabMin;
     private ArrayList<Assignment> checkedLabMax;
     private ArrayList<Assignment> checkedConflicts;
     private ArrayList<Assignment> checkedNumber;
+    private boolean tuesdayCheck;
     PrintStream output;
 
     public Constr() {}
 
-    public boolean checkConstraints(ArrayList<Assignment> assignments, int assignmentNumber) {
+    public boolean checkConstraints(ArrayList<Assignment> assignments, int assignmentNumber, ArrayList<Element> elements) {
+
+
+        elementCounter = new ArrayList<>();
 
         try{
-            if(DEBUG)
+            if (DEBUG)
                 output = new PrintStream("constr_log_" + assignmentNumber +".txt");
+            constraintsMet = checkPartialConstraints(assignments, assignmentNumber, true);
 
-            checkedCourseMin = new ArrayList<>();
+            if(constraintsMet){
+                if(DEBUG)
+                    output.println("Checking if all courses and labs have been assigned...");
+                for(Element e : elements) {
+                    if(!elementCounter.contains(e)){
+                        if(DEBUG) {
+                            output.println("    Constraint Not Met: All courses and labs have not been assigned\n");
+                            output.flush();
+                        }
+                        return false;
+                    }
+                }
+            }
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+
+        if(DEBUG) {
+            output.println("All Hard Constraints Have Been Met\n");
+            output.flush();
+        }
+
+        return constraintsMet;
+    }
+
+    public boolean checkPartialConstraints(ArrayList<Assignment> assignments, int assignmentNumber, boolean count) {
+
+        try{
+
+            if(DEBUG){
+               if(!count)
+                    output = new PrintStream("constr_log_" + assignmentNumber +".txt");
+            }
+
+            constraintsMet = true;
+            tuesdayCheck = false;
             checkedCourseMax = new ArrayList<>();
-            checkedLabMin = new ArrayList<>();
             checkedLabMax = new ArrayList<>();
             checkedConflicts = new ArrayList<>();
             checkedNumber = new ArrayList<>();
-
-            constraintsMet = true;
             myAssignments = assignments;
 
             for(Assignment a : myAssignments){
+                if(count){
+                    Element myElement = a.getElement();
+                    if(!elementCounter.contains(myElement)){
+                        elementCounter.add(myElement);
+                    }
+                }
                 for(int i = 0;i < numberOfChecks;i++){
                     performCheck(a, i);
                     if(!constraintsMet){
+                        if(DEBUG)
+                            output.flush();
                         return false;
                     }
                 }
             }
             if(DEBUG) {
-                output.println("All Hard Constraints Have Been Met");
-                output.flush();
+                output.println("All Partial Hard Constraints Have Been Met\n");
+                if(!count)
+                    output.flush();
             }
 
         }catch (FileNotFoundException e){
             e.printStackTrace();
         }
-        return constraintsMet;
-    }
-
-    public boolean checkPartialConstraints(ArrayList<Assignment> assignments) {
-
-        constraintsMet = true;
 
 
         return constraintsMet;
@@ -77,21 +115,14 @@ public class Constr {
         int slotType = slot.getType();
 
         switch(check){
-            //course min
+            //courses on tuesday at 11
             case 0:{
-                if(slotType == 0){
-                    if(!checkedCourseMin.contains(assign)){
-                        if(DEBUG)
-                            output.println("Checking Course Min for " + name + "...");
-                        constraintsMet = meetsCourseMin(assign);
-                        checkedCourseMin.add(assign);
-                    }
-                }else{
-                    if(!checkedLabMin.contains(assign)){
-                        if(DEBUG)
-                            output.println("Checking Lab Min for " + name + "...");
-                        constraintsMet = meetsLabMin(assign);
-                        checkedLabMin.add(assign);
+                if(!tuesdayCheck) {
+                    if (slotType == 0) {
+                        if (DEBUG)
+                            output.println("Checking for courses scheduled on Tuesday at 11:00...");
+                        constraintsMet = checkTuesdayCourses(assign);
+                        tuesdayCheck = true;
                     }
                 }
             }
@@ -117,60 +148,33 @@ public class Constr {
             break;
             //labs and courses in same slot
             case 2:{
-                if(DEBUG)
-                    output.println("Checking course and lab conflicts for " + slot.getInfo() + "...");
-                constraintsMet = checkConflictingCourseAndLabs(assign);
+                if (slotType == 0) {
+                    if(!checkedConflicts.contains(assign)){
+                        Course myCourse = (Course) assign.getElement();
+                        if(DEBUG)
+                            output.println("Checking course and lab conflicts for " + myCourse.getName() + " in " + slot.getInfo() + "...");
+                        checkedConflicts.add(assign);
+                        constraintsMet = checkConflictingCourseAndLabs(assign);
+                    }
+
+                }
             }
             break;
-            //courses on tuesday at 11
+            //course number related constraints (ie. 500-level, 900-level)
             case 3:{
-                if(slotType==0){
-                    if(DEBUG)
-                        output.println("Checking for courses scheduled on Tuesday at 11:00...");
-                    constraintsMet = checkTuesdayCourses(assign);
-                }
-            }
-            break;
-            case 4:{
-                if(slotType == 0) {
-                    constraintsMet = checkCourseNumberRequirements(assign);
+                if (slotType == 0) {
+                    if(!checkedNumber.contains(assign)) {
+                        if (DEBUG)
+                            output.println("Checking course number constraints...");
+                        checkedNumber.add(assign);
+                        constraintsMet = checkCourseNumberRequirements(assign);
+                    }
                 }
             }
             break;
         }
 
     }
-
-    private boolean meetsCourseMin(Assignment assign){
-
-        Slot slot = assign.getSlot();
-
-        int courseMin = slot.getMin();
-        int courseAccumulator = 1;
-
-        for(Assignment a : myAssignments){
-            if (!a.equals(assign) && !checkedCourseMin.contains(a)) {
-                if (slot.equals(a.getSlot())){
-                    courseAccumulator++;
-                    checkedCourseMin.add(a);
-                }
-            }
-        }
-
-        if(courseMin > courseAccumulator){
-            if(DEBUG) {
-                output.println("Constraint Not Met: Course Min");
-                output.println("    Course min of slot" + slot.getInfo() + " is "
-                        + slot.getMin() + ", but the number of courses assigned is " + courseAccumulator);
-            }
-            return false;
-        }else{
-            if(DEBUG)
-                output.println("Constraint Met");
-            return true;
-        }
-    }
-
 
     private boolean meetsCourseMax(Assignment assign) {
         Slot slot = assign.getSlot();
@@ -189,49 +193,17 @@ public class Constr {
 
         if(courseMax < courseAccumulator){
             if(DEBUG) {
-                output.println("Constraint Not Met: Course Max");
+                output.println("    Constraint Not Met: Course Max");
                 output.println("    Course max of slot" + slot.getInfo() + " is "
                         + slot.getMax() + ", but the number of courses assigned is " + courseAccumulator);
             }
             return false;
         }else{
             if(DEBUG)
-                output.println("Constraint Met");
+                output.println("    Constraint Met\n");
             return true;
         }
     }
-
-
-    private boolean meetsLabMin(Assignment assign){
-
-        Slot slot = assign.getSlot();
-
-        int labMin = slot.getMin();
-        int labAccumulator = 1;
-
-        for(Assignment a : myAssignments){
-            if (!a.equals(assign) && !checkedLabMin.contains(a)) {
-                if (slot.equals(a.getSlot())){
-                    labAccumulator++;
-                    checkedLabMin.add(a);
-                }
-            }
-        }
-
-        if(labMin > labAccumulator){
-            if(DEBUG) {
-                output.println("Constraint Not Met: Lab Min");
-                output.println("    Lab min of slot" + slot.getInfo() + " is "
-                        + slot.getMin() + ", but the number of lab assigned is " + labAccumulator);
-            }
-            return false;
-        }else{
-            if(DEBUG)
-                output.println("Constraint Met");
-            return true;
-        }
-    }
-
 
     private boolean meetsLabMax(Assignment assign) {
         Slot slot = assign.getSlot();
@@ -250,14 +222,14 @@ public class Constr {
 
         if(labMax < labAccumulator){
             if(DEBUG) {
-                output.println("Constraint Not Met: Lab Max");
+                output.println("    Constraint Not Met: Lab Max");
                 output.println("    Lab max of slot" + slot.getInfo() + " is "
                         + slot.getMax() + ", but the number of labs assigned is " + labAccumulator);
             }
             return false;
         }else{
             if(DEBUG)
-                output.println("Constraint Met");
+                output.println("    Constraint Met\n");
             return true;
         }
     }
@@ -265,49 +237,36 @@ public class Constr {
 
     private boolean checkConflictingCourseAndLabs(Assignment assign){
 
-        if(!checkedConflicts.contains(assign)) {
-            Slot courseSlot = assign.getSlot();
-            if (courseSlot.getType() == 0) {
-                checkedConflicts.add(assign);
-                Course myCourse = (Course) assign.getElement();
-                Day courseDay = courseSlot.getDay();
-                LocalTime courseStart = courseSlot.getStartTime();
-                LocalTime courseEnd = courseSlot.getEndTime();
-    //                    System.out.print("Course: ");
-    //                    System.out.print(myCourse.getName());
-    //                    System.out.print(" on ");
-    //                    System.out.println(course.getSlot().getInfo());
-                for (Assignment labAssign : myAssignments) {
-                    if (!checkedConflicts.contains(labAssign)) {
-                        Slot labSlot = labAssign.getSlot();
-                        if (labSlot.getType() == 1) {
-                            Lab myLab = (Lab) labAssign.getElement();
-    //                                System.out.print("Lab at: ");
-    //                                System.out.print(lab.getSlot().getInfo());
-    //                                System.out.print(" of ");
-    //                                System.out.println(myLab.getCourse().getName());
+        Slot courseSlot = assign.getSlot();
+        Course myCourse = (Course) assign.getElement();
+        Day courseDay = courseSlot.getDay();
+        LocalTime courseStart = courseSlot.getStartTime();
+        LocalTime courseEnd = courseSlot.getEndTime();
 
-                            if (myCourse.equals(myLab.getCourse())) {
-                                checkedConflicts.add(labAssign);
-                                Day labDay = labSlot.getDay();
-                                if (slotsOverlap(courseSlot, labSlot)) {
-                                    LocalTime labStart = labSlot.getStartTime();
-                                    LocalTime labEnd = labSlot.getEndTime();
-                                    if (DEBUG) {
-                                        output.println("Constraint Not Met: Lab slot overlapping with slot of its course");
-                                        output.println("    The course " + myCourse.getName() + " is scheduled on " + courseDay + " from " + courseStart + " to " + courseEnd);
-                                        output.println("    but the lab " + myLab.getName() + " is scheduled on " + labDay + " from " + labStart + " to " + labEnd);
-                                    }
-                                    return false;
-                                }
+        for (Assignment labAssign : myAssignments) {
+            if (!checkedConflicts.contains(labAssign)) {
+                Slot labSlot = labAssign.getSlot();
+                if (labSlot.getType() == 1) {
+                    Lab myLab = (Lab) labAssign.getElement();
+                    if (myCourse.equals(myLab.getCourse())) {
+                        checkedConflicts.add(labAssign);
+                        Day labDay = labSlot.getDay();
+                        if (slotsOverlap(courseSlot, labSlot)) {
+                            LocalTime labStart = labSlot.getStartTime();
+                            LocalTime labEnd = labSlot.getEndTime();
+                            if (DEBUG) {
+                                output.println("    Constraint Not Met: Lab slot overlapping with slot of its course");
+                                output.println("    The course " + myCourse.getName() + " is scheduled on " + courseDay + " from " + courseStart + " to " + courseEnd);
+                                output.println("    but the lab " + myLab.getName() + " is scheduled on " + labDay + " from " + labStart + " to " + labEnd);
                             }
+                            return false;
                         }
                     }
                 }
             }
         }
         if(DEBUG)
-            output.println("Constraint Met");
+            output.println("    Constraint Met\n");
         return true;
     }
 
@@ -317,6 +276,8 @@ public class Constr {
         if(slot.getDay() == Day.TU && slot.getStartTime().equals(LocalTime.of(11, 0)))
             return false;
 
+        if(DEBUG)
+            output.println("    Constraint Met\n");
         return true;
     }
 
@@ -331,34 +292,34 @@ public class Constr {
             switch (firstDigit) {
                 case 9: {
                     if (DEBUG)
-                        output.println("Checking 900-level courses...");
+                        output.println("Checking for evening courses...");
                     if (slot.getStartTime().isBefore(LocalTime.of(18, 0))) {
-                        //must be evening course
+                        if (DEBUG){
+                            output.println("    Constraint Not Met: 900-level in evening slot");
+                            output.println("    The course " + course.getName() + " is scheduled at " + slot.getStartTime() +
+                                    ", but 900-level courses must be scheduled at 18:00 or later");
+                        }
                         return false;
-                    } else {
-                        //check for 913 scheduled at same time of 413 + its overlap exclusions
                     }
-                }
-                break;
-                case 8: {
-                    if (DEBUG)
-                        output.println("Checking overlapping courses with CPSC 813...");
-                    //check for 813 scheduled at same time of 313 + its overlap exclusions
                 }
                 break;
                 case 5: {
                     if (DEBUG)
                         output.println("Checking for overlapping 500-level courses...");
-                    //no 500-level courses scheduled at same time
+
                     for(Assignment assn : myAssignments){
                         Slot tempSlot = assn.getSlot();
                         if(tempSlot.getType() ==0 && !checkedNumber.contains(assn)){
                             checkedNumber.add(assn);
                             Course tempCourse = (Course) assn.getElement();
                             int tempFirstDigit = getFirstDigit(tempCourse.getNumber());
-
                             if(tempFirstDigit == 5){
                                 if(slot.equals(tempSlot)){
+                                    if (DEBUG){
+                                        output.println("    Constraint Not Met: Overlapping 500-level courses");
+                                        output.println("    " + course.getName() + " is scheduled at " + slot.getInfo() +
+                                                ", and " + tempCourse.getName() + " is scheduled at " + tempSlot.getInfo() + ", but 500level courses must be scheduled in different slots");
+                                    }
                                     return false;
                                 }
                             }
@@ -368,6 +329,8 @@ public class Constr {
                 break;
             }
         }
+        if(DEBUG)
+            output.println("    Constraint Met\n");
         return true;
     }
 

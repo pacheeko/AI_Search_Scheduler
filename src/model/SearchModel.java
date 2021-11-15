@@ -6,20 +6,10 @@ import problem.Slot;
 
 import java.util.ArrayList;
 
-public class SearchModel {
+public class SearchModel {    
 
-    ArrayList<Slot> slots;    
-
-    public SearchModel() {
-        this.slots = new ArrayList<Slot>();
-    }
-
-    public SearchModel(ArrayList<Slot> slots) {
-        this.slots = slots;
-    }    
-
-    public ArrayList<Problem> Div(Problem prob) {
-        Element nextElement = prob.nextElement();     
+    public static ArrayList<Problem> Div(Problem prob, ArrayList<Slot> slots) {
+        Element nextElement = prob.nextElement();
         ArrayList<Problem> subProblems = new ArrayList<Problem>();
 
         for(Slot slot: slots) {
@@ -31,4 +21,5 @@ public class SearchModel {
         return subProblems;
     }
 
+    
 }

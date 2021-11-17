@@ -24,6 +24,11 @@ public class Constr {
     private boolean tuesdayCheck;
     PrintStream output;
 
+    //for testing only
+    //should get this from parser object
+    private ArrayList<Assignment> unwanted;
+    private ArrayList<Element[]> notCompatible;
+
     public Constr() {}
 
     public boolean checkConstraints(ArrayList<Assignment> assignments, int assignmentNumber, ArrayList<Element> elements) {
@@ -53,7 +58,7 @@ public class Constr {
             e.printStackTrace();
         }
 
-        if(DEBUG) {
+        if(DEBUG && constraintsMet) {
             output.println("All Hard Constraints Have Been Met\n");
             output.flush();
         }
@@ -86,6 +91,17 @@ public class Constr {
                     }
                 }
                 for(int i = 0;i < numberOfChecks;i++){
+                    for(Assignment u : unwanted){
+                        if(a.getElement().equals(u.getElement()) && a.getSlot().equals(u.getSlot())){
+                            if(DEBUG){
+                                output.println("    Constraint Not Met: Unwanted Assignment");
+                                output.println("    The element " + a.getElement().getName() + " is assigned to the slot "
+                                        + a.getSlot().getInfo() + ", but this assignment is in the unwanted list");
+                                output.flush();
+                                return false;
+                            }
+                        }
+                    }
                     performCheck(a, i);
                     if(!constraintsMet){
                         if(DEBUG)
@@ -185,6 +201,15 @@ public class Constr {
         for(Assignment a : myAssignments){
             if (!a.equals(assign) && !checkedCourseMax.contains(a)) {
                 if (slot.equals(a.getSlot())){
+                    if(!isCompatible(assign.getElement(), a.getElement())){
+                        if(DEBUG) {
+                            output.println("    Constraint Not Met: Non-Compatible Elements");
+                            output.println("    The elements " + assign.getElement().getName() + " and "
+                                    + a.getElement().getName() +" are both in the slot " + slot.getInfo()
+                                    + ", but they are in the list of non-compatible elements");
+                        }
+                        return false;
+                    }
                     checkedCourseMax.add(a);
                     courseAccumulator++;
                 }
@@ -314,7 +339,7 @@ public class Constr {
                             Course tempCourse = (Course) assn.getElement();
                             int tempFirstDigit = getFirstDigit(tempCourse.getNumber());
                             if(tempFirstDigit == 5){
-                                if(slot.equals(tempSlot)){
+                                if(slotsOverlap(slot, tempSlot)){
                                     if (DEBUG){
                                         output.println("    Constraint Not Met: Overlapping 500-level courses");
                                         output.println("    " + course.getName() + " is scheduled at " + slot.getInfo() +
@@ -369,5 +394,24 @@ public class Constr {
 
         }
         return false;
+    }
+
+    public void setUnwanted(ArrayList<Assignment> unwanted) {
+        this.unwanted = unwanted;
+    }
+
+    public void setNotCompatible(ArrayList<Element[]> notCompatible) {
+        this.notCompatible = notCompatible;
+    }
+
+    private boolean isCompatible(Element e1, Element e2){
+        for(Element[] elem : notCompatible){
+           if(e1.equals(elem[0]) && e2.equals(elem[1])
+           || e2.equals(elem[0]) && e1.equals(elem[1])){
+               return false;
+           }
+        }
+
+        return true;
     }
 }

@@ -11,6 +11,7 @@ public class Course extends Element {
         this.number = number;
         this.section = section;
         name = department + " " + number + " " + section;
+        super.setName(name);
     }
 
     public int getSection() {

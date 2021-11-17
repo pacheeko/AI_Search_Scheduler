@@ -21,13 +21,25 @@ public class constrTest {
         Lab lab_31 = new Lab(course_3, 01, false);
         Lab lab_41 = new Lab(course_4, 01, true);
 
+        myConstr.setNotCompatible(new ArrayList<>(Arrays.<Element[]>asList(
+                new Element[]{lab_11, lab_22},
+                new Element[]{course_4, course_1},
+                new Element[]{course_4, course_2},
+                new Element[]{lab_41, course_2},
+                new Element[]{course_1, lab_41}
+        )));
+
         CourseSlot myCourseSlot_1 =  new CourseSlot(Day.MO, LocalTime.of(8, 0), 3, 2);
-        CourseSlot myCourseSlot_2 =  new CourseSlot(Day.TU, LocalTime.of(9, 0), 3, 2);
-        CourseSlot myCourseSlot_3 =  new CourseSlot(Day.FR, LocalTime.of(9, 30), 2, 1);
+        CourseSlot myCourseSlot_2 =  new CourseSlot(Day.MO, LocalTime.of(9, 0), 3, 2);
+        CourseSlot myCourseSlot_3 =  new CourseSlot(Day.TU, LocalTime.of(9, 30), 2, 1);
 
         LabSlot myLabSot_1 = new LabSlot(Day.TU, LocalTime.of(10, 0), 2, 1);
         LabSlot myLabSot_2 = new LabSlot(Day.MO, LocalTime.of(8, 0), 4, 2);
         LabSlot myLabSot_3 = new LabSlot(Day.FR, LocalTime.of(10, 0), 2, 1);
+
+        myConstr.setUnwanted(new ArrayList<>(Arrays.asList(
+                new Assignment(course_1, myCourseSlot_3)
+        )));
 
         Assignment assign_1 = new Assignment(course_1, myCourseSlot_1);
         Assignment assign_2 = new Assignment(course_2, myCourseSlot_1);
@@ -39,6 +51,8 @@ public class constrTest {
 
         Assignment assign_6 = new Assignment(course_2, myCourseSlot_2);
         Assignment assign_7 = new Assignment(course_4, myCourseSlot_3);
+        Assignment assign_8 = new Assignment(course_1, myCourseSlot_3);
+        Assignment assign_9 = new Assignment(course_2, myCourseSlot_3);
 
         Assignment lab_assign_1 = new Assignment(lab_11, myLabSot_2);
         Assignment lab_assign_2 = new Assignment(lab_11, myLabSot_1);
@@ -63,12 +77,18 @@ public class constrTest {
 
         ArrayList<Element> allElements =  new ArrayList<>(Arrays.asList(course_1, course_2,course_3,course_4, lab_11, lab_22, lab_31,lab_41));
 
+        ArrayList<Assignment> unwanted = new ArrayList<>(Arrays.asList(assign_8));
+
+        ArrayList<Assignment> notcompatible = new ArrayList<>(Arrays.asList(assign_7, assign_9));
+
         myConstr.checkPartialConstraints(myAssignments_coursemax, 1, false);
         myConstr.checkPartialConstraints(myAssignments_labmax, 2, false);
         myConstr.checkPartialConstraints(myAssignments_courselabconflict, 3, false);
         myConstr.checkPartialConstraints(myAssignments_partialmet, 4, false);
 
         myConstr.checkConstraints(myAssignments_allmet, 5, allElements);
+        myConstr.checkPartialConstraints(unwanted, 6, false);
+        myConstr.checkPartialConstraints(notcompatible, 7, false);
 
     }
 }

@@ -24,6 +24,8 @@ public class Parser {
 	private ArrayList<Lab> labs;
 	private ArrayList<Element[]> notCompatible;
 	private ArrayList<Element[]> pairs;
+	private ArrayList<Assignment> unwanted;
+	private ArrayList<Assignment> partialAssignments;
 	
 	
 	//
@@ -77,6 +79,23 @@ public class Parser {
 			}
 		}
 		throw new Exception("Invalid lab in input file!");
+	}
+	
+	//
+	//
+	//
+	private Slot getSlot(Day day, LocalTime time) throws Exception {
+		for (Slot slot : courseSlots) {
+			if(slot.getDay().equals(day) && slot.getStartTime().equals(time)){
+				return slot;
+			}
+		}
+		for (Slot slot : labSlots) {
+			if(slot.getDay().equals(day) && slot.getStartTime().equals(time)){
+				return slot;
+			}
+		}
+		throw new Exception("Invalid slot in input file!");
 	}
 	
 	//isCourse - Returns if a given input string represents a course
@@ -291,13 +310,63 @@ public class Parser {
 		return slots;
 	}
 	
-	
-	/*
-	//Arraylist of Assignments
-	public (Element, Slot) parseUnwanted(){
-		return null;
+	//parseUnwantedOrPartialAssignments - Parses input file for either unwanted or partial assignments
+	//INPUT: Category to parse from
+	//RETURNS: An arraylist of assignments
+	public ArrayList<Assignment> parseUnwantedOrPartialAssignments(String category) throws Exception{
+		Scanner scanner = createScanner();
+		String lineStr;
+		ArrayList<Assignment> slots = new ArrayList<Assignment>();
+		while(scanner.hasNextLine()) {
+			
+			if(scanner.nextLine().equals(category)) {
+				
+				lineStr = scanner.nextLine();
+				while(lineStr.equals("") == false) {
+					//Split along comma in line
+					lineStr = lineStr.trim().replaceAll(" +", " ");
+					String[] parts = lineStr.split(", ");
+					
+					//If not exactly three comma-seperated values were found, invalid entry
+					if (parts.length != 3) {
+						throw new Exception("Invalid unwanted or partial assignment in input file!");
+					}
+					
+					String[] elementStr = parts[0].split(" ");
+					Element element;
+					
+					//Element is a course
+					if (isCourse(elementStr)){
+						element = getCourse(elementStr[0] + " " + elementStr[1] + " " + Integer.parseInt(elementStr[3]));
+					}
+					//Element is a lab
+					else {
+						if (elementStr.length == 6) {
+							element = getLab(elementStr[0] + " " + elementStr[1] + " " + Integer.parseInt(elementStr[3])  + " TUT " + Integer.parseInt(elementStr[5]));
+						}
+						else if (elementStr.length == 4) {
+							element = getLab(elementStr[0] + " " + elementStr[1] + " " + 1 + " TUT " + Integer.parseInt(elementStr[3]));
+						}
+						else {
+							throw new Exception("Invalid unwanted or partial assignment in input file!");
+						}
+					}
+					
+					Day day = getDay(parts[1]);
+					LocalTime time = LocalTime.parse(parts[2], DateTimeFormatter.ofPattern("H:m"));
+					slots.add(new Assignment(element, getSlot(day, time)));
+					
+					if(scanner.hasNextLine() == false) {
+						break;
+					}
+					lineStr = scanner.nextLine();
+				}
+			}
+		}
+		scanner.close();
+		return slots;
 	}
-	*/
+	
 	
 	/*
 	//Preference extends Assignment (assignment plus preference weighting)
@@ -306,12 +375,6 @@ public class Parser {
 	}
 	*/
 	
-	/*
-	//Arraylist of Assignments
-	public (Element, Slot) parsePartialAssignments(){
-		return null;
-	}
-	*/
 	
 	//parseFile - Main parse method. Invokes sub-parse methods to populate global vars with data from input file
 	//INPUT: A string representing the local path of a .txt file that should contain valid input for the system
@@ -325,6 +388,8 @@ public class Parser {
     	labs = parseLabs();
     	notCompatible = parsePairsOrNotCompatible("Not compatible:");
     	pairs = parsePairsOrNotCompatible("Pair:");
+    	unwanted = parseUnwantedOrPartialAssignments("Unwanted:");
+    	partialAssignments = parseUnwantedOrPartialAssignments("Partial assignments:");
     	
 	}
 	
@@ -359,5 +424,13 @@ public class Parser {
 	
 	public ArrayList<Element[]> getPairs(){
 		return pairs;
+	}
+	
+	public ArrayList<Assignment> getUnwanted(){
+		return unwanted;
+	}
+	
+	public ArrayList<Assignment> getPartialAssignments(){
+		return partialAssignments;
 	}
 }

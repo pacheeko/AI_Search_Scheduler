@@ -81,21 +81,28 @@ public class Parser {
 		throw new Exception("Invalid lab in input file!");
 	}
 	
-	//
-	//
-	//
-	private Slot getSlot(Day day, LocalTime time) throws Exception {
+	//getCourseSlot - Returns a slot object contained in the courseSlots arraylist with the same properties as the inputs
+	//INPUT: the slot's day and time
+	//RETURNS: A slot object from the courseSlots arraylists, if one is found
+	private Slot getCourseSlot(Day day, LocalTime time) throws Exception {
 		for (Slot slot : courseSlots) {
 			if(slot.getDay().equals(day) && slot.getStartTime().equals(time)){
 				return slot;
 			}
 		}
+		throw new Exception("Invalid course slot in input file!");
+	}
+	
+	//getLabSlot - Returns a slot object contained in the labSlots arraylist with the same properties as the inputs
+	//INPUT: the slot's day and time
+	//RETURNS: A slot object from the labSlots arraylists, if one is found
+	private Slot getLabSlot(Day day, LocalTime time) throws Exception {
 		for (Slot slot : labSlots) {
 			if(slot.getDay().equals(day) && slot.getStartTime().equals(time)){
 				return slot;
 			}
 		}
-		throw new Exception("Invalid slot in input file!");
+		throw new Exception("Invalid lab slot in input file!");
 	}
 	
 	//isCourse - Returns if a given input string represents a course
@@ -332,12 +339,15 @@ public class Parser {
 						throw new Exception("Invalid unwanted or partial assignment in input file!");
 					}
 					
+					Day day = getDay(parts[1]);
+					LocalTime time = LocalTime.parse(parts[2], DateTimeFormatter.ofPattern("H:m"));
 					String[] elementStr = parts[0].split(" ");
 					Element element;
 					
 					//Element is a course
 					if (isCourse(elementStr)){
 						element = getCourse(elementStr[0] + " " + elementStr[1] + " " + Integer.parseInt(elementStr[3]));
+						slots.add(new Assignment(element, getCourseSlot(day, time)));
 					}
 					//Element is a lab
 					else {
@@ -350,11 +360,8 @@ public class Parser {
 						else {
 							throw new Exception("Invalid unwanted or partial assignment in input file!");
 						}
+						slots.add(new Assignment(element, getLabSlot(day, time)));
 					}
-					
-					Day day = getDay(parts[1]);
-					LocalTime time = LocalTime.parse(parts[2], DateTimeFormatter.ofPattern("H:m"));
-					slots.add(new Assignment(element, getSlot(day, time)));
 					
 					if(scanner.hasNextLine() == false) {
 						break;

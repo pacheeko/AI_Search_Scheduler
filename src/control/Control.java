@@ -52,12 +52,11 @@ public class Control {
         current_leaf = leafs.get(0);
     }
 
-    public void ftrans() {
-        ProblemState current_state = leafs.get(0);
-        if (current_state.getSol())
+    public void ftrans() {        
+        if (current_leaf.getSol())
             return;
 
-        Problem current_problem = current_state.getProblem();
+        Problem current_problem = current_leaf.getProblem();
         if (current_problem.isSolved()) {
             ProblemState new_leaf = new ProblemState(current_problem, current_leaf);
             new_leaf.setSol(true);
@@ -76,7 +75,6 @@ public class Control {
 
         for(Problem subProblem : subProblems) {
             ProblemState new_leaf = new ProblemState(subProblem, current_leaf);
-            current_leaf.addChild(new_leaf);
             leafs.add(new_leaf);
         }
 

@@ -1,6 +1,8 @@
 package test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -74,8 +76,20 @@ public class ControlTest {
     }
 
     @Test
-    public void testRunningOnce() {   
-        control.next();             
-        assertEquals(" ", control.getLeafs().get(1).getProblem().getAssignments());
+    public void testInitial() {           
+        assertEquals(1, control.getLeafs().size());
+    }
+
+    @Test
+    public void testAfterOneRun() {
+        control.next();        
+        assertEquals(control.getRoot().getChildren(), control.getLeafs());
+    }
+
+    @Test
+    public void testAfterTwoRuns() {
+        control.next();        
+        control.next();
+        assertEquals(control.getRoot().getChildren(), control.getLeafs());
     }
 }

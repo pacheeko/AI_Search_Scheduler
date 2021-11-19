@@ -22,7 +22,7 @@ public class Parser {
 	private ArrayList<LabSlot> labSlots;
 	private ArrayList<Course> courses;
 	private ArrayList<Lab> labs;
-	private ArrayList<Element[]> notCompatibles;
+	private ArrayList<Element[]> notCompatible;
 	
 	
 	//
@@ -78,9 +78,9 @@ public class Parser {
 		throw new Exception("Invalid lab in input file!");
 	}
 	
-	//
-	//
-	//RETURNS: true if Course, false if Lab
+	//isCourse - Returns if a given input string represents a course
+	//INPUT: Element name string
+	//RETURNS: true if Course, false if Lab or otherwise
 	private boolean isCourse(String[] string) {
 		if (string[2].equals("TUT")) {
 			return false;
@@ -199,7 +199,7 @@ public class Parser {
 		return slots;
 	}
 	
-	//parseCourses - Parses input file for labs
+	//parseLabs - Parses input file for labs
 	//INPUT: None
 	//RETURNS: An arraylist of all labs
 	private ArrayList<Lab> parseLabs() throws Exception {
@@ -235,8 +235,9 @@ public class Parser {
 		return slots;
 	}
 	
-	
-	//Arraylist of Element tuples
+	//parseNotCompatible - Parses input file for tuples of incompatible elements
+	//INPUT: None
+	//RETURNS: An arraylist of all incompatible tuples
 	private ArrayList<Element[]> parseNotCompatible() throws Exception{
 		Scanner scanner = createScanner();
 		String lineStr;
@@ -328,7 +329,7 @@ public class Parser {
     	labSlots = parseLabSlots();
     	courses = parseCourses();
     	labs = parseLabs();
-    	notCompatibles = parseNotCompatible();
+    	notCompatible = parseNotCompatible();
     	
 	}
 	
@@ -357,7 +358,7 @@ public class Parser {
 		return labs;
 	}
 	
-	public ArrayList<Element[]> getNotCompatibles(){
-		return notCompatibles;
+	public ArrayList<Element[]> getNotCompatible(){
+		return notCompatible;
 	}
 }

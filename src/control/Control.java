@@ -55,7 +55,7 @@ public class Control {
         Problem current_problem = current_state.getProblem();
         if (current_problem.isSolved()) {
             ProblemState new_leaf = new ProblemState(current_problem, current_leaf);
-           //new_leaf.setSol(true);		Why is this here???
+            new_leaf.setSol(true); // This is here because we have to mark the problem as solved		Why is this here???
             current_leaf.addChild(new_leaf);
             leafs.remove(current_leaf);
             leafs.add(new_leaf);

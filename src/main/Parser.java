@@ -23,6 +23,7 @@ public class Parser {
 	private ArrayList<Course> courses;
 	private ArrayList<Lab> labs;
 	private ArrayList<Element[]> notCompatible;
+	private ArrayList<Element[]> pairs;
 	
 	
 	//
@@ -235,16 +236,16 @@ public class Parser {
 		return slots;
 	}
 	
-	//parseNotCompatible - Parses input file for tuples of incompatible elements
-	//INPUT: None
-	//RETURNS: An arraylist of all incompatible tuples
-	private ArrayList<Element[]> parseNotCompatible() throws Exception{
+	//parsePairsOrNotCompatible - Parses input file for tuples of elements from either "Not compatible:" or "Pair:"
+	//INPUT: Category to parse from
+	//RETURNS: An arraylist of tuples of elements
+	private ArrayList<Element[]> parsePairsOrNotCompatible(String category) throws Exception{
 		Scanner scanner = createScanner();
 		String lineStr;
 		ArrayList<Element[]> slots = new ArrayList<Element[]>();
 		while(scanner.hasNextLine()) {
 			
-			if(scanner.nextLine().equals("Not compatible:")) {
+			if(scanner.nextLine().equals(category)) {
 				
 				lineStr = scanner.nextLine();
 				while(lineStr.equals("") == false) {
@@ -254,7 +255,7 @@ public class Parser {
 					
 					//If not exactly two comma-seperated elements were found, invalid entry
 					if (parts.length != 2) {
-						throw new Exception("Invalid \"not compatible\" pair in input file!");
+						throw new Exception("Invalid \"not compatible\" or \"pair\" in input file!");
 					}
 					
 					ArrayList<String[]> strings = new ArrayList<String[]>();
@@ -306,13 +307,6 @@ public class Parser {
 	*/
 	
 	/*
-	//Arraylist of Element tuples
-	private ArrayList<Element[]> parsePair(){
-		return null;
-	}
-	*/
-	
-	/*
 	//Arraylist of Assignments
 	public (Element, Slot) parsePartialAssignments(){
 		return null;
@@ -329,7 +323,8 @@ public class Parser {
     	labSlots = parseLabSlots();
     	courses = parseCourses();
     	labs = parseLabs();
-    	notCompatible = parseNotCompatible();
+    	notCompatible = parsePairsOrNotCompatible("Not compatible:");
+    	pairs = parsePairsOrNotCompatible("Pair:");
     	
 	}
 	
@@ -360,5 +355,9 @@ public class Parser {
 	
 	public ArrayList<Element[]> getNotCompatible(){
 		return notCompatible;
+	}
+	
+	public ArrayList<Element[]> getPairs(){
+		return pairs;
 	}
 }

@@ -414,7 +414,7 @@ public class Parser {
 							System.out.println("WARNING: Preference with invalid course slot: " + day + " at " + time + " will not be considered!");
 						}
 					}
-					//Element is a lab
+					//Element is a lab 
 					else {
 						if (elementStr.length == 6) {
 							element = getLab(elementStr[0] + " " + elementStr[1] + " " + Integer.parseInt(elementStr[3])  + " TUT " + Integer.parseInt(elementStr[5]));

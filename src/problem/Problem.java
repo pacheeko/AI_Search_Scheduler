@@ -63,12 +63,11 @@ public class Problem {
         if (elements.isEmpty())
             return null;
         Element element = elements.get(0);
-        elements.remove(0);
         return element;
     }
 
     public ArrayList<Assignment> getAssignments() {
-        return this.assignments;
+        return assignments;
     }
 
     public boolean isSolved() {

@@ -1,6 +1,7 @@
 package test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -8,9 +9,9 @@ import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import model.SearchModel;
 import problem.Problem;
 import problem.Element;
+import problem.Assignment;
 import problem.Course;
 import problem.Lab;
 import problem.Slot;
@@ -18,7 +19,7 @@ import problem.CourseSlot;
 import problem.LabSlot;
 import problem.Day;
 
-public class SearchModelTest {
+public class ProblemTest {
     private ArrayList<Element> elements;
     private ArrayList<Slot> slots;
     private Problem problem;
@@ -68,8 +69,25 @@ public class SearchModelTest {
     }
 
     @Test
-    public void testRunningOnce() {
-        ArrayList<Problem> subProblems = SearchModel.Div(problem, slots);
-        assertEquals(1, subProblems.get(0).getAssignments().size());
+    public void testAssignSuccess() {
+        Element next = problem.nextElement();
+        Boolean success = problem.assign(next, slots.get(0));
+        assertTrue(success);
+    }
+
+    @Test
+    public void testAssignAssignments() {
+        Element next = problem.nextElement();
+        problem.assign(next, slots.get(0));        
+        ArrayList<Assignment> assignments = problem.getAssignments();
+        assertEquals(1, assignments.size());        
+    }
+
+    @Test
+    public void testAssignElements() {
+        Element next = problem.nextElement();
+        problem.assign(next, slots.get(0));
+        ArrayList<Element> el = problem.getElements();        
+        assertEquals(9, el.size());                
     }
 }

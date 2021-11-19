@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class ProblemState {
 
 	private Problem problem;
-	private Boolean sol = null;
+	private Boolean sol = false;
 	private int eval;
 	private ArrayList<ProblemState> children;
 	private ProblemState parent;
@@ -13,16 +13,18 @@ public class ProblemState {
 	public ProblemState(Problem problem, ProblemState parent) {
 		this.problem = problem;
 		this.parent = parent;
+		this.children = new ArrayList<ProblemState>();
+
+		if (parent == null) return;
+
+		parent.addChild(this);
 	}
 	
 	
 	public void addChild(ProblemState child) {
 		this.children.add(child);
 	}
-
-	
-	
-	
+		
 	public boolean isLeaf() {
         if (children.isEmpty()) {
             return true;

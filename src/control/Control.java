@@ -23,7 +23,6 @@ class LeafComparator implements Comparator<ProblemState> {
 
 }
 
-
 public class Control {
 
     ProblemState root;
@@ -41,33 +40,38 @@ public class Control {
         this.leaf_comparer = new LeafComparator();
     }
 
+    public void next() {
+        fleaf();
+        if (current_leaf == null) return;
+        ftrans();        
+    }
+
     public void fleaf() {
         if (leafs.isEmpty())
             return;
         current_leaf = leafs.get(0);
     }
 
-    public ProblemState ftrans() {
+    public void ftrans() {
         ProblemState current_state = leafs.get(0);
         if (current_state.getSol())
-            return null;
+            return;
 
         Problem current_problem = current_state.getProblem();
         if (current_problem.isSolved()) {
             ProblemState new_leaf = new ProblemState(current_problem, current_leaf);
-            new_leaf.setSol(true); // This is here because we have to mark the problem as solved		Why is this here???
-            current_leaf.addChild(new_leaf);
+            new_leaf.setSol(true);
             leafs.remove(current_leaf);
             leafs.add(new_leaf);
             leafs.sort(leaf_comparer);
             current_leaf = null;
-            return new_leaf;
+            return;
         }
 
 
         ArrayList<Problem> subProblems = SearchModel.Div(current_problem, slots);
         if (subProblems.isEmpty()) {
-            return null;
+            return;
         }
 
         for(Problem subProblem : subProblems) {
@@ -78,7 +82,19 @@ public class Control {
 
         leafs.remove(current_leaf);
         leafs.sort(leaf_comparer);
-        return null;
+        return;
+    }
+
+    public ProblemState getSelectedLeaf() {
+        return current_leaf;
+    }
+
+    public ProblemState getRoot() {
+        return root;
+    }
+
+    public ArrayList<ProblemState> getLeafs() {
+        return leafs;
     }
 
 }

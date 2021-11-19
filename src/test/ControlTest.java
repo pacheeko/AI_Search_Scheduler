@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import model.SearchModel;
+import control.Control;
+import problem.ProblemState;
 import problem.Problem;
 import problem.Element;
 import problem.Course;
@@ -18,10 +19,11 @@ import problem.CourseSlot;
 import problem.LabSlot;
 import problem.Day;
 
-public class SearchModelTest {
+public class ControlTest {
+
     private ArrayList<Element> elements;
     private ArrayList<Slot> slots;
-    private Problem problem;
+    private Control control;
 
     void populateElements() {
         elements = new ArrayList<Element>();
@@ -48,7 +50,7 @@ public class SearchModelTest {
     void populateSlots() {
         slots = new ArrayList<Slot>();
         populateCourseSlots();
-        populateLabSlots();
+        populateLabSlots();        
     }
 
     private void populateLabSlots() {
@@ -64,12 +66,16 @@ public class SearchModelTest {
     public void setup() {
         populateElements();
         populateSlots();
-        problem = new Problem(elements);
+        
+        Problem problem = new Problem(elements);
+        ProblemState root = new ProblemState(problem, null);
+
+        control = new Control(root, slots);        
     }
 
     @Test
-    public void testRunningOnce() {
-        ArrayList<Problem> subProblems = SearchModel.Div(problem, slots);
-        assertEquals(1, subProblems.get(0).getAssignments().size());
+    public void testRunningOnce() {   
+        control.next();             
+        assertEquals(" ", control.getLeafs().get(1).getProblem().getAssignments());
     }
 }

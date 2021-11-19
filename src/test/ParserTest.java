@@ -1,5 +1,6 @@
-package test;
+//package test;
 
+import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -16,7 +17,7 @@ public class ParserTest {
     public void init() {
         parser = new Parser();
         try {
-            parser.parseFile("/home/jp/School/CPSC433/CPSC433_PROJECT/tests/test_input");
+            parser.parseFile("C:\\\\Users\\\\mrnoo\\\\Desktop\\\\test_example.txt");
         } catch (Exception e) {
             fail();
         }        

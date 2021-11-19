@@ -17,6 +17,7 @@ class Start {
     	//Instantiate Parser, parse file passed in arg[0]
     	Parser parser = new Parser();
     	parser.parseFile(args[0]);
+    	System.out.println(parser.getLabs().get(0).getName());
     	
     	//Run the search
     	//ProblemState solution = run();

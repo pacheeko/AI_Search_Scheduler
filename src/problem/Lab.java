@@ -12,6 +12,7 @@ public class Lab extends Element {
         this.course = course;
         this.openToAllSections = openToAllSections;
         name = course.getName() + " TUT " + number;
+        this.number = number;
         super.setName(name);
     }
 

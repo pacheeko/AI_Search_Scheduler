@@ -68,7 +68,13 @@ public class SearchModelTest {
     }
 
     @Test
-    public void testRunningOnce() {
+    public void testDivSubProblems() {
+        ArrayList<Problem> subProblems = SearchModel.Div(problem, slots);
+        assertEquals(slots.size(), subProblems.size());
+    }
+
+    @Test
+    public void testDivAssignments() {
         ArrayList<Problem> subProblems = SearchModel.Div(problem, slots);
         assertEquals(1, subProblems.get(0).getAssignments().size());
     }

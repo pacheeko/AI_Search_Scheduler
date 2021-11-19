@@ -26,6 +26,7 @@ public class Parser {
 	private ArrayList<Element[]> pairs;
 	private ArrayList<Assignment> unwanted;
 	private ArrayList<Assignment> partialAssignments;
+	private ArrayList<Preference> preferences;
 	
 	
 	//
@@ -375,12 +376,71 @@ public class Parser {
 	}
 	
 	
-	/*
-	//Preference extends Assignment (assignment plus preference weighting)
-	public (Slot, Element, int) parsePreferences(){
-		return null;
+	
+	//parsePreferences - Parses input file for preferences
+	//INPUT: None
+	//RETURNS: An arraylist of preferences
+	public ArrayList<Preference> parsePreferences() throws Exception{
+		Scanner scanner = createScanner();
+		String lineStr;
+		ArrayList<Preference> slots = new ArrayList<Preference>();
+		while(scanner.hasNextLine()) {
+			
+			if(scanner.nextLine().equals("Preferences:")) {
+				
+				lineStr = scanner.nextLine();
+				while(lineStr.equals("") == false) {
+					//Split along comma in line
+					lineStr = lineStr.trim().replaceAll(" +", " ");
+					String[] parts = lineStr.split(", ");
+					
+					//If not exactly three comma-seperated values were found, invalid entry
+					if (parts.length != 4) {
+						throw new Exception("Invalid preference in input file!");
+					}
+					
+					Day day = getDay(parts[0]);
+					LocalTime time = LocalTime.parse(parts[1], DateTimeFormatter.ofPattern("H:m"));
+					String[] elementStr = parts[2].split(" ");
+					Element element;
+					
+					//Element is a course
+					if (isCourse(elementStr)){
+						element = getCourse(elementStr[0] + " " + elementStr[1] + " " + Integer.parseInt(elementStr[3]));
+						try {
+							slots.add(new Preference(element, getCourseSlot(day, time), Integer.parseInt(parts[3])));
+						}
+						catch(Exception e) {
+							System.out.println("WARNING: Preference with invalid course slot: " + day + " at " + time + " will not be considered!");
+						}
+					}
+					//Element is a lab
+					else {
+						if (elementStr.length == 6) {
+							element = getLab(elementStr[0] + " " + elementStr[1] + " " + Integer.parseInt(elementStr[3])  + " TUT " + Integer.parseInt(elementStr[5]));
+						}
+						else if (elementStr.length == 4) {
+							element = getLab(elementStr[0] + " " + elementStr[1] + " " + 1 + " TUT " + Integer.parseInt(elementStr[3]));
+						}
+						else {
+							throw new Exception("Invalid preference in input file!");
+						}
+						try {
+							slots.add(new Preference(element, getLabSlot(day, time), Integer.parseInt(parts[3])));
+						}
+						catch(Exception e) {
+							System.out.println("WARNING: Preference with invalid lab slot: " + day + " at " + time + " will not be considered!");
+						}
+					}
+
+					lineStr = scanner.nextLine();
+				}
+			}
+		}
+		scanner.close();
+		return slots;
 	}
-	*/
+	
 	
 	
 	//parseFile - Main parse method. Invokes sub-parse methods to populate global vars with data from input file
@@ -397,6 +457,7 @@ public class Parser {
     	pairs = parsePairsOrNotCompatible("Pair:");
     	unwanted = parseUnwantedOrPartialAssignments("Unwanted:");
     	partialAssignments = parseUnwantedOrPartialAssignments("Partial assignments:");
+    	preferences = parsePreferences();
     	
 	}
 	
@@ -439,5 +500,9 @@ public class Parser {
 	
 	public ArrayList<Assignment> getPartialAssignments(){
 		return partialAssignments;
+	}
+	
+	public ArrayList<Preference> getPreferences(){
+		return preferences;
 	}
 }

@@ -12,8 +12,8 @@ public class Constr {
     private boolean DEBUG = true;
 
     private boolean constraintsMet;
-    private int numberOfChecks = 4;
     private ArrayList<Assignment> myAssignments;
+    private ArrayList<Element> allElements = new ArrayList<>();
     private ArrayList<Element> elementCounter;
 
     //avoid checking constr of assignment multiple times
@@ -22,17 +22,21 @@ public class Constr {
     private ArrayList<Assignment> checkedConflicts;
     private ArrayList<Assignment> checkedNumber;
     private boolean tuesdayCheck;
-    PrintStream output;
+    private PrintStream output;
 
     //for testing only
     //should get this from parser object
     private ArrayList<Assignment> unwanted;
     private ArrayList<Element[]> notCompatible;
 
-    public Constr() {}
+    public Constr(Parser p) {
+        unwanted = p.getUnwanted();
+        notCompatible = p.getNotCompatible();
+        allElements.addAll(p.getCourses());
+        allElements.addAll(p.getLabs());
+    }
 
-    public boolean checkConstraints(ArrayList<Assignment> assignments, int assignmentNumber, ArrayList<Element> elements) {
-
+    public boolean checkConstraints(ArrayList<Assignment> assignments, int assignmentNumber) {
 
         elementCounter = new ArrayList<>();
 
@@ -44,7 +48,7 @@ public class Constr {
             if(constraintsMet){
                 if(DEBUG)
                     output.println("Checking if all courses and labs have been assigned...");
-                for(Element e : elements) {
+                for(Element e : allElements) {
                     if(!elementCounter.contains(e)){
                         if(DEBUG) {
                             output.println("    Constraint Not Met: All courses and labs have not been assigned\n");
@@ -69,9 +73,8 @@ public class Constr {
     public boolean checkPartialConstraints(ArrayList<Assignment> assignments, int assignmentNumber, boolean count) {
 
         try{
-
             if(DEBUG){
-               if(!count)
+                if(!count)
                     output = new PrintStream("constr_log_" + assignmentNumber +".txt");
             }
 
@@ -90,7 +93,8 @@ public class Constr {
                         elementCounter.add(myElement);
                     }
                 }
-                for(int i = 0;i < numberOfChecks;i++){
+                int numberOfChecks = 4;
+                for(int i = 0; i < numberOfChecks; i++){
                     for(Assignment u : unwanted){
                         if(a.getElement().equals(u.getElement()) && a.getSlot().equals(u.getSlot())){
                             if(DEBUG){
@@ -120,6 +124,10 @@ public class Constr {
             e.printStackTrace();
         }
 
+        checkedCourseMax = null;
+        checkedLabMax = null;
+        checkedConflicts = null;
+        checkedNumber = null;
 
         return constraintsMet;
     }
@@ -376,7 +384,8 @@ public class Constr {
         Day dayTwo = two.getDay();
 
         if(dayOne == dayTwo || (dayOne == Day.MO && dayTwo == Day.FR)
-        || (dayTwo == Day.MO && dayOne == Day.FR)){
+            || (dayTwo == Day.MO && dayOne == Day.FR)){
+
             LocalTime startOne = one.getStartTime();
             LocalTime startTwo = two.getStartTime();
             if(startOne.equals(startTwo)){
@@ -388,28 +397,19 @@ public class Constr {
                 return true;
             }
             if(startTwo.isAfter(startOne) && startTwo.isBefore(endOne)
-            || endTwo.isAfter(startOne) && endTwo.isBefore(endOne)){
+                || endTwo.isAfter(startOne) && endTwo.isBefore(endOne)){
                 return true;
             }
-
         }
         return false;
     }
 
-    public void setUnwanted(ArrayList<Assignment> unwanted) {
-        this.unwanted = unwanted;
-    }
-
-    public void setNotCompatible(ArrayList<Element[]> notCompatible) {
-        this.notCompatible = notCompatible;
-    }
-
     private boolean isCompatible(Element e1, Element e2){
         for(Element[] elem : notCompatible){
-           if(e1.equals(elem[0]) && e2.equals(elem[1])
-           || e2.equals(elem[0]) && e1.equals(elem[1])){
-               return false;
-           }
+            if(e1.equals(elem[0]) && e2.equals(elem[1])
+                    || e2.equals(elem[0]) && e1.equals(elem[1])){
+                return false;
+            }
         }
 
         return true;

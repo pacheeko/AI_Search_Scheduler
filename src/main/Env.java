@@ -1,21 +1,14 @@
 package main;
 
 public class Env {
-    int minPenalty;
+    static int minPenalty = Integer.MAX_VALUE;
 
-    public Env(int minPenalty) {
-        this.minPenalty = minPenalty;
-    }
 
-    public Env() {
-        this.minPenalty = Integer.MAX_VALUE;
-    }
-
-    public int getMinPenalty() {
+    public static int getMinPenalty() {
         return minPenalty;
     }
 
-    public void setMinPenalty(int minPenalty) {
-        this.minPenalty = minPenalty;
+    public static void setMinPenalty(int minPen) {
+        minPenalty = minPen;
     }
 }

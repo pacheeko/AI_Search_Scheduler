@@ -8,6 +8,7 @@ import java.util.List;
 
 import problem.*;
 
+
 class Start {
     public static void main(String args[]) throws Exception {
     	//Check if file path was passed
@@ -15,8 +16,7 @@ class Start {
     		throw new FileNotFoundException("Please provide the path of a valid input file.");
     	}
     	//Instantiate Parser, parse file passed in arg[0]
-    	Parser parser = new Parser();
-    	parser.parseFile(args[0]);
+    	Parser.parseFile(args[0]);
     	
     	//Run the search
     	//ProblemState solution = run();

@@ -10,32 +10,27 @@ public class Problem {
 
     ArrayList<Element> elements;
     ArrayList<Assignment> assignments;
-    Env environment;
     Constr myConstr = new Constr();
     Eval myEval = new Eval(1, 1, 1, 1);
 
     public Problem() {
         this.elements = new ArrayList<Element>();
         this.assignments = new ArrayList<Assignment>();
-        this.environment = new Env();
     }
 
     public Problem(Problem problem) {
         this.elements = problem.elements;
         this.assignments = problem.assignments;
-        this.environment = problem.environment;
     }
 
     public Problem(ArrayList<Element> elements) {
         this.elements = elements;
         this.assignments = new ArrayList<Assignment>();
-        this.environment = new Env();
     }
 
-    public Problem(ArrayList<Element> elements, ArrayList<Assignment> assignments, Env environment) {
+    public Problem(ArrayList<Element> elements, ArrayList<Assignment> assignments) {
         this.elements = elements;
         this.assignments = assignments;
-        this.environment = environment;
     }
 
     
@@ -77,7 +72,7 @@ public class Problem {
             return true;
         if (!myConstr.checkPartialConstraints(assignments, 0, false))
             return true;
-        if (myEval.partialEvaluate(assignments) > this.environment.getMinPenalty())
+        if (myEval.partialEvaluate(assignments) > Env.getMinPenalty())
             return true;
         return false;
     }

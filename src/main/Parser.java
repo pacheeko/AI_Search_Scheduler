@@ -16,17 +16,17 @@ public class Parser {
 	//
 	//GLOBAL VARIABLES
 	//
-	private File inputFile;
-	private String name;
-	private ArrayList<CourseSlot> courseSlots;
-	private ArrayList<LabSlot> labSlots;
-	private ArrayList<Course> courses;
-	private ArrayList<Lab> labs;
-	private ArrayList<Element[]> notCompatible;
-	private ArrayList<Element[]> pairs;
-	private ArrayList<Assignment> unwanted;
-	private ArrayList<Assignment> partialAssignments;
-	private ArrayList<Preference> preferences;
+	private static File inputFile;
+	private static String name;
+	private static ArrayList<CourseSlot> courseSlots;
+	private static ArrayList<LabSlot> labSlots;
+	private static ArrayList<Course> courses;
+	private static ArrayList<Lab> labs;
+	private static ArrayList<Element[]> notCompatible;
+	private static ArrayList<Element[]> pairs;
+	private static ArrayList<Assignment> unwanted;
+	private static ArrayList<Assignment> partialAssignments;
+	private static ArrayList<Preference> preferences;
 	
 	
 	//
@@ -36,7 +36,7 @@ public class Parser {
 	//createScanner - Creates a new scanner to parse an input file
 	//INPUT: None
 	//RETURNS: A scanner object
-	private Scanner createScanner() throws Exception {
+	private static Scanner createScanner() throws Exception {
 	    Scanner scanner = new Scanner(inputFile);
 	    scanner.useDelimiter(",");
 		return scanner;
@@ -45,7 +45,7 @@ public class Parser {
 	//getDay - Returns the enum type of a day, given a matching string type
 	//INPUT: String representing abbreviated day
 	//RETURNS: A Day enum type
-	private Day getDay(String string) throws Exception{
+	private static Day getDay(String string) throws Exception{
 		if (string.equals("MO")) {
 			return Day.MO;
 		}
@@ -61,7 +61,7 @@ public class Parser {
 	//getCourse - Returns a course object contained in the courses arraylist with the same name as the input string
 	//INPUT: Course name string of form "<department> <number> <section>"
 	//RETURNS: A course object if one is found
-	private Course getCourse(String string) throws Exception {
+	private static Course getCourse(String string) throws Exception {
 		for (Course course : courses) {
 			if(course.getName().equals(string)){
 				return course;
@@ -73,7 +73,7 @@ public class Parser {
 	//getLab - Returns a lab object contained in the labs arraylist with the same name as the input string
 	//INPUT: Lab name string of form "<course.getName()> TUT <number>"
 	//RETURNS: A lab object if one is found
-	private Lab getLab(String string) throws Exception {
+	private static Lab getLab(String string) throws Exception {
 		for (Lab lab : labs) {
 			if(lab.getName().equals(string)){
 				return lab;
@@ -85,7 +85,7 @@ public class Parser {
 	//getCourseSlot - Returns a slot object contained in the courseSlots arraylist with the same properties as the inputs
 	//INPUT: the slot's day and time
 	//RETURNS: A slot object from the courseSlots arraylists, if one is found
-	private Slot getCourseSlot(Day day, LocalTime time) throws Exception {
+	private static Slot getCourseSlot(Day day, LocalTime time) throws Exception {
 		for (Slot slot : courseSlots) {
 			if(slot.getDay().equals(day) && slot.getStartTime().equals(time)){
 				return slot;
@@ -97,7 +97,7 @@ public class Parser {
 	//getLabSlot - Returns a slot object contained in the labSlots arraylist with the same properties as the inputs
 	//INPUT: the slot's day and time
 	//RETURNS: A slot object from the labSlots arraylists, if one is found
-	private Slot getLabSlot(Day day, LocalTime time) throws Exception {
+	private static Slot getLabSlot(Day day, LocalTime time) throws Exception {
 		for (Slot slot : labSlots) {
 			if(slot.getDay().equals(day) && slot.getStartTime().equals(time)){
 				return slot;
@@ -109,7 +109,7 @@ public class Parser {
 	//isCourse - Returns if a given input string represents a course
 	//INPUT: Element name string
 	//RETURNS: true if Course, false if Lab or otherwise
-	private boolean isCourse(String[] string) {
+	private static boolean isCourse(String[] string) {
 		if (string[2].equals("TUT")) {
 			return false;
 		}
@@ -130,7 +130,7 @@ public class Parser {
 	//parseName - Parses input file for the name of the example
 	//INPUT: None
 	//RETURNS: A string representing the name of the example
-	private String parseName() throws Exception {
+	private static String parseName() throws Exception {
 		Scanner scanner = createScanner();
 		String name = "";
 		while (scanner.hasNextLine()) {
@@ -149,7 +149,7 @@ public class Parser {
 	//parseCourseSlots - Parses input file for course slots
 	//INPUT: None
 	//RETURNS: An arraylist of all course slots
-	private ArrayList<CourseSlot> parseCourseSlots() throws Exception {
+	private static ArrayList<CourseSlot> parseCourseSlots() throws Exception {
 		Scanner scanner = createScanner();
 		String lineStr;
 		ArrayList<CourseSlot> slots = new ArrayList<CourseSlot>();
@@ -176,7 +176,7 @@ public class Parser {
 	//parseLabSlots - Parses input file for lab slots
 	//INPUT: None
 	//RETURNS: An arraylist of all lab slots
-	private ArrayList<LabSlot> parseLabSlots() throws Exception {
+	private static ArrayList<LabSlot> parseLabSlots() throws Exception {
 		Scanner scanner = createScanner();
 		String lineStr;
 		ArrayList<LabSlot> slots = new ArrayList<LabSlot>();
@@ -203,7 +203,7 @@ public class Parser {
 	//parseCourses - Parses input file for courses
 	//INPUT: None
 	//RETURNS: An arraylist of all courses
-	private ArrayList<Course> parseCourses() throws Exception {
+	private static ArrayList<Course> parseCourses() throws Exception {
 		Scanner scanner = createScanner();
 		String lineStr;
 		ArrayList<Course> slots = new ArrayList<Course>();
@@ -230,7 +230,7 @@ public class Parser {
 	//parseLabs - Parses input file for labs
 	//INPUT: None
 	//RETURNS: An arraylist of all labs
-	private ArrayList<Lab> parseLabs() throws Exception {
+	private static ArrayList<Lab> parseLabs() throws Exception {
 		Scanner scanner = createScanner();
 		String lineStr;
 		ArrayList<Lab> slots = new ArrayList<Lab>();
@@ -266,7 +266,7 @@ public class Parser {
 	//parsePairsOrNotCompatible - Parses input file for tuples of elements from either "Not compatible:" or "Pair:"
 	//INPUT: Category to parse from
 	//RETURNS: An arraylist of tuples of elements
-	private ArrayList<Element[]> parsePairsOrNotCompatible(String category) throws Exception{
+	private static ArrayList<Element[]> parsePairsOrNotCompatible(String category) throws Exception{
 		Scanner scanner = createScanner();
 		String lineStr;
 		ArrayList<Element[]> slots = new ArrayList<Element[]>();
@@ -321,7 +321,7 @@ public class Parser {
 	//parseUnwantedOrPartialAssignments - Parses input file for either unwanted or partial assignments
 	//INPUT: Category to parse from
 	//RETURNS: An arraylist of assignments
-	public ArrayList<Assignment> parseUnwantedOrPartialAssignments(String category) throws Exception{
+	public static ArrayList<Assignment> parseUnwantedOrPartialAssignments(String category) throws Exception{
 		Scanner scanner = createScanner();
 		String lineStr;
 		ArrayList<Assignment> slots = new ArrayList<Assignment>();
@@ -380,7 +380,7 @@ public class Parser {
 	//parsePreferences - Parses input file for preferences
 	//INPUT: None
 	//RETURNS: An arraylist of preferences
-	public ArrayList<Preference> parsePreferences() throws Exception{
+	public static ArrayList<Preference> parsePreferences() throws Exception{
 		Scanner scanner = createScanner();
 		String lineStr;
 		ArrayList<Preference> slots = new ArrayList<Preference>();
@@ -446,7 +446,7 @@ public class Parser {
 	//parseFile - Main parse method. Invokes sub-parse methods to populate global vars with data from input file
 	//INPUT: A string representing the local path of a .txt file that should contain valid input for the system
 	//RETURNS: None
-	public void parseFile(String path) throws Exception {
+	public static void parseFile(String path) throws Exception {
 		inputFile = new File(path);
     	name = parseName();
     	courseSlots = parseCourseSlots();
@@ -466,43 +466,43 @@ public class Parser {
 	//GETTERS
 	//
 	
-	public String getName() {
+	public static String getName() {
 		return name;
 	}
 	
-	public ArrayList<CourseSlot> getCourseSlots(){
+	public static ArrayList<CourseSlot> getCourseSlots(){
 		return courseSlots;
 	}
 	
-	public ArrayList<LabSlot> getlabSlots(){
+	public static ArrayList<LabSlot> getlabSlots(){
 		return labSlots;
 	}
 	
-	public ArrayList<Course> getCourses(){
+	public static ArrayList<Course> getCourses(){
 		return courses;
 	}
 	
-	public ArrayList<Lab> getLabs(){
+	public static ArrayList<Lab> getLabs(){
 		return labs;
 	}
 	
-	public ArrayList<Element[]> getNotCompatible(){
+	public static ArrayList<Element[]> getNotCompatible(){
 		return notCompatible;
 	}
 	
-	public ArrayList<Element[]> getPairs(){
+	public static ArrayList<Element[]> getPairs(){
 		return pairs;
 	}
 	
-	public ArrayList<Assignment> getUnwanted(){
+	public static ArrayList<Assignment> getUnwanted(){
 		return unwanted;
 	}
 	
-	public ArrayList<Assignment> getPartialAssignments(){
+	public static ArrayList<Assignment> getPartialAssignments(){
 		return partialAssignments;
 	}
 	
-	public ArrayList<Preference> getPreferences(){
+	public static ArrayList<Preference> getPreferences(){
 		return preferences;
 	}
 }

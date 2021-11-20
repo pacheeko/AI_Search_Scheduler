@@ -1,0 +1,2 @@
+    Constraint Not Met: Unwanted Assignment
+    The element CPSC 433 1 is assigned to the slot (TU at 09:30), but this assignment is in the unwanted list

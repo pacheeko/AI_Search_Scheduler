@@ -1,0 +1,3 @@
+Checking Lab Max for(TU at 10:00)...
+    Constraint Not Met: Lab Max
+    Lab max of slot(TU at 10:00) is 2, but the number of labs assigned is 3

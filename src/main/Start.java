@@ -10,14 +10,27 @@ import problem.*;
 
 
 class Start {
+	
+	public final static long ONE_MINUTE = 60000000000L;
+	public final static long TWO_MINUTES = ONE_MINUTE*2;
+	public final static long FIVE_MINUTES = ONE_MINUTE*5;
+	
     public static void main(String args[]) throws Exception {
     	//Check if file path was passed
     	if (args.length == 0) {
     		throw new FileNotFoundException("Please provide the path of a valid input file.");
     	}
+    	if (args.length < 5) {
+    		throw new IllegalArgumentException("Please provide 4 integer values after the input file, representing the weights for the soft constraints: minfilled pref pair secdiff");
+    	}
     	//Instantiate Parser, parse file passed in arg[0]
     	Parser.parseFile(args[0]);
     	
+    	//Set the weights of each soft constraint in the static Env class
+    	Env.setMinfilledWeight(Integer.valueOf(args[1]));
+    	Env.setPrefWeight(Integer.valueOf(args[2]));
+    	Env.setPairWeight(Integer.valueOf(args[3]));
+    	Env.setSecdiffWeight(Integer.valueOf(args[4]));
     	//Run the search
     	//ProblemState solution = run();
     	//printAssignments(solution);
@@ -158,6 +171,14 @@ class Start {
     };
     
     public static void run() {
-    	
-    }
+    	long StartTime = System.nanoTime();
+    	while (System.nanoTime() - StartTime < TWO_MINUTES) {
+    		
+    		
+    		
+    		
+    		
+    		
+    	}
+    }   
 }

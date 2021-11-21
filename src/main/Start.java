@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.lang.model.util.Elements;
+
+import control.Control;
 import problem.*;
 
 
@@ -31,10 +34,58 @@ class Start {
     	Env.setPrefWeight(Integer.valueOf(args[2]));
     	Env.setPairWeight(Integer.valueOf(args[3]));
     	Env.setSecdiffWeight(Integer.valueOf(args[4]));
+    	
+    	ProblemState initialState = initialize();
+    	
     	//Run the search
-    	//ProblemState solution = run();
-    	//printAssignments(solution);
+    	ProblemState solution = run(initialState);
+    	printAssignments(solution);
     }
+    
+    public static ProblemState initialize() {
+    	//Set up the initial problem with the elements to add
+    	Problem initialProblem = new Problem();
+    	Parser.getCourses().forEach((course) ->
+    		initialProblem.addElement(course));
+    	Parser.getLabs().forEach((lab) ->
+    		initialProblem.addElement(lab));
+    	
+    	return new ProblemState(initialProblem, null);
+    }
+    
+    public static ProblemState run(ProblemState initialState) {
+		ProblemState bestState = null;
+		ProblemState currentState;
+		//Initialize the control with the slots provided in the input file
+		ArrayList<Slot> slots = new ArrayList<Slot>();
+		Parser.getCourseSlots().forEach((courseSlot) -> 
+				slots.add(courseSlot));
+		Parser.getlabSlots().forEach((labSlot) ->
+				slots.add(labSlot));
+		Control control = new Control(initialState, slots);
+		
+    	long StartTime = System.nanoTime();
+    	while ((System.nanoTime() - StartTime < TWO_MINUTES) && (!control.getLeafs().isEmpty())) {
+    		//Select the best leaf to work on
+    		control.fleaf();
+    		//Decide what to do with the current leaf
+    		control.ftrans();
+    		currentState = control.getSelectedLeaf();
+    		//If the solution is complete and it has a better eval value than the current best state,
+    		//then update the best state to the current state
+    		if ((!(currentState == null)) && (currentState.getSol())) {
+    			if (currentState.getEval() < Env.getMinPenalty()) {
+    				bestState = currentState;
+    				Env.setMinPenalty(currentState.getEval());
+    			}
+    		}
+    		
+    	}
+    	if (bestState == null) {
+    		throw new NullPointerException("No solution found");
+    	}
+    	return bestState;
+    }   
     
     public static void printAssignments(ProblemState state) {
     	System.out.println("Eval-Value: " + state.getEval());
@@ -169,16 +220,4 @@ class Start {
     	}
     	
     };
-    
-    public static void run() {
-    	long StartTime = System.nanoTime();
-    	while (System.nanoTime() - StartTime < TWO_MINUTES) {
-    		
-    		
-    		
-    		
-    		
-    		
-    	}
-    }   
 }

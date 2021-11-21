@@ -7,7 +7,7 @@ public class Env {
     private static int prefWeight;
     private static int pairWeight;
     private static int secdiffWeight;
-
+    
     public static int getMinPenalty() {
         return minPenalty;
     }

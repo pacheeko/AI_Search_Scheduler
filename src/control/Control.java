@@ -56,9 +56,9 @@ public class Control {
         if (current_leaf.getSol())
             return;
 
-        Problem current_problem = current_leaf.getProblem();
+        ProblemState current_problem = current_leaf;
         if (current_problem.isSolved()) {
-            ProblemState new_leaf = new ProblemState(current_problem, current_leaf);
+            ProblemState new_leaf = new ProblemState(current_problem.getProblem(), current_leaf);
             new_leaf.setSol(true);
             leafs.remove(current_leaf);
             leafs.add(new_leaf);
@@ -68,7 +68,7 @@ public class Control {
         }
 
 
-        ArrayList<Problem> subProblems = SearchModel.Div(current_problem, slots);
+        ArrayList<Problem> subProblems = SearchModel.Div(current_problem.getProblem(), slots);
         if (subProblems.isEmpty()) {
             return;
         }

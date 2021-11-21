@@ -12,8 +12,6 @@ public class Problem {
     ArrayList<Element> elements;
     ArrayList<Assignment> assignments;
     Env environment;
-    Constr myConstr = new Constr();
-    Eval myEval = new Eval(1, 1, 1, 1);
 
     public Problem() {
         this.elements = new ArrayList<Element>();
@@ -65,16 +63,6 @@ public class Problem {
 
     public ArrayList<Assignment> getAssignments() {
         return assignments;
-    }
-
-    public boolean isSolved() {
-
-        //assignment number is for debug, element list is for testing only
-        if (elements.isEmpty() && myConstr.checkConstraints(assignments))
-            return true;
-        if (myEval.partialEvaluate(assignments) > Env.getMinPenalty())
-            return true;
-        return false;
     }
 
     public boolean assign(Element element, Slot slot) {

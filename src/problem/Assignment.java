@@ -25,7 +25,7 @@ public class Assignment {
         }
         if (!(o instanceof Assignment)) return false;
         Assignment other = (Assignment) o;
-        return this.element.equals(other.element) && this.slo;
+        return this.element.equals(other.element) && this.slot.equals(other.getSlot());
     }
 
     public Element getElement() {

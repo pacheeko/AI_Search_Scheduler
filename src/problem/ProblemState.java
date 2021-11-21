@@ -2,6 +2,10 @@ package problem;
 
 import java.util.ArrayList;
 
+import main.Constr;
+import main.Env;
+import main.Eval;
+
 public class ProblemState {
 
 	private Problem problem;
@@ -9,6 +13,8 @@ public class ProblemState {
 	private int eval;
 	private ArrayList<ProblemState> children;
 	private ProblemState parent;
+    private Constr myConstr = new Constr();
+    private Eval myEval = new Eval();
 	
 	public ProblemState(Problem problem, ProblemState parent) {
 		this.problem = problem;
@@ -43,11 +49,16 @@ public class ProblemState {
         }
     }
 	
-	
-	
-	
-	
-	
+    public boolean isSolved() {
+        //assignment number is for debug, element list is for testing only
+        if (problem.getElements().isEmpty() && myConstr.checkConstraints(problem.getAssignments()))
+            return true;
+        eval = myEval.partialEvaluate(problem.getAssignments(), eval);
+        if (eval > Env.getMinPenalty())
+            return true;
+        
+        return false;
+    }
 	
 	public ArrayList<ProblemState> getChildren() {
 		return children;

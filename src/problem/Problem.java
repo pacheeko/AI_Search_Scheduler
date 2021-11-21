@@ -12,7 +12,7 @@ public class Problem {
     ArrayList<Element> elements;
     ArrayList<Assignment> assignments;
     Env environment;
-    Constr myConstr = new Constr(new Parser());
+    Constr myConstr = new Constr();
     Eval myEval = new Eval(1, 1, 1, 1);
 
     public Problem() {
@@ -70,9 +70,7 @@ public class Problem {
     public boolean isSolved() {
 
         //assignment number is for debug, element list is for testing only
-        if (elements.isEmpty() && myConstr.checkConstraints(assignments, 0))
-            return true;
-        if (!myConstr.checkPartialConstraints(assignments, 0, false))
+        if (elements.isEmpty() && myConstr.checkConstraints(assignments))
             return true;
         if (myEval.partialEvaluate(assignments) > Env.getMinPenalty())
             return true;

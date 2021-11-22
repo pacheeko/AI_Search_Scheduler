@@ -5,6 +5,8 @@ import problem.*;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Eval {
 
@@ -19,7 +21,8 @@ public class Eval {
     private ArrayList<Assignment> checkedCourseMin;
     private ArrayList<Assignment> checkedLabMin;
     PrintStream output;
-
+    
+    /* Old code, did not want to delete
     public int evaluate(ArrayList<Assignment> assignments, int assignmentNumber, int eval) {
 
         int score = 0;
@@ -40,18 +43,76 @@ public class Eval {
 
         return eval + score;
     }
+	*/
+    
+    /*
+     * Called after a problemState is found to be solved, with no more elements to assign
+     * Adds the penalty for each CourseSlot and LabSlot that does not meet the minimum number
+     * to the total eval, and returns that eval
+     */
+    public int evaluate(ArrayList<Assignment> assignments, int eval) {
+            
+            eval += Env.getMinfilledWeight() * getCourseSlotPenalties(Parser.getCourseSlots(), assignments);
+            eval += Env.getMinfilledWeight() * getLabSlotPenalties(Parser.getlabSlots(), assignments);
 
+        return eval;
+    }
+    
+    private int getCourseSlotPenalties(ArrayList<CourseSlot> slots, ArrayList<Assignment> assignments) {
+    	int penalty = 0;
+    	HashMap<CourseSlot, Integer> slotNums = new HashMap<CourseSlot, Integer>();
+    	for (CourseSlot slot : slots) {
+    		slotNums.put(slot, 0);
+    	}
+    	for (Assignment assign : assignments) {
+    		if (assign.getSlot() instanceof CourseSlot) {
+    			slotNums.put((CourseSlot) assign.getSlot(), slotNums.get(assign.getSlot()) + 1);
+    		}
+    	}
+    	for (Map.Entry<CourseSlot, Integer> entry : slotNums.entrySet()) {
+    		int i = entry.getKey().getMin() - entry.getValue();
+    		if (i > 0) {
+    			penalty += i;
+    		}
+    	}
+    	return penalty;
+    }
+    
+    private int getLabSlotPenalties(ArrayList<LabSlot> slots, ArrayList<Assignment> assignments) {
+    	int penalty = 0;
+    	HashMap<LabSlot, Integer> slotNums = new HashMap<LabSlot, Integer>();
+    	for (LabSlot slot : slots) {
+    		slotNums.put(slot, 0);
+    	}
+    	for (Assignment assign : assignments) {
+    		if (assign.getSlot() instanceof LabSlot) {
+    			slotNums.put((LabSlot) assign.getSlot(), slotNums.get(assign.getSlot()) + 1);
+    		}
+    	}
+    	for (Map.Entry<LabSlot, Integer> entry : slotNums.entrySet()) {
+    		int i = entry.getKey().getMin() - entry.getValue();
+    		if (i > 0) {
+    			penalty += i;
+    		}
+    	}
+    	return penalty;
+    }
+    
+    /*
+     * Called after every assignment to calculate the penalty added to the 
+     * problemState based on the most recent assignment
+     */
     public int partialEvaluate(ArrayList<Assignment> assignments, int eval) {
     	if (assignments.isEmpty()) {
     		return eval;
     	}
     	Assignment mostRecent = assignments.get(assignments.size()-1);
-    	
-    	if (partialSecDiff(assignments, mostRecent)) 
+    	if (partialSecDiff(assignments, mostRecent)) {
     		eval += (1 * Env.getSecdiffWeight());
+    	}
     	if (!partialPairs(assignments, mostRecent)) {
     		eval += (1 * Env.getPairWeight());
-    	};
+    	}
     	eval += partialPref(assignments, mostRecent);
         return eval;
     }
@@ -250,9 +311,7 @@ public class Eval {
     	return true;
     }
     
-    
-    
-    
+    /* Old code, did not want to delete
     private int minFilled(Assignment assign){
 
         int penalty = 0;
@@ -329,4 +388,5 @@ public class Eval {
             return 0;
         }
     }
+    */
 }

@@ -25,11 +25,22 @@ import problem.Slot;
 class EvalTest {
 
     private ArrayList<Assignment> assignments = new ArrayList<Assignment>();
+    
+    //Course Slots
+	private Slot mon800 = new CourseSlot(Day.MO, LocalTime.parse("08:00"), 3, 2);
+	private Slot mon900 = new CourseSlot(Day.MO, LocalTime.parse("09:00"), 3, 2);
 	private Slot mon1020 = new CourseSlot(Day.MO, LocalTime.parse("10:20"), 5, 1);
 	private Slot mon1120 = new CourseSlot(Day.MO, LocalTime.parse("11:20"), 5, 1);
+	private Slot tues900 = new CourseSlot(Day.TU, LocalTime.parse("09:00"), 2, 1);
+	private Slot tues930 = new CourseSlot(Day.TU, LocalTime.parse("09:30"), 3, 1);
+	
+	//Lab Slots
+	private Slot mon800lab = new LabSlot(Day.MO, LocalTime.parse("08:00"), 4, 2);
+	private Slot tues1000lab = new LabSlot(Day.TU, LocalTime.parse("10:00"), 2, 1);
+	private Slot fri1000lab = new LabSlot(Day.FR, LocalTime.parse("10:00"), 2, 1);
 	private Slot mon1220 = new LabSlot(Day.MO, LocalTime.parse("12:20"), 5, 1);
-	private Slot tues900 = new CourseSlot(Day.TU, LocalTime.parse("09:00"), 5, 1);
-	private Slot tues930 = new CourseSlot(Day.TU, LocalTime.parse("09:30"), 5, 1);
+	
+	//Courses
     private Element cpsc433_1 = new Course("CPSC", 433, 1);
     private Element cpsc433_2 = new Course("CPSC", 433, 2);
     private Element cpsc413_1 = new Course("CPSC", 413, 1);
@@ -39,6 +50,13 @@ class EvalTest {
     private Element cpsc101_1 = new Course("CPSC", 101, 1);
     private Element seng311_1 = new Course("SENG", 311, 1);
     private Element cpsc567_1 = new Course("CPSC", 567, 1);
+    
+    //Labs
+    private Element cpsc433_1_1 = new Lab((Course) cpsc433_1, 1, false);
+    private Element cpsc433_2_2 = new Lab((Course) cpsc433_2, 2, false);
+    private Element seng311_1_1 = new Lab((Course) seng311_1, 1, false);
+    private Element cpsc567_1_1 = new Lab((Course) cpsc567_1, 1, false);
+    
     private ProblemState state;
     private Problem problem;
     private Eval eval = new Eval();
@@ -269,6 +287,164 @@ class EvalTest {
     	assignments.add(new Assignment(cpsc413_1, tues900));
     	assignments.add(new Assignment(cpsc433_1, tues930));
     	assertEquals(13+8+4+(3*10), eval.partialEvaluate(assignments, 13));
+    }
+    
+    @Test
+    public void testEvaluateNoPenalty1() {
+    	Env.setMinfilledWeight(0);
+    	assertEquals(13, eval.evaluate(assignments, 13));
+    }
+    
+    @Test
+    public void testEvaluateNoPenalty2() {
+    	Env.setMinfilledWeight(2);
+    	
+    	mon800lab = Parser.getlabSlots().get(0);
+    	tues1000lab = Parser.getlabSlots().get(1);
+    	fri1000lab = Parser.getlabSlots().get(2);
+    	mon800 = Parser.getCourseSlots().get(0);
+    	mon900 = Parser.getCourseSlots().get(1);
+    	tues930 = Parser.getCourseSlots().get(2);
+    	tues900 = Parser.getCourseSlots().get(3);
+    	
+    	assignments.add(new Assignment(cpsc433_1, tues930));
+    	assignments.add(new Assignment(cpsc433_2, tues900));
+    	assignments.add(new Assignment(cpsc422_1, mon800));
+    	assignments.add(new Assignment(cpsc329_1, mon800));
+    	assignments.add(new Assignment(cpsc213_1, mon900));
+    	assignments.add(new Assignment(cpsc101_1, mon900));
+    	assignments.add(new Assignment(cpsc433_1_1, mon800lab));
+    	assignments.add(new Assignment(cpsc433_2_2, mon800lab));
+    	assignments.add(new Assignment(seng311_1_1, tues1000lab));
+    	assignments.add(new Assignment(cpsc567_1_1, fri1000lab));
+    	assertEquals(43, eval.evaluate(assignments, 43));
+    	
+    }
+    
+    @Test
+    public void testEvaluatePenalty1() {
+    	Env.setMinfilledWeight(1);
+    	assertEquals(23, eval.evaluate(assignments, 13));
+    }
+    
+    @Test
+    public void testEvaluatePenalty2() {
+    	Env.setMinfilledWeight(4);
+    	
+    	mon800lab = Parser.getlabSlots().get(0);
+    	tues1000lab = Parser.getlabSlots().get(1);
+    	fri1000lab = Parser.getlabSlots().get(2);
+    	mon800 = Parser.getCourseSlots().get(0);
+    	mon900 = Parser.getCourseSlots().get(1);
+    	tues930 = Parser.getCourseSlots().get(2);
+    	tues900 = Parser.getCourseSlots().get(3);
+    	
+    	assignments.add(new Assignment(cpsc433_1, tues930));
+    	assignments.add(new Assignment(cpsc433_2, tues900));
+    	assignments.add(new Assignment(cpsc422_1, mon800));
+    	assignments.add(new Assignment(cpsc329_1, mon800));
+    	assignments.add(new Assignment(cpsc213_1, mon900));
+    	assignments.add(new Assignment(cpsc101_1, mon900));
+    	assignments.add(new Assignment(cpsc433_2_2, mon800lab));
+    	assignments.add(new Assignment(seng311_1_1, tues1000lab));
+    	assignments.add(new Assignment(cpsc567_1_1, fri1000lab));
+    	assertEquals(47, eval.evaluate(assignments, 43));
+    	
+    }
+    
+    @Test
+    public void testEvaluatePenalty3() {
+    	Env.setMinfilledWeight(7);
+    	
+    	mon800lab = Parser.getlabSlots().get(0);
+    	tues1000lab = Parser.getlabSlots().get(1);
+    	fri1000lab = Parser.getlabSlots().get(2);
+    	mon800 = Parser.getCourseSlots().get(0);
+    	mon900 = Parser.getCourseSlots().get(1);
+    	tues930 = Parser.getCourseSlots().get(2);
+    	tues900 = Parser.getCourseSlots().get(3);
+    	
+    	assignments.add(new Assignment(cpsc433_1, tues930));
+    	assignments.add(new Assignment(cpsc329_1, mon800));
+    	assignments.add(new Assignment(cpsc213_1, mon900));
+    	assignments.add(new Assignment(cpsc101_1, mon900));
+    	assignments.add(new Assignment(cpsc433_1_1, mon800lab));
+    	assignments.add(new Assignment(cpsc433_2_2, mon800lab));
+    	assignments.add(new Assignment(seng311_1_1, tues1000lab));
+    	assertEquals(64, eval.evaluate(assignments, 43));
+    	
+    }
+    
+    @Test
+    public void testComplex1() {
+    	Env.setPairWeight(3);
+    	Env.setPrefWeight(2);
+    	Env.setSecdiffWeight(5);
+    	Env.setMinfilledWeight(7);
+    	int i = 0;
+    	
+    	mon800lab = Parser.getlabSlots().get(0);
+    	tues1000lab = Parser.getlabSlots().get(1);
+    	fri1000lab = Parser.getlabSlots().get(2);
+    	mon800 = Parser.getCourseSlots().get(0);
+    	mon900 = Parser.getCourseSlots().get(1);
+    	tues930 = Parser.getCourseSlots().get(2);
+    	tues900 = Parser.getCourseSlots().get(3);
+    	
+    	assignments.add(new Assignment(cpsc433_1, tues930));
+    	i = eval.partialEvaluate(assignments, i);
+    	assignments.add(new Assignment(cpsc329_1, mon800));
+    	i = eval.partialEvaluate(assignments, i);
+    	assignments.add(new Assignment(cpsc213_1, mon900));
+    	i = eval.partialEvaluate(assignments, i);
+    	assignments.add(new Assignment(cpsc101_1, mon900));
+    	i = eval.partialEvaluate(assignments, i);
+    	assignments.add(new Assignment(cpsc433_1_1, mon800lab));
+    	i = eval.partialEvaluate(assignments, i);
+    	assignments.add(new Assignment(cpsc433_2_2, tues1000lab));
+    	i = eval.partialEvaluate(assignments, i);
+    	assignments.add(new Assignment(seng311_1_1, tues1000lab));	
+    	i = eval.partialEvaluate(assignments, i);
+    	i = eval.evaluate(assignments, i);
+    	assertEquals(20+2+28, i);
+    	
+    }
+    
+    @Test
+    public void testComplex2() {
+    	Env.setPairWeight(3);
+    	Env.setPrefWeight(2);
+    	Env.setSecdiffWeight(5);
+    	Env.setMinfilledWeight(7);
+    	int i = 0;
+    	
+    	mon800lab = Parser.getlabSlots().get(0);
+    	tues1000lab = Parser.getlabSlots().get(1);
+    	fri1000lab = Parser.getlabSlots().get(2);
+    	mon800 = Parser.getCourseSlots().get(0);
+    	mon900 = Parser.getCourseSlots().get(1);
+    	tues930 = Parser.getCourseSlots().get(2);
+    	tues900 = Parser.getCourseSlots().get(3);
+    	
+    	assignments.add(new Assignment(cpsc433_1, tues900));
+    	i = eval.partialEvaluate(assignments, i);
+    	assignments.add(new Assignment(cpsc433_2, tues900));
+    	i = eval.partialEvaluate(assignments, i);
+    	assignments.add(new Assignment(cpsc567_1, mon800));
+    	i = eval.partialEvaluate(assignments, i);
+    	assignments.add(new Assignment(seng311_1, mon900));
+    	i = eval.partialEvaluate(assignments, i);
+    	assignments.add(new Assignment(cpsc101_1, mon900));
+    	i = eval.partialEvaluate(assignments, i);
+    	assignments.add(new Assignment(cpsc433_1_1, mon800lab));
+    	i = eval.partialEvaluate(assignments, i);
+    	assignments.add(new Assignment(cpsc433_2_2, tues1000lab));
+    	i = eval.partialEvaluate(assignments, i);
+    	assignments.add(new Assignment(seng311_1_1, tues1000lab));	
+    	i = eval.partialEvaluate(assignments, i);
+    	i = eval.evaluate(assignments, i);
+    	assertEquals(20+5+3+2+28, i);
+    	
     }
     
 }

@@ -42,6 +42,9 @@ public class Eval {
     }
 
     public int partialEvaluate(ArrayList<Assignment> assignments, int eval) {
+    	if (assignments.isEmpty()) {
+    		return eval;
+    	}
     	Assignment mostRecent = assignments.get(assignments.size()-1);
     	
     	if (partialSecDiff(assignments, mostRecent))

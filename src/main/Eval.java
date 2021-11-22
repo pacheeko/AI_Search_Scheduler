@@ -134,7 +134,7 @@ public class Eval {
         				return elementExistsSlot(pair[1],assignments,mostRecent.getSlot()); 
         			}
         		}
-        		else if (pair[1] instanceof Course) {
+        		if (pair[1] instanceof Course) {
         			Course pairCourse = (Course) pair[1];
         			if (compareCourses(c, pairCourse)) {
         				return elementExistsSlot(pair[0],assignments,mostRecent.getSlot());
@@ -152,7 +152,7 @@ public class Eval {
     					return elementExistsSlot(pair[1],assignments,mostRecent.getSlot());
     				}
     			}
-    			else if (pair[1] instanceof Lab) {
+    			if (pair[1] instanceof Lab) {
     				Lab pairLab = (Lab) pair[1];
     				if (compareLabs(l, pairLab)) {
     					return elementExistsSlot(pair[0],assignments,mostRecent.getSlot());
@@ -214,16 +214,39 @@ public class Eval {
     
     //Returns false only if ele is assigned to a different time slot than slot
     private boolean elementExistsSlot(Element ele, ArrayList<Assignment> assignments, Slot slot) {
-    	for (Assignment assign : assignments) {
-    		if (assign.getElement().equals(ele)) {
-    			if (compareSlot(assign.getSlot(), slot)) {
-    				return true;
-    			}
-    			else {
-    				return false;
-    			}
-    		}
+    	if (ele instanceof Course) {
+    		Course c1 = (Course) ele;
+    		for (Assignment assign : assignments) {
+        		if (assign.getElement() instanceof Course) {
+        			Course c2 = (Course) assign.getElement();
+        			if (compareCourses(c1,c2)) {
+	        			if (compareSlot(assign.getSlot(), slot)) {
+	        				return true;
+	        			}
+	        			else {
+	        				return false;
+	        			}
+        			}
+        		}
+        	}
     	}
+    	else {
+    		Lab l1 = (Lab) ele;
+    		for (Assignment assign : assignments) {
+        		if (assign.getElement() instanceof Lab) {
+        			Lab l2 = (Lab) assign.getElement();
+        			if (compareLabs(l1,l2)) {
+	        			if (compareSlot(assign.getSlot(), slot)) {
+	        				return true;
+	        			}
+	        			else {
+	        				return false;
+	        			}
+        			}
+        		}
+        	}
+    	}
+    	
     	return true;
     }
     

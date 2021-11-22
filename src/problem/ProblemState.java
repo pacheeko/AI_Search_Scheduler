@@ -56,7 +56,6 @@ public class ProblemState {
         eval = myEval.partialEvaluate(problem.getAssignments(), eval);
         if (eval > Env.getMinPenalty())
             return true;
-        
         return false;
     }
 	

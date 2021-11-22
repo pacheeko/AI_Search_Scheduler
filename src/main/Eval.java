@@ -47,7 +47,7 @@ public class Eval {
     	}
     	Assignment mostRecent = assignments.get(assignments.size()-1);
     	
-    	if (partialSecDiff(assignments, mostRecent))
+    	if (partialSecDiff(assignments, mostRecent)) 
     		eval += (1 * Env.getSecdiffWeight());
     	if (!partialPairs(assignments, mostRecent)) {
     		eval += (1 * Env.getPairWeight());
@@ -62,8 +62,8 @@ public class Eval {
      * 
      */
     private boolean partialSecDiff(ArrayList<Assignment> assignments, Assignment mostRecent) {
-    	if (mostRecent.getSlot() instanceof LabSlot) return false;
     	for (Assignment a : assignments) {
+			if (a.equals(mostRecent)) return false;
     		if (compareCoursesNameAndNumber(a, mostRecent)) {
     			if (compareSlot(a.getSlot(), mostRecent.getSlot())) {
     				return true;
@@ -170,7 +170,7 @@ public class Eval {
     	if (a1.getSlot().equals(a2.getSlot())) {
     		Course c1 = (Course) a1.getElement();
     		Course c2 = (Course) a2.getElement();
-    		if (c1.getName().equals(c2.getName())) {
+    		if (c1.getDepartment().equals(c2.getDepartment())) {
     			if (c1.getNumber() == c2.getNumber()) {
     				if (c1.getSection() != c2.getSection()) {
         				return true;

@@ -505,4 +505,23 @@ public class Parser {
 	public static ArrayList<Preference> getPreferences(){
 		return preferences;
 	}
+	
+	//getNotCompatibleWithCourse - Given a course number, returns all elements that are not compatible with this course and its labs
+	//INPUT: Course number (ex. 313, 413, etc)
+	//RETURNS: Returns an arraylist of elements that are incompatible with the input course
+	public static ArrayList<Element> getNotCompatibleWithCourse(String course){
+		ArrayList<Element> incompatibles = new ArrayList<Element>();
+		
+		for (Element[] tuple : notCompatible) {
+			String courseNum = tuple[0].getName().split(" ")[1];
+			if(courseNum.equals(course)) {
+				incompatibles.add(tuple[1]);
+			}
+			courseNum = tuple[1].getName().split(" ")[1];
+			if(courseNum.equals(course)) {
+				incompatibles.add(tuple[0]);
+			}
+		}
+		return incompatibles;
+	}
 }

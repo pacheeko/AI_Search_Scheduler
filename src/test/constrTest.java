@@ -1,9 +1,9 @@
-package test;
+//package test;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ConstrTest {
+public class constrTest {
     
     @BeforeEach
     public void init() {

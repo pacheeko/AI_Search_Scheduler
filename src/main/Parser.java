@@ -323,13 +323,14 @@ public class Parser {
 	//RETURNS: An arraylist of assignments
 	public static ArrayList<Assignment> parseUnwantedOrPartialAssignments(String category) throws Exception{
 		Scanner scanner = createScanner();
-		String lineStr;
+		String lineStr = "";
 		ArrayList<Assignment> slots = new ArrayList<Assignment>();
 		while(scanner.hasNextLine()) {
 			
 			if(scanner.nextLine().equals(category)) {
-				
-				lineStr = scanner.nextLine();
+
+			    if(scanner.hasNextLine())
+				    lineStr = scanner.nextLine();
 				while(lineStr.equals("") == false) {
 					//Split along comma in line
 					lineStr = lineStr.trim().replaceAll(" +", " ");

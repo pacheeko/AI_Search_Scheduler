@@ -65,7 +65,13 @@ class Start {
 		Control control = new Control(initialState, slots);
 		
     	long StartTime = System.nanoTime();
-    	while ((System.nanoTime() - StartTime < TWO_MINUTES) && (!control.getLeafs().isEmpty())) {
+		long running_time = TWO_MINUTES;
+		System.out.print("Running for " + (running_time/ONE_MINUTE) + " minute");
+		if(running_time != ONE_MINUTE){
+			System.out.print("s");
+		}
+		System.out.println("...");
+    	while ((System.nanoTime() - StartTime < running_time) && (!control.getLeafs().isEmpty())) {
     		//Select the best leaf to work on
     		control.fleaf();
     		//Decide what to do with the current leaf

@@ -55,7 +55,7 @@ public class Parser {
 		if (string.equals("FR")) {
 			return Day.FR;
 		}
-		throw new Exception("Invalid day in input file!");
+		throw new Exception("Invalid day in input file! " + string);
 	}
 	
 	//getCourse - Returns a course object contained in the courses arraylist with the same name as the input string
@@ -67,7 +67,7 @@ public class Parser {
 				return course;
 			}
 		}
-		throw new Exception("Invalid course in input file!");
+		throw new Exception("Invalid course in input file! " + string);
 	}
 	
 	//getLab - Returns a lab object contained in the labs arraylist with the same name as the input string
@@ -79,7 +79,7 @@ public class Parser {
 				return lab;
 			}
 		}
-		throw new Exception("Invalid lab in input file!");
+		throw new Exception("Invalid lab in input file! " + string);
 	}
 	
 	//getCourseSlot - Returns a slot object contained in the courseSlots arraylist with the same properties as the inputs
@@ -91,7 +91,7 @@ public class Parser {
 				return slot;
 			}
 		}
-		throw new Exception("Invalid course slot in input file!");
+		throw new Exception("Invalid course slot in input file! " + day + " " + time);
 	}
 	
 	//getLabSlot - Returns a slot object contained in the labSlots arraylist with the same properties as the inputs
@@ -103,7 +103,7 @@ public class Parser {
 				return slot;
 			}
 		}
-		throw new Exception("Invalid lab slot in input file!");
+		throw new Exception("Invalid lab slot in input file! " + day + " " + time);
 	}
 	
 	//isCourse - Returns if a given input string represents a course

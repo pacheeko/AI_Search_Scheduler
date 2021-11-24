@@ -1,28 +1,31 @@
 Name:
-has_solution
+simple_solution
 
 Course slots:
-
+MO, 8:00, 4, 1
+TU, 12:30, 3, 2
 
 Lab slots:
-
+MO, 8:00, 4, 1
+TU, 12:30, 3, 2
 
 Courses:
-
+CPSC 231 Lec 01
+CPSC 433 Lec 01
 
 Labs:
-
+CPSC 231 Lec 01 TUT 01
+CPSC 231 Lec 01 TUT 02
+CPSC 231 Lec 01 TUT 03
+CPSC 433 Lec 01 TUT 01
+CPSC 433 Lec 01 TUT 02
 
 Not compatible:
 
-
 Unwanted:
-
 
 Preferences:
 
-
 Pair:
-
 
 Partial assignments:

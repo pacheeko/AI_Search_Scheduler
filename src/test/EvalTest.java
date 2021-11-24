@@ -33,12 +33,14 @@ class EvalTest {
 	private Slot mon1120 = new CourseSlot(Day.MO, LocalTime.parse("11:20"), 5, 1);
 	private Slot tues900 = new CourseSlot(Day.TU, LocalTime.parse("09:00"), 2, 1);
 	private Slot tues930 = new CourseSlot(Day.TU, LocalTime.parse("09:30"), 3, 1);
+	private Slot mon1900 = new CourseSlot(Day.MO, LocalTime.parse("19:00"), 2, 1);
 	
 	//Lab Slots
 	private Slot mon800lab = new LabSlot(Day.MO, LocalTime.parse("08:00"), 4, 2);
 	private Slot tues1000lab = new LabSlot(Day.TU, LocalTime.parse("10:00"), 2, 1);
 	private Slot fri1000lab = new LabSlot(Day.FR, LocalTime.parse("10:00"), 2, 1);
 	private Slot mon1220 = new LabSlot(Day.MO, LocalTime.parse("12:20"), 5, 1);
+	
 	
 	//Courses
     private Element cpsc433_1 = new Course("CPSC", 433, 1);
@@ -75,6 +77,7 @@ class EvalTest {
     	mon900 = Parser.getCourseSlots().get(1);
     	tues930 = Parser.getCourseSlots().get(2);
     	tues900 = Parser.getCourseSlots().get(3);
+    	mon1900 = Parser.getCourseSlots().get(4);
     	
     }
     
@@ -359,6 +362,7 @@ class EvalTest {
     	assignments.add(new Assignment(cpsc433_2_2, mon800lab));
     	assignments.add(new Assignment(seng311_1_1, tues1000lab));
     	assignments.add(new Assignment(cpsc567_1_1, fri1000lab));
+    	assignments.add(new Assignment(cpsc101_1, mon1900));
     	assertEquals(43, eval.evaluate(assignments, 43));
     	
     }
@@ -366,7 +370,7 @@ class EvalTest {
     @Test
     public void testEvaluatePenalty1() {
     	Env.setMinfilledWeight(1);
-    	assertEquals(23, eval.evaluate(assignments, 13));
+    	assertEquals(24, eval.evaluate(assignments, 13));
     }
     
     @Test
@@ -382,7 +386,7 @@ class EvalTest {
     	assignments.add(new Assignment(cpsc433_2_2, mon800lab));
     	assignments.add(new Assignment(seng311_1_1, tues1000lab));
     	assignments.add(new Assignment(cpsc567_1_1, fri1000lab));
-    	assertEquals(47, eval.evaluate(assignments, 43));
+    	assertEquals(51, eval.evaluate(assignments, 43));
     	
     }
     
@@ -397,7 +401,7 @@ class EvalTest {
     	assignments.add(new Assignment(cpsc433_1_1, mon800lab));
     	assignments.add(new Assignment(cpsc433_2_2, mon800lab));
     	assignments.add(new Assignment(seng311_1_1, tues1000lab));
-    	assertEquals(64, eval.evaluate(assignments, 43));
+    	assertEquals(71, eval.evaluate(assignments, 43));
     	
     }
     
@@ -424,7 +428,7 @@ class EvalTest {
     	assignments.add(new Assignment(seng311_1_1, tues1000lab));	
     	i = eval.partialEvaluate(assignments, i);
     	i = eval.evaluate(assignments, i);
-    	assertEquals(20+2+28, i);
+    	assertEquals(20+2+35, i);
     	
     }
     
@@ -453,7 +457,7 @@ class EvalTest {
     	assignments.add(new Assignment(seng311_1_1, tues1000lab));	
     	i = eval.partialEvaluate(assignments, i);
     	i = eval.evaluate(assignments, i);
-    	assertEquals(20+5+3+2+28, i);
+    	assertEquals(20+5+3+2+35, i);
     	
     }
     

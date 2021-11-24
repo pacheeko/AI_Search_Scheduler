@@ -1,6 +1,0 @@
-Checking for courses scheduled on Tuesday at 11:00...
-    Constraint Met
-
-Checking Course Max for(MO at 08:00)...
-    Constraint Not Met: Non-Compatible Elements
-    The elements CPSC 433 1 and CPSC 567 1 are both in the slot (MO at 08:00), but they are in the list of non-compatible elements

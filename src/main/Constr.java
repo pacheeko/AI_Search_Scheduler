@@ -11,31 +11,37 @@ public class Constr {
     Hashtable<Slot, Integer> courses_in_slot;
     Hashtable<Slot, Integer> labs_in_slot;
 
+    private final boolean DEBUG = false;;
+    
     public Constr() {
         courses_in_slot = new Hashtable<Slot, Integer>();
         labs_in_slot = new Hashtable<Slot, Integer>();
     }
 
     public boolean checkConstraints(ArrayList<Assignment> assignments) {
-
         int last_index = assignments.size() - 1;
-        int second_to_last_index = last_index - 1;
 
         Assignment new_addition = assignments.get(last_index);
 
         if (assignmentFails(new_addition))
             return false;
 
-        for (Assignment assignment : assignments.subList(0, second_to_last_index)) {
+        for (Assignment assignment : assignments.subList(0, last_index)) {
 
-            if (conflictingCourseWithLab(new_addition, assignment))
+            if (conflictingCourseWithLab(new_addition, assignment)) {
+            	if (DEBUG) System.out.println("conflict course with lab");
                 return false;
+            }
 
-            if (failsCompatability(new_addition, assignment))
+            if (failsCompatability(new_addition, assignment)) {
+            	if (DEBUG) System.out.println("conflict compatability");
                 return false;
+            }
 
-            if (collisionOn500LevelCourses(new_addition, assignment))
+            if (collisionOn500LevelCourses(new_addition, assignment)) {
+            	if (DEBUG) System.out.println("conflict 500 level course");
                 return false;
+            }
 
         }
 
@@ -44,19 +50,30 @@ public class Constr {
 
     private boolean assignmentFails(Assignment assignment) {
 
-        if (failsCorrectSlotType(assignment))
+        if (failsCorrectSlotType(assignment)) {
+        	if (DEBUG) System.out.println("failed correct slot type");
             return true;
-        if (failsMaxElements(assignment))
+        }
+        if (failsMaxElements(assignment)) {
+        	if (DEBUG) System.out.println("failed max elements");
             return true;
-        if (faislUnwanted(assignment))
+        }
+        if (failsUnwanted(assignment)) {
+        	if (DEBUG) System.out.println("failed unwanted");
             return true;
-        if (failsEveningSlot(assignment))
+        }
+        if (failsEveningSlot(assignment)) {
+        	if (DEBUG) System.out.println("failed evening slot");
             return true;
-        if (failsTuesdayCourseRestriction(assignment))
+        }
+        if (failsTuesdayCourseRestriction(assignment)) {
+        	if (DEBUG) System.out.println("failed tuesday course restriction");
             return true;
-        if (failsPlacementOf813And913(assignment))
+        }
+        if (failsPlacementOf813And913(assignment)) {
+        	if (DEBUG) System.out.println("failed 813/913");
             return true;
-
+        }
         return false;
     }
 
@@ -72,30 +89,29 @@ public class Constr {
     private boolean failsMaxElements(Assignment assignment) {
         Slot slot = assignment.getSlot();
         if (slot instanceof CourseSlot) {
-            incrementElemenentCount(courses_in_slot, slot);
+            incrementElementCount(courses_in_slot, slot);
             if (courses_in_slot.get(slot) > slot.getMax())
-                return false;
+                return true;
         } else {
-            incrementElemenentCount(labs_in_slot, slot);
+            incrementElementCount(labs_in_slot, slot);
             if (labs_in_slot.get(slot) > slot.getMax())
-                return false;
+                return true;
         }
-        return true;
+        return false;
     }
 
-    private void incrementElemenentCount(Hashtable<Slot, Integer> elements_in_slot, Slot slot) {
+    private void incrementElementCount(Hashtable<Slot, Integer> elements_in_slot, Slot slot) {
         if (elements_in_slot.containsKey(slot))
             elements_in_slot.put(slot, elements_in_slot.get(slot) + 1);
         else
             elements_in_slot.put(slot, 1);
     }
 
-    private boolean faislUnwanted(Assignment assignment) {
+    private boolean failsUnwanted(Assignment assignment) {
 
         ArrayList<Assignment> unwanted_assignments = Parser.getUnwanted();
         for (Assignment unwanted : unwanted_assignments) {
-            if (unwanted.equals(assignment))
-                return true;
+            if (unwanted.equals(assignment)) return true;
         }
         return false;
     }
@@ -110,7 +126,7 @@ public class Constr {
 
         Course course = (Course) element;
 
-        int firstDigit = getFirstDigit(course.getNumber());
+        int firstDigit = getFirstDigit(course.getSection());
         if (firstDigit != 9)
             return false;
 
@@ -224,8 +240,8 @@ public class Constr {
         ArrayList<Element[]> notCompatible = Parser.getNotCompatible();
 
         for (Element[] elem : notCompatible) {
-            if (firstElement.equals(elem[0]) && secondElement.equals(elem[1])
-                    || (secondElement.equals(elem[0]) && firstElement.equals(elem[1]))) {
+            if ((firstElement.equals(elem[0]) && secondElement.equals(elem[1]) && slotsOverlap(first.getSlot(),second.getSlot()))
+                    || (secondElement.equals(elem[0]) && firstElement.equals(elem[1]) && slotsOverlap(first.getSlot(), second.getSlot()))) {
                 return true;
             }
         }

@@ -27,7 +27,7 @@ public class Assignment {
         Assignment other = (Assignment) o;
         return this.element.equals(other.element) && this.slot.equals(other.getSlot());
     }
-
+    
     public Element getElement() {
         return element;
     }

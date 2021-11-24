@@ -37,5 +37,15 @@ public class CourseSlot extends Slot {
             return endTime;
         }
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+    	if (obj == this) return true;
+    	else if (!(obj instanceof CourseSlot)) return false;
+    	else {
+    		CourseSlot slot = (CourseSlot) obj;
+    		return (slot.day.equals(this.day) && slot.getStartTime().equals(this.getStartTime()));
+    	}
+    }
 
 }

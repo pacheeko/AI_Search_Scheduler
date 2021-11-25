@@ -33,7 +33,7 @@ class EvalTest {
 	private Slot mon900 = new CourseSlot(Day.MO, LocalTime.parse("09:00"), 3, 2);
 	private Slot mon1020 = new CourseSlot(Day.MO, LocalTime.parse("10:20"), 5, 1);
 	private Slot mon1120 = new CourseSlot(Day.MO, LocalTime.parse("11:20"), 5, 1);
-	private Slot tues900 = new CourseSlot(Day.TU, LocalTime.parse("09:00"), 2, 1);
+	private Slot tues1400 = new CourseSlot(Day.TU, LocalTime.parse("14:00"), 2, 1);
 	private Slot tues930 = new CourseSlot(Day.TU, LocalTime.parse("09:30"), 3, 1);
 	private Slot mon1900 = new CourseSlot(Day.MO, LocalTime.parse("19:00"), 2, 1);
 	
@@ -66,11 +66,13 @@ class EvalTest {
     @BeforeEach
     public void setup() {
     	try {
-			Parser.parseFile("inputExample.txt");
+			Parser.parseFile("test_files/Inputs/junitTestExample.txt");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+    	
+    	System.out.println("courseslots: " + Parser.getCourseSlots().size());
     	
     	mon800lab = Parser.getlabSlots().get(0);
     	tues1000lab = Parser.getlabSlots().get(1);
@@ -78,7 +80,7 @@ class EvalTest {
     	mon800 = Parser.getCourseSlots().get(0);
     	mon900 = Parser.getCourseSlots().get(1);
     	tues930 = Parser.getCourseSlots().get(2);
-    	tues900 = Parser.getCourseSlots().get(3);
+    	tues1400 = Parser.getCourseSlots().get(3);
     	mon1900 = Parser.getCourseSlots().get(4);
     	
     }
@@ -240,7 +242,7 @@ class EvalTest {
     public void testSecDiffAndPrefNoPenalty1() {
     	Env.setSecdiffWeight(2);
     	Env.setPrefWeight(3);
-    	assignments.add(new Assignment(cpsc433_1, tues900));
+    	assignments.add(new Assignment(cpsc433_1, tues1400));
     	assignments.add(new Assignment(cpsc433_2, tues930));
     	assertEquals(22, eval.partialEvaluate(assignments, 22));
     }
@@ -294,8 +296,8 @@ class EvalTest {
     	Element[] elements = {e1,e2};
     	Parser.getPairs().add(elements);
     	assignments.add(new Assignment(cpsc433_2, tues930));
-    	assignments.add(new Assignment(cpsc413_1, tues900));
-    	assignments.add(new Assignment(cpsc433_1, tues900));
+    	assignments.add(new Assignment(cpsc413_1, tues1400));
+    	assignments.add(new Assignment(cpsc433_1, tues1400));
     	assertEquals(52, eval.partialEvaluate(assignments, 52));
     }
     
@@ -309,7 +311,7 @@ class EvalTest {
     	Element[] elements = {e1,e2};
     	Parser.getPairs().add(elements);
     	assignments.add(new Assignment(cpsc433_2, tues930));
-    	assignments.add(new Assignment(cpsc413_1, tues900));
+    	assignments.add(new Assignment(cpsc413_1, tues1400));
     	assignments.add(new Assignment(cpsc433_1, mon1020));
     	assertEquals(52+90+5, eval.partialEvaluate(assignments, 52));
     }
@@ -324,8 +326,8 @@ class EvalTest {
     	Element[] elements = {e1,e2};
     	Parser.getPairs().add(elements);
     	assignments.add(new Assignment(cpsc433_2, tues930));
-    	assignments.add(new Assignment(cpsc413_1, tues900));
-    	assignments.add(new Assignment(cpsc433_1, tues900));
+    	assignments.add(new Assignment(cpsc413_1, tues1400));
+    	assignments.add(new Assignment(cpsc433_1, tues1400));
     	assertEquals(13, eval.partialEvaluate(assignments, 13));
     }
     
@@ -339,7 +341,7 @@ class EvalTest {
     	Element[] elements = {e1,e2};
     	Parser.getPairs().add(elements);
     	assignments.add(new Assignment(cpsc433_2, tues930));
-    	assignments.add(new Assignment(cpsc413_1, tues900));
+    	assignments.add(new Assignment(cpsc413_1, tues1400));
     	assignments.add(new Assignment(cpsc433_1, tues930));
     	assertEquals(13+8+4+(3*10), eval.partialEvaluate(assignments, 13));
     }
@@ -355,7 +357,7 @@ class EvalTest {
     	Env.setMinfilledWeight(2);
     	
     	assignments.add(new Assignment(cpsc433_1, tues930));
-    	assignments.add(new Assignment(cpsc433_2, tues900));
+    	assignments.add(new Assignment(cpsc433_2, tues1400));
     	assignments.add(new Assignment(cpsc422_1, mon800));
     	assignments.add(new Assignment(cpsc329_1, mon800));
     	assignments.add(new Assignment(cpsc213_1, mon900));
@@ -380,7 +382,7 @@ class EvalTest {
     	Env.setMinfilledWeight(4);
 
     	assignments.add(new Assignment(cpsc433_1, tues930));
-    	assignments.add(new Assignment(cpsc433_2, tues900));
+    	assignments.add(new Assignment(cpsc433_2, tues1400));
     	assignments.add(new Assignment(cpsc422_1, mon800));
     	assignments.add(new Assignment(cpsc329_1, mon800));
     	assignments.add(new Assignment(cpsc213_1, mon900));
@@ -442,9 +444,9 @@ class EvalTest {
     	Env.setMinfilledWeight(7);
     	int i = 0;
     	
-    	assignments.add(new Assignment(cpsc433_1, tues900));
+    	assignments.add(new Assignment(cpsc433_1, tues1400));
     	i = eval.partialEvaluate(assignments, i);
-    	assignments.add(new Assignment(cpsc433_2, tues900));
+    	assignments.add(new Assignment(cpsc433_2, tues1400));
     	i = eval.partialEvaluate(assignments, i);
     	assignments.add(new Assignment(cpsc567_1, mon800));
     	i = eval.partialEvaluate(assignments, i);

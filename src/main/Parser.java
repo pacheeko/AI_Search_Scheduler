@@ -529,4 +529,79 @@ public class Parser {
         }
         return incompatibles;
     }
+    
+    public static void printParsedInput() {
+    	System.out.println("\n-----------------------------------------------");
+    	
+    	//Name
+    	System.out.println("Name: ");
+    	System.out.println(getName());
+    	
+    	//Course Slots
+    	System.out.println("\nCourse slots: ");
+    	for (CourseSlot e : getCourseSlots()) {
+    		System.out.println(e.getInfo() + ", " + e.getMax() + ", " + e.getMin());
+    	}
+    	
+    	//Lab Slots
+    	System.out.println("\nLab slots: ");
+    	for (LabSlot e : getlabSlots()) {
+    		System.out.println(e.getInfo() + ", " + e.getMax() + ", " + e.getMin());
+    	}
+    	
+    	//Courses
+    	System.out.println("\nCourses: ");
+    	for (Course e : getCourses()) {
+    		System.out.println(e.getName());
+    	}
+    	
+    	//Labs
+    	System.out.println("\nLabs: ");
+    	for (Lab e : getLabs()) {
+    		System.out.println(e.getName());
+    	}
+    	
+    	//Not compatible
+    	System.out.println("\nNot compatible: ");
+    	for (Element[] e : getNotCompatible()) {
+    		System.out.println(e[0].getName() + ", " + e[1].getName());
+    	}
+    	
+    	//Unwanted
+    	System.out.println("\nUnwanted: ");
+    	for (Assignment e : getUnwanted()) {
+    		System.out.println(e.getElement().getName() + ", " + e.getSlot().getInfo());
+    	}
+    	
+    	//Preferences
+    	System.out.println("\nPreferences: ");
+    	for (Preference e : getPreferences()) {
+    		System.out.println(e.getElement().getName() + ", " + e.getSlot().getInfo() + ", " + e.getWeight());
+    	}
+    	
+    	//Pair
+    	System.out.println("\nPair: ");
+    	for (Element[] e : getPairs()) {
+    		System.out.println(e[0].getName() + ", " + e[1].getName());
+    	}
+    	
+    	//Partial Assignments
+    	System.out.println("\nPartial Assignment: ");
+    	for (Assignment e : getPartialAssignments()) {
+    		System.out.println(e.getElement().getName() + ", " + e.getSlot().getInfo());
+    	}
+    	
+    	System.out.println("-----------------------------------------------\n");
+    }
 }
+
+
+
+
+
+
+
+
+
+
+

@@ -9,16 +9,16 @@ import org.junit.jupiter.api.Test;
 import main.Parser;
 
 public class ParserTest {
-    
+
     @BeforeEach
     public void init() {
         try {
-        	Parser.parseFile("C:\\\\Users\\\\mrnoo\\\\Desktop\\\\test_example.txt");
+        	Parser.parseFile("test_inputs/test_input.txt");
         } catch (Exception e) {
             //fail();
-        }        
+        }
     }
-    
+
     @Test
     public void testParseName() {
         assertEquals("ShortExample", Parser.getName());
@@ -32,13 +32,13 @@ public class ParserTest {
         assertEquals(1, Parser.getCourses().get(0).getSection());
         assertEquals("CPSC", Parser.getCourses().get(1).getDepartment());
         assertEquals(433, Parser.getCourses().get(1).getNumber());
-        assertEquals(2, Parser.getCourses().get(1).getSection());        
+        assertEquals(2, Parser.getCourses().get(1).getSection());
     }
 
 
     @Test
     public void testParseLabs() {
-        assertEquals(4, Parser.getLabs().size());        
+        assertEquals(4, Parser.getLabs().size());
         assertEquals(Parser.getCourses().get(0), Parser.getLabs().get(0).getCourse());
         assertEquals(1, Parser.getLabs().get(0).getNumber());
     }

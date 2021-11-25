@@ -1,0 +1,29 @@
+test2 expected hard constraints
+
+ - TU, 11:00 will have highest preference, but no courses should be assigned
+ - CPSC 913 LEC 01 should be in evening slot
+ - CPSC 813 & 913 must not be in same slot as non-compatible courses of 313/413
+ - CPSC 501 & 518 not in same slot
+
+(unchecked) Current Optimal Solution
+Eval-value: 
+CPSC 231 LEC 01 	: MO, 16:00
+CPSC 231 LEC 01 TUT 01	: TU, 16:00
+CPSC 231 LEC 01 TUT 02	: FR,  8:00
+CPSC 313 LEC 01		: TU, 17:00
+CPSC 313 LEC 01 TUT 01	: FR, 10:00
+CPSC 313 LEC 01 TUT 02	: TU, 14:00
+CPSC 313 LEC 01 TUT 03	: TU, 15:00
+CPSC 413 LEC 01		: TU, 17:00
+CPSC 413 LEC 01 TUT 01	: MO,  9:00
+CPSC 413 LEC 01 TUT 02	: MO, 12:00
+CPSC 501 LEC 01		: MO,  9:00
+CPSC 501 LEC 01 TUT 01	: TU, 14:00
+CPSC 501 LEC 01 TUT 02	: FR,  8:00
+CPSC 518 LEC 01		: MO,  9:00
+CPSC 518 LEC 01 TUT 01	: MO, 12:00
+CPSC 518 LEC 01 TUT 02	: MO, 16:00
+CPSC 813 LEC 01		: MO, 12:00
+CPSC 813 LEC 01 TUT 01	: MO, 16:00
+CPSC 913 LEC 01		: TU, 18:30
+CPSC 913 LEC 01 TUT 01	: TU, 16:00

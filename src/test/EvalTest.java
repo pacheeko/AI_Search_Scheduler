@@ -33,12 +33,14 @@ class EvalTest {
 	private Slot mon1120 = new CourseSlot(Day.MO, LocalTime.parse("11:20"), 5, 1);
 	private Slot tues900 = new CourseSlot(Day.TU, LocalTime.parse("09:00"), 2, 1);
 	private Slot tues930 = new CourseSlot(Day.TU, LocalTime.parse("09:30"), 3, 1);
+	private Slot mon1900 = new CourseSlot(Day.MO, LocalTime.parse("19:00"), 2, 1);
 	
 	//Lab Slots
 	private Slot mon800lab = new LabSlot(Day.MO, LocalTime.parse("08:00"), 4, 2);
 	private Slot tues1000lab = new LabSlot(Day.TU, LocalTime.parse("10:00"), 2, 1);
 	private Slot fri1000lab = new LabSlot(Day.FR, LocalTime.parse("10:00"), 2, 1);
 	private Slot mon1220 = new LabSlot(Day.MO, LocalTime.parse("12:20"), 5, 1);
+	
 	
 	//Courses
     private Element cpsc433_1 = new Course("CPSC", 433, 1);
@@ -57,8 +59,6 @@ class EvalTest {
     private Element seng311_1_1 = new Lab((Course) seng311_1, 1, false);
     private Element cpsc567_1_1 = new Lab((Course) cpsc567_1, 1, false);
     
-    private ProblemState state;
-    private Problem problem;
     private Eval eval = new Eval();
 
     @BeforeEach
@@ -69,6 +69,16 @@ class EvalTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+    	
+    	mon800lab = Parser.getlabSlots().get(0);
+    	tues1000lab = Parser.getlabSlots().get(1);
+    	fri1000lab = Parser.getlabSlots().get(2);
+    	mon800 = Parser.getCourseSlots().get(0);
+    	mon900 = Parser.getCourseSlots().get(1);
+    	tues930 = Parser.getCourseSlots().get(2);
+    	tues900 = Parser.getCourseSlots().get(3);
+    	mon1900 = Parser.getCourseSlots().get(4);
+    	
     }
     
     @Test
@@ -128,12 +138,27 @@ class EvalTest {
     	assertEquals(0, eval.partialEvaluate(assignments, 0));
     }
     
+    @Test
     public void testPairsNoPenalty4() {
     	Env.setPairWeight(1);
     	assignments.add(new Assignment(cpsc567_1, mon1020));
     	assignments.add(new Assignment(seng311_1, mon1020));
     	
     	assertEquals(15, eval.partialEvaluate(assignments, 15));
+    }
+    
+    @Test
+    public void testPairsNoPenalty5() {
+    	Env.setPairWeight(5);
+    	
+    	assignments.add(new Assignment(cpsc433_1_1, mon800lab));
+    	assignments.add(new Assignment(cpsc433_2_2, mon800lab));
+    	Element[] pair = { assignments.get(assignments.size()-2).getElement(), assignments.get(assignments.size()-1).getElement()};
+    	
+    	Parser.getPairs().add(pair);
+    	
+    	assertEquals(5, eval.partialEvaluate(assignments, 5));
+    	
     }
     
     @Test
@@ -153,6 +178,20 @@ class EvalTest {
     }
     
     @Test
+    public void testPairsPenalty3() {
+    	Env.setPairWeight(5);
+    	
+    	assignments.add(new Assignment(cpsc433_1_1, mon800lab));
+    	assignments.add(new Assignment(cpsc433_2_2, tues1000lab));
+    	Element[] pair = { assignments.get(assignments.size()-2).getElement(), assignments.get(assignments.size()-1).getElement()};
+    	
+    	Parser.getPairs().add(pair);
+    	
+    	assertEquals(10, eval.partialEvaluate(assignments, 5));
+    	
+    }
+    
+    @Test
     public void testPrefNoPenalty1() {
     	Env.setPrefWeight(1);
     	assignments.add(new Assignment(cpsc433_2, tues930));
@@ -160,11 +199,18 @@ class EvalTest {
     }
     
     @Test
-    public void testPrefNoPenalty() {
+    public void testPrefNoPenalty2() {
     	Env.setPrefWeight(1);
     	assignments.add(new Assignment(cpsc433_2, mon1020));
     	assignments.add(new Assignment(cpsc422_1, mon1120));
     	assertEquals(10, eval.partialEvaluate(assignments, 10));
+    }
+    
+    @Test
+    public void testPrefNoPenalty3() {
+    	Env.setPrefWeight(2);
+    	assignments.add(new Assignment(cpsc433_2_2, mon800lab));
+    	assertEquals(6, eval.partialEvaluate(assignments, 6));
     }
     
     @Test
@@ -179,6 +225,13 @@ class EvalTest {
     	Env.setPrefWeight(5);
     	assignments.add(new Assignment(cpsc433_2, mon1120));
     	assertEquals(50, eval.partialEvaluate(assignments, 0));
+    }
+    
+    @Test
+    public void testPrefPenalty3() {
+    	Env.setPrefWeight(7);
+    	assignments.add(new Assignment(cpsc433_2_2, fri1000lab));
+    	assertEquals(13, eval.partialEvaluate(assignments, 6));
     }
     
     @Test
@@ -299,14 +352,6 @@ class EvalTest {
     public void testEvaluateNoPenalty2() {
     	Env.setMinfilledWeight(2);
     	
-    	mon800lab = Parser.getlabSlots().get(0);
-    	tues1000lab = Parser.getlabSlots().get(1);
-    	fri1000lab = Parser.getlabSlots().get(2);
-    	mon800 = Parser.getCourseSlots().get(0);
-    	mon900 = Parser.getCourseSlots().get(1);
-    	tues930 = Parser.getCourseSlots().get(2);
-    	tues900 = Parser.getCourseSlots().get(3);
-    	
     	assignments.add(new Assignment(cpsc433_1, tues930));
     	assignments.add(new Assignment(cpsc433_2, tues900));
     	assignments.add(new Assignment(cpsc422_1, mon800));
@@ -317,6 +362,7 @@ class EvalTest {
     	assignments.add(new Assignment(cpsc433_2_2, mon800lab));
     	assignments.add(new Assignment(seng311_1_1, tues1000lab));
     	assignments.add(new Assignment(cpsc567_1_1, fri1000lab));
+    	assignments.add(new Assignment(cpsc101_1, mon1900));
     	assertEquals(43, eval.evaluate(assignments, 43));
     	
     }
@@ -324,21 +370,13 @@ class EvalTest {
     @Test
     public void testEvaluatePenalty1() {
     	Env.setMinfilledWeight(1);
-    	assertEquals(23, eval.evaluate(assignments, 13));
+    	assertEquals(24, eval.evaluate(assignments, 13));
     }
     
     @Test
     public void testEvaluatePenalty2() {
     	Env.setMinfilledWeight(4);
-    	
-    	mon800lab = Parser.getlabSlots().get(0);
-    	tues1000lab = Parser.getlabSlots().get(1);
-    	fri1000lab = Parser.getlabSlots().get(2);
-    	mon800 = Parser.getCourseSlots().get(0);
-    	mon900 = Parser.getCourseSlots().get(1);
-    	tues930 = Parser.getCourseSlots().get(2);
-    	tues900 = Parser.getCourseSlots().get(3);
-    	
+
     	assignments.add(new Assignment(cpsc433_1, tues930));
     	assignments.add(new Assignment(cpsc433_2, tues900));
     	assignments.add(new Assignment(cpsc422_1, mon800));
@@ -348,21 +386,13 @@ class EvalTest {
     	assignments.add(new Assignment(cpsc433_2_2, mon800lab));
     	assignments.add(new Assignment(seng311_1_1, tues1000lab));
     	assignments.add(new Assignment(cpsc567_1_1, fri1000lab));
-    	assertEquals(47, eval.evaluate(assignments, 43));
+    	assertEquals(51, eval.evaluate(assignments, 43));
     	
     }
     
     @Test
     public void testEvaluatePenalty3() {
     	Env.setMinfilledWeight(7);
-    	
-    	mon800lab = Parser.getlabSlots().get(0);
-    	tues1000lab = Parser.getlabSlots().get(1);
-    	fri1000lab = Parser.getlabSlots().get(2);
-    	mon800 = Parser.getCourseSlots().get(0);
-    	mon900 = Parser.getCourseSlots().get(1);
-    	tues930 = Parser.getCourseSlots().get(2);
-    	tues900 = Parser.getCourseSlots().get(3);
     	
     	assignments.add(new Assignment(cpsc433_1, tues930));
     	assignments.add(new Assignment(cpsc329_1, mon800));
@@ -371,7 +401,7 @@ class EvalTest {
     	assignments.add(new Assignment(cpsc433_1_1, mon800lab));
     	assignments.add(new Assignment(cpsc433_2_2, mon800lab));
     	assignments.add(new Assignment(seng311_1_1, tues1000lab));
-    	assertEquals(64, eval.evaluate(assignments, 43));
+    	assertEquals(71, eval.evaluate(assignments, 43));
     	
     }
     
@@ -382,14 +412,6 @@ class EvalTest {
     	Env.setSecdiffWeight(5);
     	Env.setMinfilledWeight(7);
     	int i = 0;
-    	
-    	mon800lab = Parser.getlabSlots().get(0);
-    	tues1000lab = Parser.getlabSlots().get(1);
-    	fri1000lab = Parser.getlabSlots().get(2);
-    	mon800 = Parser.getCourseSlots().get(0);
-    	mon900 = Parser.getCourseSlots().get(1);
-    	tues930 = Parser.getCourseSlots().get(2);
-    	tues900 = Parser.getCourseSlots().get(3);
     	
     	assignments.add(new Assignment(cpsc433_1, tues930));
     	i = eval.partialEvaluate(assignments, i);
@@ -406,7 +428,7 @@ class EvalTest {
     	assignments.add(new Assignment(seng311_1_1, tues1000lab));	
     	i = eval.partialEvaluate(assignments, i);
     	i = eval.evaluate(assignments, i);
-    	assertEquals(20+2+28, i);
+    	assertEquals(20+2+35, i);
     	
     }
     
@@ -417,14 +439,6 @@ class EvalTest {
     	Env.setSecdiffWeight(5);
     	Env.setMinfilledWeight(7);
     	int i = 0;
-    	
-    	mon800lab = Parser.getlabSlots().get(0);
-    	tues1000lab = Parser.getlabSlots().get(1);
-    	fri1000lab = Parser.getlabSlots().get(2);
-    	mon800 = Parser.getCourseSlots().get(0);
-    	mon900 = Parser.getCourseSlots().get(1);
-    	tues930 = Parser.getCourseSlots().get(2);
-    	tues900 = Parser.getCourseSlots().get(3);
     	
     	assignments.add(new Assignment(cpsc433_1, tues900));
     	i = eval.partialEvaluate(assignments, i);
@@ -443,7 +457,7 @@ class EvalTest {
     	assignments.add(new Assignment(seng311_1_1, tues1000lab));	
     	i = eval.partialEvaluate(assignments, i);
     	i = eval.evaluate(assignments, i);
-    	assertEquals(20+5+3+2+28, i);
+    	assertEquals(20+5+3+2+35, i);
     	
     }
     

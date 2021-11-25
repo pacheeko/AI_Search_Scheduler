@@ -35,7 +35,7 @@ public class Course extends Element {
         Course other = (Course) o;
         return other.number == this.number 
             && other.section == this.section 
-            && other.department == this.department;
+            && other.department.equals(this.department);
     }
 
 }

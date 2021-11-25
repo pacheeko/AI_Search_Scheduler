@@ -530,6 +530,9 @@ public class Parser {
         return incompatibles;
     }
     
+    //printParsedInput - Loosely echos the input file using the data stored by Parser
+    //INPUT: None
+    //RETURNS: None
     public static void printParsedInput() {
     	System.out.println("\n-----------------------------------------------");
     	

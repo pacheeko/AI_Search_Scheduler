@@ -20,6 +20,9 @@ class Start {
 	
     public static void main(String args[]) throws Exception {
     	//Check if file path was passed
+    	
+    	System.out.println(System.getProperty("user.dir"));
+    	
     	if (args.length == 0) {
     		throw new FileNotFoundException("Please provide the path of a valid input file.");
     	}

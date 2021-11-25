@@ -328,46 +328,51 @@ public class Parser {
 		while(scanner.hasNextLine()) {
 			
 			if(scanner.nextLine().equals(category)) {
+				try {
+					lineStr = scanner.nextLine();
 				
-				lineStr = scanner.nextLine();
-				while(lineStr.equals("") == false) {
-					//Split along comma in line
-					lineStr = lineStr.trim().replaceAll(" +", " ");
-					String[] parts = lineStr.split(", ");
-					
-					//If not exactly three comma-seperated values were found, invalid entry
-					if (parts.length != 3) {
-						throw new Exception("Invalid unwanted or partial assignment in input file!");
-					}
-					
-					Day day = getDay(parts[1]);
-					LocalTime time = LocalTime.parse(parts[2], DateTimeFormatter.ofPattern("H:m"));
-					String[] elementStr = parts[0].split(" ");
-					Element element;
-					
-					//Element is a course
-					if (isCourse(elementStr)){
-						element = getCourse(elementStr[0] + " " + elementStr[1] + " " + Integer.parseInt(elementStr[3]));
-						slots.add(new Assignment(element, getCourseSlot(day, time)));
-					}
-					//Element is a lab
-					else {
-						if (elementStr.length == 6) {
-							element = getLab(elementStr[0] + " " + elementStr[1] + " " + Integer.parseInt(elementStr[3])  + " TUT " + Integer.parseInt(elementStr[5]));
-						}
-						else if (elementStr.length == 4) {
-							element = getLab(elementStr[0] + " " + elementStr[1] + " " + 1 + " TUT " + Integer.parseInt(elementStr[3]));
-						}
-						else {
+					while(lineStr.equals("") == false) {
+						//Split along comma in line
+						lineStr = lineStr.trim().replaceAll(" +", " ");
+						String[] parts = lineStr.split(", ");
+						
+						//If not exactly three comma-seperated values were found, invalid entry
+						if (parts.length != 3) {
 							throw new Exception("Invalid unwanted or partial assignment in input file!");
 						}
-						slots.add(new Assignment(element, getLabSlot(day, time)));
+						
+						Day day = getDay(parts[1]);
+						LocalTime time = LocalTime.parse(parts[2], DateTimeFormatter.ofPattern("H:m"));
+						String[] elementStr = parts[0].split(" ");
+						Element element;
+						
+						//Element is a course
+						if (isCourse(elementStr)){
+							element = getCourse(elementStr[0] + " " + elementStr[1] + " " + Integer.parseInt(elementStr[3]));
+							slots.add(new Assignment(element, getCourseSlot(day, time)));
+						}
+						//Element is a lab
+						else {
+							if (elementStr.length == 6) {
+								element = getLab(elementStr[0] + " " + elementStr[1] + " " + Integer.parseInt(elementStr[3])  + " TUT " + Integer.parseInt(elementStr[5]));
+							}
+							else if (elementStr.length == 4) {
+								element = getLab(elementStr[0] + " " + elementStr[1] + " " + 1 + " TUT " + Integer.parseInt(elementStr[3]));
+							}
+							else {
+								throw new Exception("Invalid unwanted or partial assignment in input file!");
+							}
+							slots.add(new Assignment(element, getLabSlot(day, time)));
+						}
+						
+						if(scanner.hasNextLine() == false) {
+							break;
+						}
+						lineStr = scanner.nextLine();
 					}
-					
-					if(scanner.hasNextLine() == false) {
-						break;
-					}
-					lineStr = scanner.nextLine();
+				}
+				catch (Exception e){
+					return slots;
 				}
 			}
 		}

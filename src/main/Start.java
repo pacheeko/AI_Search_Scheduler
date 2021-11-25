@@ -31,6 +31,7 @@ class Start {
     	}
     	//Instantiate Parser, parse file passed in arg[0]
     	Parser.parseFile(args[0]);
+    	Parser.printParsedInput();
     	
     	//Set the weights of each soft constraint in the static Env class
     	Env.setMinfilledWeight(Integer.valueOf(args[1]));

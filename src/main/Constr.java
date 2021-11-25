@@ -19,6 +19,7 @@ public class Constr {
     }
 
     public boolean checkConstraints(ArrayList<Assignment> assignments) {
+    	if (assignments == null || assignments.size() == 0) return true;
         int last_index = assignments.size() - 1;
 
         Assignment new_addition = assignments.get(last_index);

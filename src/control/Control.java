@@ -2,6 +2,8 @@ package control;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+
+import main.Eval;
 import model.SearchModel;
 import problem.Problem;
 import problem.ProblemState;
@@ -30,6 +32,7 @@ public class Control {
     ProblemState current_leaf;
     LeafComparator leaf_comparer;
     ArrayList<Slot> slots;
+    Eval eval = new Eval();
 
     public Control(ProblemState root, ArrayList<Slot> slots) {
         this.slots = slots;
@@ -52,33 +55,42 @@ public class Control {
         current_leaf = leafs.get(0);
     }
 
-    public void ftrans() {        
-        if (current_leaf.getSol())
-            return;
-
-        ProblemState current_problem = current_leaf;
-        if (current_problem.isSolved()) {
-            ProblemState new_leaf = new ProblemState(current_problem.getProblem(), current_leaf);
-            new_leaf.setSol(true);
-            leafs.remove(current_leaf);
-            leafs.add(new_leaf);
-            leafs.sort(leaf_comparer);
-            current_leaf = null;
+    public void ftrans() {
+    	//Check if the current leaf should be discarded, return null if so
+        if (current_leaf.getSol() || current_leaf.discardLeaf()) {
+        	leafs.remove(current_leaf);
+        	current_leaf = null;
             return;
         }
+        
+        if (current_leaf.getProblem().getElements().isEmpty()) {
+        	if (current_leaf.isBestSolution()) {
+        		leafs.remove(current_leaf);
+        		return;
+        	}
+        	else {
+        		leafs.remove(current_leaf);
+        		current_leaf = null;
+        		return;
+        	}
+        }
 
-
-        ArrayList<Problem> subProblems = SearchModel.Div(current_problem.getProblem(), slots);
+        ArrayList<Problem> subProblems = SearchModel.Div(current_leaf.getProblem(), slots);
+        //If the node cannot be divided into more leaves, discard it
         if (subProblems.isEmpty()) {
+        	leafs.remove(current_leaf);
+        	current_leaf = null;
             return;
         }
 
         for(Problem subProblem : subProblems) {
             ProblemState new_leaf = new ProblemState(subProblem, current_leaf);
+            new_leaf.setEval(eval.partialEvaluate(new_leaf.getProblem().getAssignments(), new_leaf.getParent().getEval()));
             leafs.add(new_leaf);
         }
 
         leafs.remove(current_leaf);
+        current_leaf = null;
         leafs.sort(leaf_comparer);
         return;
     }

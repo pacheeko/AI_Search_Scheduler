@@ -49,16 +49,23 @@ public class ProblemState {
         }
     }
 	
-    public boolean isSolved() {
-        //assignment number is for debug, element list is for testing only
-        if (problem.getElements().isEmpty() && myConstr.checkConstraints(problem.getAssignments()))
-            return true;
-        eval = myEval.partialEvaluate(problem.getAssignments(), eval);
-        if (eval > Env.getMinPenalty())
-            return true;
+	//Returns true if this solution is the best solution
+    public boolean isBestSolution() {
+        eval = myEval.evaluate(problem.getAssignments(), eval);
+        if (eval < Env.getMinPenalty()) {
+        	Env.setMinPenalty(eval);
+        }
         return false;
     }
 	
+    //Returns true if the leaf should be discarded and not looked further into
+    public boolean discardLeaf() {
+    	if (!myConstr.checkConstraints(problem.getAssignments()) || (eval > Env.getMinPenalty())) {
+    		return true;
+    	}
+    	return false;
+    }
+    
 	public ArrayList<ProblemState> getChildren() {
 		return children;
 	}

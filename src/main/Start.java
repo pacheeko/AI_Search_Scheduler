@@ -83,16 +83,14 @@ class Start {
     		currentState = control.getSelectedLeaf();
     		//If the solution is complete and it has a better eval value than the current best state,
     		//then update the best state to the current state
-    		if ((!(currentState == null)) && (currentState.getSol())) {
-    			if (currentState.getEval() < Env.getMinPenalty()) {
-    				bestState = currentState;
-    				Env.setMinPenalty(currentState.getEval());
-    			}
+    		if (!(currentState == null)) {
+    			bestState = currentState;
     		}
     		
     	}
     	if (bestState == null) {
-    		throw new NullPointerException("No solution found");
+    		System.out.println("No solution found.");
+    		System.exit(1);
     	}
     	return bestState;
     }   

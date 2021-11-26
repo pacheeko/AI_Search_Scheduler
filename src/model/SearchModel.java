@@ -16,7 +16,7 @@ public class SearchModel {
             Problem subProblem = new Problem(prob);
             if (subProblem.assign(nextElement, slot));            
                 subProblems.add(subProblem);
-        }
+            }
 
         return subProblems;
     }

@@ -11,7 +11,7 @@ public class Constr {
     Hashtable<Slot, Integer> courses_in_slot;
     Hashtable<Slot, Integer> labs_in_slot;
 
-    private final boolean DEBUG = false;;
+    private final boolean DEBUG = true;
     
     public Constr() {
         courses_in_slot = new Hashtable<Slot, Integer>();
@@ -145,6 +145,8 @@ public class Constr {
     }
 
     private boolean failsTuesdayCourseRestriction(Assignment a) {
+    	if (a.getElement() instanceof Lab) return false;
+    	
         Slot slot = a.getSlot();
 
         if (slot.getDay() != Day.TU)

@@ -19,8 +19,13 @@ public class Problem {
     }
 
     public Problem(Problem problem) {
-        this.elements = problem.elements;
-        this.assignments = problem.assignments;
+    	elements = new ArrayList<Element>();
+    	assignments = new ArrayList<Assignment>();
+    	
+    	problem.elements.forEach((element) ->
+    		this.elements.add(element));
+    	problem.assignments.forEach((assignment) ->
+    		this.assignments.add(assignment));
     }
 
     public Problem(ArrayList<Element> elements) {
@@ -66,7 +71,7 @@ public class Problem {
     }
 
     public boolean assign(Element element, Slot slot) {
-        if (assignments.contains(element) || !elements.contains(element))        
+        if (!elements.contains(element))        
             return false;
         Assignment newAssignment = new Assignment(element, slot);
         assignments.add(newAssignment);

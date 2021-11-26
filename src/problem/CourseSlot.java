@@ -28,10 +28,10 @@ public class CourseSlot extends Slot {
             switch (day) {
             case MO:
             case FR:
-                endTime = startTime.plusHours(1);
+                endTime = startTime.plusHours(1).minusMinutes(10);
                 break;
             case TU:
-                endTime = startTime.plusHours(1).plusMinutes(30);                
+                endTime = startTime.plusHours(1).plusMinutes(15);                
                 break;
             }
             return endTime;

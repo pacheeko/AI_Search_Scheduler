@@ -184,9 +184,16 @@ public class constrTest {
     }
     
     @Test
-    public void meetsTuesdayCourseRestriction() {
+    public void meetsTuesdayCourseRestriction1() {
     	Parser.getCourseSlots().add((CourseSlot) tues1100);
     	assignments.add(new Assignment(cpsc433_1, mon900));
+    	assertTrue(constr.checkConstraints(assignments));
+    }
+    
+    @Test
+    public void meetsTuesdayCourseRestriction2() {
+    	Parser.getCourseSlots().add((CourseSlot) tues1100);
+    	assignments.add(new Assignment(cpsc433_1, tues930));
     	assertTrue(constr.checkConstraints(assignments));
     }
     

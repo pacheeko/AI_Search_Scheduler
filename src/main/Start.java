@@ -54,6 +54,13 @@ class Start {
     	Parser.getLabs().forEach((lab) ->
     		initialProblem.addElement(lab));
     	
+    	for (Assignment assignment : Parser.getPartialAssignments()) {
+			if (!initialProblem.assign(assignment.getElement(), assignment.getSlot())) {
+				System.out.println("Failed to assign partial assignments");
+				System.exit(1);
+			}
+    	}
+    		
     	return new ProblemState(initialProblem, null);
     }
     
@@ -103,13 +110,23 @@ class Start {
     	for (Assignment a : assignments) {
     		if (a.getElement() instanceof Course) {
     			Course course = (Course) a.getElement();
-    			//TODO: Remove lecture section for courses that only have 1 lab or tutorial section
-        		System.out.println(course.getName() + " " + course.getNumber() + " LEC " + course.getSection() + "\t:" + a.getSlot().getDay() + "," + a.getSlot().getStartTime());
+    			if (course.getSection() == 0) {
+    				System.out.println(course.getName() + "\t:" + a.getSlot().getDay() + "," + a.getSlot().getStartTime());
+    			}
+    			else {
+    				System.out.println(course.getName() + "\t:" + a.getSlot().getDay() + "," + a.getSlot().getStartTime());
+    			}
+        		
     		}
     		else {
     			Lab lab = (Lab) a.getElement();
-    			//TODO: Remove lecture section for courses that only have 1 lab or tutorial section
-        		System.out.println(lab.getCourse().getName() + " " + lab.getCourse().getNumber() + " LEC " + lab.getCourse().getSection() + " " + lab.getName() + " " + lab.getNumber() + "\t:" + a.getSlot().getDay() + "," + a.getSlot().getStartTime());
+    			if (lab.getCourse().getSection() == 0) {
+    				System.out.println(lab.getName() + "\t:" + a.getSlot().getDay() + "," + a.getSlot().getStartTime());
+    			}
+    			else {
+    				System.out.println(lab.getName() + "\t:" + a.getSlot().getDay() + "," + a.getSlot().getStartTime());
+    			}
+        		
     		}
 
     	}
@@ -120,7 +137,7 @@ class Start {
     // directly under the lecture section it belongs to, and place all labs for each section
     // before the next section.
     public static Comparator<Assignment> assignmentCompare = new Comparator<Assignment>() {
-    	
+		//Returns 1 if a1 should be placed before a2, -1 otherwise
     	public int compare (Assignment a1, Assignment a2) {
     		int cmp = a1.getElement().getDepartment().compareTo(a2.getElement().getDepartment());
     		
@@ -136,18 +153,18 @@ class Start {
     			// If they are the same course, sort by section number
     			if (c1.getNumber() == c2.getNumber()) {
     				if (c1.getSection() < c2.getSection()) {
-    					return 1;
+    					return -1;
     				}
     				else {
-    					return -1;
+    					return 1;
     				}
     			}
     			//Place the lower course number first
     			else if (c1.getNumber() < c2.getNumber()) {
-    				return 1;
+    				return -1;
     			}
     			else {
-    				return -1;
+    				return 1;
     			}
     		}
     		//If both assignments are labs
@@ -160,31 +177,31 @@ class Start {
     					//If they are part of the same section, sort by lab number
     					if (l1.getNumber() == l2.getNumber()) {
     						if (l1.getName().compareTo("TUT") == 0) {
-    							return -1;
+    							return 1;
     						}
     						else {
-    							return 1;
+    							return -1;
     						}
     					}
     					else if (l1.getNumber() < l2.getNumber()) {
-    						return 1;
+    						return -1;
     					}
     					else {
-    						return -1;
+    						return 1;
     					}
     				}
     				else if (l1.getCourse().getSection() < l2.getCourse().getSection()) {
-    					return 1;
+    					return -1;
     				}
     				else {
-    					return -1;
+    					return 1;
     				}
     			}
     			else if (l1.getCourse().getNumber() < l1.getCourse().getNumber()){
-    				return 1;
+    				return -1;
     			}
     			else {
-    				return -1;
+    				return 1;
     			}
     		}
     		//If a1 is a course and a2 is a lab
@@ -203,10 +220,10 @@ class Start {
     				
     			}
     			else if (c1.getNumber() < l2.getCourse().getNumber()) {
-    				return 1;
+    				return -1;
     			}
     			else {
-    				return -1;
+    				return 1;
     			}
     		}
     		//If a2 is a course and a1 is a lab
@@ -214,13 +231,18 @@ class Start {
     			Lab l1 = (Lab) a1.getElement();
     			Course c2 = (Course) a2.getElement();
     			if (l1.getCourse().getNumber() == c2.getNumber()) {
-    				
+    				if (l1.getCourse().getSection() < c2.getSection()) {
+    					return -1;
+    				}
+    				else {
+    					return 1;
+    				}
     			}
     			else if (l1.getCourse().getNumber() < c2.getNumber()) {
-    				return 1;
+    				return -1;
     			}
     			else {
-    				return -1;
+    				return 1;
     			}
     		}
 			System.out.println("Error comparing assignments");

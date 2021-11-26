@@ -11,7 +11,7 @@ public class Constr {
     Hashtable<Slot, Integer> courses_in_slot;
     Hashtable<Slot, Integer> labs_in_slot;
 
-    private final boolean DEBUG = true;
+    private final boolean DEBUG = false;
     
     public Constr() {
         courses_in_slot = new Hashtable<Slot, Integer>();

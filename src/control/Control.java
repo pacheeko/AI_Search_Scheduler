@@ -36,7 +36,7 @@ public class Control {
     LeafComparator leaf_comparer;
     ArrayList<Slot> slots;
     Eval eval = new Eval();
-    boolean DEBUG = true;
+    boolean DEBUG = false;
 
     public Control(ProblemState root, ArrayList<Slot> slots) {
         this.slots = slots;

@@ -46,7 +46,7 @@ public class Parser {
     // getDay - Returns the enum type of a day, given a matching string type
     // INPUT: String representing abbreviated day
     // RETURNS: A Day enum type
-    private static Day getDay(String string) throws Exception {
+    private static Day getDay(String string) {
         if (string.equals("MO")) {
             return Day.MO;
         }
@@ -56,59 +56,80 @@ public class Parser {
         if (string.equals("FR")) {
             return Day.FR;
         }
-        throw new Exception("Invalid day in input file! " + string);
+        System.out.println("ERROR: Invalid day in input file: " + "<" + string + ">" + "\nExiting program...");
+        System.exit(1);
+        return null;
     }
 
     // getCourse - Returns a course object contained in the courses arraylist with
     // the same name as the input string
     // INPUT: Course name string of form "<department> <number> <section>"
     // RETURNS: A course object if one is found
-    private static Course getCourse(String string) throws Exception {
+    private static Course getCourse(String string, boolean strict) {
         for (Course course : courses) {
             if (course.getName().equals(string)) {
                 return course;
             }
         }
-        throw new Exception("Invalid course in input file! " + string);
+        if(strict) {
+            System.out.println("ERROR: Invalid course in input file: " + "<" + string + ">" + "\nExiting program...");
+            System.exit(1);
+            return null;
+        }
+        else {
+        	return null;
+        }
     }
 
     // getLab - Returns a lab object contained in the labs arraylist with the same
     // name as the input string
     // INPUT: Lab name string of form "<course.getName()> TUT <number>"
     // RETURNS: A lab object if one is found
-    private static Lab getLab(String string) throws Exception {
+    private static Lab getLab(String string, boolean strict) {
         for (Lab lab : labs) {
             if (lab.getName().equals(string)) {
                 return lab;
             }
         }
-        throw new Exception("Invalid lab in input file! " + string);
+        if(strict) {
+            System.out.println("ERROR: Invalid lab in input file: " + "<" + string + ">" + "\nExiting program...");
+            System.exit(1);
+            return null;
+        }
+        else {
+        	return null;
+        }
+
     }
 
     // getCourseSlot - Returns a slot object contained in the courseSlots arraylist
     // with the same properties as the inputs
     // INPUT: the slot's day and time
     // RETURNS: A slot object from the courseSlots arraylists, if one is found
-    private static Slot getCourseSlot(Day day, LocalTime time) throws Exception {
+    private static Slot getCourseSlot(Day day, LocalTime time){
         for (Slot slot : courseSlots) {
             if (slot.getDay().equals(day) && slot.getStartTime().equals(time)) {
                 return slot;
             }
         }
-        throw new Exception("Invalid course slot in input file! " + day + " " + time);
+        System.out.println("ERROR: Invalid course slot in input file! " + "<" + day + ", " + time + ">" + "\nExiting program...");
+        System.exit(1);
+        return null;
     }
 
     // getLabSlot - Returns a slot object contained in the labSlots arraylist with
     // the same properties as the inputs
     // INPUT: the slot's day and time
     // RETURNS: A slot object from the labSlots arraylists, if one is found
-    private static Slot getLabSlot(Day day, LocalTime time) throws Exception {
+    private static Slot getLabSlot(Day day, LocalTime time) {
         for (Slot slot : labSlots) {
             if (slot.getDay().equals(day) && slot.getStartTime().equals(time)) {
                 return slot;
             }
         }
-        throw new Exception("Invalid lab slot in input file! " + day + " " + time);
+        System.out.println("ERROR: Invalid lab slot in input file! " + "<" + day + ", " + time + ">" + "\nExiting program...");
+        System.exit(1);
+        return null;
     }
 
     // isCourse - Returns if a given input string represents a course
@@ -134,7 +155,7 @@ public class Parser {
     // parseName - Parses input file for the name of the example
     // INPUT: None
     // RETURNS: A string representing the name of the example
-    private static String parseName() throws Exception {
+    private static String parseName() throws Exception{
         Scanner scanner = createScanner();
         String name = "";
         while (scanner.hasNextLine()) {
@@ -144,7 +165,9 @@ public class Parser {
             }
         }
         if (name.equals("")) {
-            throw new Exception("ERROR: No name specified!");
+            System.out.println("ERROR: No name specified\nExiting program...");
+            System.exit(1);
+            return null;
         }
         scanner.close();
         return name;
@@ -166,13 +189,20 @@ public class Parser {
                     lineStr = lineStr.replaceAll("\\s", "");
                     String[] parts = lineStr.split(",");
                     if (parts.length != 4) {
-                        throw new Exception("Invalid course slot in input file!");
+                        System.out.println("ERROR: Course slot with invalid number of parameters: " + "<" + lineStr + ">" + "\nExiting program...");
+                        System.exit(1);
                     }
                     CourseSlot slot = new CourseSlot(getDay(parts[0]),
                             LocalTime.parse(parts[1], DateTimeFormatter.ofPattern("H:m")), Integer.parseInt(parts[2]),
                             Integer.parseInt(parts[3]));
-                    if (ValidateInput.courseSlot(slot))
+                    
+                    if (ValidateInput.courseSlot(slot)) {
                         slots.add(slot);
+                    }
+                    else {
+                    	System.out.println("ERROR: Invalid course slot: " + "<" + slot.getDay() + ", " + slot.getStartTime() + ">" + " Only course slots from the problem description are permitted!\nExiting program...");
+                    	System.exit(1);
+                    }
                     lineStr = scanner.nextLine();
                 }
             }
@@ -197,15 +227,21 @@ public class Parser {
                     lineStr = lineStr.replaceAll("\\s", "");
                     String[] parts = lineStr.split(",");
                     if (parts.length != 4) {
-                        throw new Exception("Invalid lab slot in input file!");
+                        System.out.println("ERROR: Lab slot with invalid number of parameters: " + "<" + lineStr + ">" + "\nExiting program...");
+                        System.exit(1);
                     }
 
                     LabSlot slot = new LabSlot(getDay(parts[0]),
                             LocalTime.parse(parts[1], DateTimeFormatter.ofPattern("H:m")), Integer.parseInt(parts[2]),
                             Integer.parseInt(parts[3]));
 
-                    if (ValidateInput.labSlot(slot))
+                    if (ValidateInput.labSlot(slot)) {
                         slots.add(slot);
+                    }
+                    else {
+                    	System.out.println("ERROR: Invalid lab slot: " + "<" + slot.getDay() + ", " + slot.getStartTime() + ">" + " Only lab slots from the problem description are permitted!\nExiting program...");
+                    	System.exit(1);
+                    }
                     lineStr = scanner.nextLine();
                 }
             }
@@ -230,7 +266,8 @@ public class Parser {
                     lineStr = lineStr.trim().replaceAll(" +", " ");
                     String[] parts = lineStr.split(" ");
                     if (parts.length != 4) {
-                        throw new Exception("Invalid course in input file!");
+                    	System.out.println("ERROR: Course with invalid number of parameters: " + "<" + lineStr + ">" + "\nExiting program...");
+                    	System.exit(1);
                     }
                     slots.add(new Course(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[3])));
                     lineStr = scanner.nextLine();
@@ -258,15 +295,16 @@ public class Parser {
                     String[] parts = lineStr.split(" ");
                     // Lab specific to a lecture section
                     if (parts.length == 6) {
-                        Course course = getCourse(parts[0] + " " + parts[1] + " " + Integer.parseInt(parts[3]));
+                        Course course = getCourse(parts[0] + " " + parts[1] + " " + Integer.parseInt(parts[3]), true);
                         slots.add(new Lab(course, Integer.parseInt(parts[5]), false));
                     }
                     // Lab open to all lecture sections
                     else if (parts.length == 4) {
-                        Course course = getCourse(parts[0] + " " + parts[1] + " " + 1);
+                        Course course = getCourse(parts[0] + " " + parts[1] + " " + 1, true);
                         slots.add(new Lab(course, Integer.parseInt(parts[3]), true));
                     } else {
-                        throw new Exception("Invalid lab in input file!");
+                    	System.out.println("ERROR: Lab with invalid number of parameters: " + "<" + lineStr + ">" + "\nExiting program...");
+                    	System.exit(1);
                     }
                     lineStr = scanner.nextLine();
                 }
@@ -296,7 +334,8 @@ public class Parser {
 
                     // If not exactly two comma-seperated elements were found, invalid entry
                     if (parts.length != 2) {
-                        throw new Exception("Invalid \"not compatible\" or \"pair\" in input file!");
+                    	System.out.println("ERROR: Input line: " + "<" + lineStr + ">" + " is not a tuple of elements!" + "\nExiting program...");
+                    	System.exit(1);
                     }
 
                     ArrayList<String[]> strings = new ArrayList<String[]>();
@@ -312,14 +351,14 @@ public class Parser {
                         if (isCourse(str) == false) {
                             if (str.length == 6) {
                                 tuple[i] = getLab(str[0] + " " + str[1] + " " + Integer.parseInt(str[3]) + " TUT "
-                                        + Integer.parseInt(str[5]));
+                                        + Integer.parseInt(str[5]), false);
                             } else if (str.length == 4) {
-                                tuple[i] = getLab(str[0] + " " + str[1] + " " + 1 + " TUT " + Integer.parseInt(str[3]));
+                                tuple[i] = getLab(str[0] + " " + str[1] + " " + 1 + " TUT " + Integer.parseInt(str[3]), false);
                             }
                         }
                         // Element is a course
                         else if (str.length == 4) {
-                            tuple[i] = getCourse(str[0] + " " + str[1] + " " + Integer.parseInt(str[3]));
+                            tuple[i] = getCourse(str[0] + " " + str[1] + " " + Integer.parseInt(str[3]), false);
                         }
                     }
                     slots.add(tuple);
@@ -353,7 +392,8 @@ public class Parser {
 
                         // If not exactly three comma-seperated values were found, invalid entry
                         if (parts.length != 3) {
-                            throw new Exception("Invalid unwanted or partial assignment in input file!");
+                        	System.out.println("ERROR: Input line: " + "<" + lineStr + ">" + " is not a comma-separated triple!" + "\nExiting program...");
+                        	System.exit(1);
                         }
 
                         Day day = getDay(parts[1]);
@@ -364,19 +404,21 @@ public class Parser {
                         // Element is a course
                         if (isCourse(elementStr)) {
                             element = getCourse(
-                                    elementStr[0] + " " + elementStr[1] + " " + Integer.parseInt(elementStr[3]));
+                                    elementStr[0] + " " + elementStr[1] + " " + Integer.parseInt(elementStr[3]), true);
                             slots.add(new Assignment(element, getCourseSlot(day, time)));
                         }
                         // Element is a lab
                         else {
                             if (elementStr.length == 6) {
                                 element = getLab(elementStr[0] + " " + elementStr[1] + " "
-                                        + Integer.parseInt(elementStr[3]) + " TUT " + Integer.parseInt(elementStr[5]));
+                                        + Integer.parseInt(elementStr[3]) + " TUT " + Integer.parseInt(elementStr[5]), true);
                             } else if (elementStr.length == 4) {
                                 element = getLab(elementStr[0] + " " + elementStr[1] + " " + 1 + " TUT "
-                                        + Integer.parseInt(elementStr[3]));
+                                        + Integer.parseInt(elementStr[3]), true);
                             } else {
-                                throw new Exception("Invalid unwanted or partial assignment in input file!");
+                            	System.out.println("ERROR: Input line: " + "<" + lineStr + ">" + " is not a comma-separated triple!" + "\nExiting program...");
+                            	System.exit(1);
+                            	return null;
                             }
                             slots.add(new Assignment(element, getLabSlot(day, time)));
                         }
@@ -412,9 +454,10 @@ public class Parser {
                     lineStr = lineStr.trim().replaceAll(" +", " ");
                     String[] parts = lineStr.split(", ");
 
-                    // If not exactly three comma-seperated values were found, invalid entry
+                    // If not exactly four comma-seperated values were found, invalid entry
                     if (parts.length != 4) {
-                        throw new Exception("Invalid preference in input file!");
+                    	System.out.println("ERROR: Input line: " + "<" + lineStr + ">" + " is not 4 comma-separated values!" + "\nExiting program...");
+                    	System.exit(1);
                     }
 
                     Day day = getDay(parts[0]);
@@ -425,31 +468,35 @@ public class Parser {
                     // Element is a course
                     if (isCourse(elementStr)) {
                         element = getCourse(
-                                elementStr[0] + " " + elementStr[1] + " " + Integer.parseInt(elementStr[3]));
-                        try {
-                            slots.add(new Preference(element, getCourseSlot(day, time), Integer.parseInt(parts[3])));
-                        } catch (Exception e) {
-                            System.out.println("WARNING: Preference with invalid course slot: " + day + " at " + time
-                                    + " will not be considered!");
+                                elementStr[0] + " " + elementStr[1] + " " + Integer.parseInt(elementStr[3]), false);
+                        if (getCourseSlot(day, time) != null && element != null) {
+                        	slots.add(new Preference(element, getCourseSlot(day, time), Integer.parseInt(parts[3])));
+                        }
+                        else {
+                        	System.out.println("WARNING: Invalid preference will not be considered: " + "<" + lineStr + ">");
                         }
                     }
                     // Element is a lab
                     else {
                         if (elementStr.length == 6) {
                             element = getLab(elementStr[0] + " " + elementStr[1] + " " + Integer.parseInt(elementStr[3])
-                                    + " TUT " + Integer.parseInt(elementStr[5]));
+                                    + " TUT " + Integer.parseInt(elementStr[5]), false);
                         } else if (elementStr.length == 4) {
                             element = getLab(elementStr[0] + " " + elementStr[1] + " " + 1 + " TUT "
-                                    + Integer.parseInt(elementStr[3]));
+                                    + Integer.parseInt(elementStr[3]), false);
                         } else {
-                            throw new Exception("Invalid preference in input file!");
+                        	System.out.println("ERROR: Input line: " + "<" + lineStr + ">" + " is not 4 comma-separated values!" + "\nExiting program...");
+                        	System.exit(1);
+                        	return null;
                         }
-                        try {
-                            slots.add(new Preference(element, getLabSlot(day, time), Integer.parseInt(parts[3])));
-                        } catch (Exception e) {
-                            System.out.println("WARNING: Preference with invalid lab slot: " + day + " at " + time
-                                    + " will not be considered!");
+                        
+                        if (getLabSlot(day, time) != null && element != null) {
+                        	slots.add(new Preference(element, getLabSlot(day, time), Integer.parseInt(parts[3])));
                         }
+                        else {
+                        	System.out.println("WARNING: Invalid preference will not be considered: " + "<" + lineStr + ">");
+                        }
+                    
                     }
 
                     lineStr = scanner.nextLine();
@@ -466,6 +513,8 @@ public class Parser {
     // contain valid input for the system
     // RETURNS: None
     public static void parseFile(String path) throws Exception {
+    	System.out.println("-----------------------------------------------");
+    	System.out.println("Beginning input file parsing...");
         inputFile = new File(path);
         name = parseName();
         courseSlots = parseCourseSlots();
@@ -477,6 +526,8 @@ public class Parser {
         unwanted = parseUnwantedOrPartialAssignments("Unwanted:");
         partialAssignments = parseUnwantedOrPartialAssignments("Partial assignments:");
         preferences = parsePreferences();
+        System.out.println("Input file parsing complete!");
+        System.out.println("-----------------------------------------------");
 
     }
 
@@ -545,13 +596,17 @@ public class Parser {
         return incompatibles;
     }
 
+    
+    
+    //
+    //DEBUG/DISPLAY METHODS
+    //
+    
     // printParsedInput - Loosely echos the input file using the data stored by
     // Parser
     // INPUT: None
     // RETURNS: None
     public static void printParsedInput() {
-        System.out.println("\n-----------------------------------------------");
-
         // Name
         System.out.println("Name: ");
         System.out.println(getName());
@@ -610,6 +665,6 @@ public class Parser {
             System.out.println(e.getElement().getName() + ", " + e.getSlot().getInfo());
         }
 
-        System.out.println("-----------------------------------------------\n");
+        System.out.println("-----------------------------------------------");
     }
 }

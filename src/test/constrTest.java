@@ -1,7 +1,7 @@
-//package test;
+package test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class constrTest {
 	private Slot mon900 = new CourseSlot(Day.MO, LocalTime.parse("09:00"), 3, 2);
 	private Slot mon1020 = new CourseSlot(Day.MO, LocalTime.parse("10:20"), 5, 1);
 	private Slot mon1120 = new CourseSlot(Day.MO, LocalTime.parse("11:20"), 5, 1);
-	private Slot tues900 = new CourseSlot(Day.TU, LocalTime.parse("09:00"), 2, 1);
+	private Slot tues1400 = new CourseSlot(Day.TU, LocalTime.parse("14:00"), 2, 1);
 	private Slot tues930 = new CourseSlot(Day.TU, LocalTime.parse("09:30"), 3, 1);
 	private Slot mon1900 = new CourseSlot(Day.MO, LocalTime.parse("19:00"), 2, 1);
 	private Slot tues1100 = new CourseSlot(Day.TU, LocalTime.parse("11:00"), 2, 1);
@@ -74,7 +74,7 @@ public class constrTest {
     @BeforeEach
     public void setup() {
     	try {
-			Parser.parseFile("inputExample.txt");
+			Parser.parseFile("test_files/Inputs/junitTestExample.txt");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -86,7 +86,7 @@ public class constrTest {
     	mon800 = Parser.getCourseSlots().get(0);
     	mon900 = Parser.getCourseSlots().get(1);
     	tues930 = Parser.getCourseSlots().get(2);
-    	tues900 = Parser.getCourseSlots().get(3);
+    	tues1400 = Parser.getCourseSlots().get(3);
     	mon1900 = Parser.getCourseSlots().get(4);
     	
     	//Set partial assignments
@@ -97,7 +97,7 @@ public class constrTest {
 
     @Test
     public void correctCourseSlot() {
-    	assignments.add(new Assignment(cpsc213_1, tues900));
+    	assignments.add(new Assignment(cpsc213_1, tues1400));
     	assertTrue(constr.checkConstraints(assignments));
     }
     
@@ -184,9 +184,16 @@ public class constrTest {
     }
     
     @Test
-    public void meetsTuesdayCourseRestriction() {
+    public void meetsTuesdayCourseRestriction1() {
     	Parser.getCourseSlots().add((CourseSlot) tues1100);
     	assignments.add(new Assignment(cpsc433_1, mon900));
+    	assertTrue(constr.checkConstraints(assignments));
+    }
+    
+    @Test
+    public void meetsTuesdayCourseRestriction2() {
+    	Parser.getCourseSlots().add((CourseSlot) tues1100);
+    	assignments.add(new Assignment(cpsc433_1, tues930));
     	assertTrue(constr.checkConstraints(assignments));
     }
     

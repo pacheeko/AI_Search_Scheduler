@@ -14,26 +14,51 @@ import problem.*;
 
 class Start {
 	
-	public final static long ONE_MINUTE = 60000000000L;
+	public final static long ONE_MINUTE = 60000000000L;//OL
 	public final static long TWO_MINUTES = ONE_MINUTE*2;
 	public final static long FIVE_MINUTES = ONE_MINUTE*5;
 	
-    public static void main(String args[]) throws Exception {
-    	//Check if file path was passed
-    	if (args.length == 0) {
-    		throw new FileNotFoundException("Please provide the path of a valid input file.");
-    	}
+    public static void main(String args[]) {    	
     	if (args.length < 5) {
-    		throw new IllegalArgumentException("Please provide 4 integer values after the input file, representing the weights for the soft constraints: minfilled pref pair secdiff");
+			System.out.println("Missing input file and evaluation weights.");
+    		printUsage();
+			return;
     	}
+
+		String file = args[0];
+
+		int min_filled_weight;
+		int pre_filled_weight;
+		int pair_weight;
+		int sec_diff_weight;
+
+		try {
+			min_filled_weight = Integer.valueOf(args[1]);
+			pre_filled_weight = Integer.valueOf(args[2]);
+			pair_weight = Integer.valueOf(args[3]);
+			sec_diff_weight = Integer.valueOf(args[4]);
+
+		} catch (Exception e) {
+			System.out.println("Evaluation weights but be valid numbers.");
+			return;
+		}
+
+
     	//Instantiate Parser, parse file passed in arg[0]
-    	Parser.parseFile(args[0]);
+		try {
+			Parser.parseFile(file);
+		} catch (Exception e) {
+			System.out.println("Errors parsing file " + file + ".");
+			return;
+		}		
+
     	
+		Parser.printParsedInput();
     	//Set the weights of each soft constraint in the static Env class
-    	Env.setMinfilledWeight(Integer.valueOf(args[1]));
-    	Env.setPrefWeight(Integer.valueOf(args[2]));
-    	Env.setPairWeight(Integer.valueOf(args[3]));
-    	Env.setSecdiffWeight(Integer.valueOf(args[4]));
+    	Env.setMinfilledWeight(min_filled_weight);
+    	Env.setPrefWeight(pre_filled_weight);
+    	Env.setPairWeight(pair_weight);
+    	Env.setSecdiffWeight(sec_diff_weight);
     	
     	ProblemState initialState = initialize();
     	
@@ -42,7 +67,11 @@ class Start {
     	printAssignments(solution);
     }
     
-    public static ProblemState initialize() {
+    private static void printUsage() {
+		System.out.println("Usage: command  file_path minfilled pref pair secdiff");
+	}
+
+	public static ProblemState initialize() {
     	//Set up the initial problem with the elements to add
     	Problem initialProblem = new Problem();
     	Parser.getCourses().forEach((course) ->
@@ -50,6 +79,13 @@ class Start {
     	Parser.getLabs().forEach((lab) ->
     		initialProblem.addElement(lab));
     	
+    	for (Assignment assignment : Parser.getPartialAssignments()) {
+			if (!initialProblem.assign(assignment.getElement(), assignment.getSlot())) {
+				System.out.println("Failed to assign partial assignments");
+				System.exit(1);
+			}
+    	}
+    		
     	return new ProblemState(initialProblem, null);
     }
     
@@ -79,16 +115,14 @@ class Start {
     		currentState = control.getSelectedLeaf();
     		//If the solution is complete and it has a better eval value than the current best state,
     		//then update the best state to the current state
-    		if ((!(currentState == null)) && (currentState.getSol())) {
-    			if (currentState.getEval() < Env.getMinPenalty()) {
-    				bestState = currentState;
-    				Env.setMinPenalty(currentState.getEval());
-    			}
+    		if (!(currentState == null)) {
+    			bestState = currentState;
     		}
     		
     	}
     	if (bestState == null) {
-    		throw new NullPointerException("No solution found");
+    		System.out.println("No solution found.");
+    		System.exit(1);
     	}
     	return bestState;
     }   
@@ -101,13 +135,23 @@ class Start {
     	for (Assignment a : assignments) {
     		if (a.getElement() instanceof Course) {
     			Course course = (Course) a.getElement();
-    			//TODO: Remove lecture section for courses that only have 1 lab or tutorial section
-        		System.out.println(course.getName() + " " + course.getNumber() + " LEC " + course.getSection() + "\t:" + a.getSlot().getDay() + "," + a.getSlot().getStartTime());
+    			if (course.getSection() == 0) {
+    				System.out.println(course.getName() + "\t:" + a.getSlot().getDay() + "," + a.getSlot().getStartTime());
+    			}
+    			else {
+    				System.out.println(course.getName() + "\t:" + a.getSlot().getDay() + "," + a.getSlot().getStartTime());
+    			}
+        		
     		}
     		else {
     			Lab lab = (Lab) a.getElement();
-    			//TODO: Remove lecture section for courses that only have 1 lab or tutorial section
-        		System.out.println(lab.getCourse().getName() + " " + lab.getCourse().getNumber() + " LEC " + lab.getCourse().getSection() + " " + lab.getName() + " " + lab.getNumber() + "\t:" + a.getSlot().getDay() + "," + a.getSlot().getStartTime());
+    			if (lab.getCourse().getSection() == 0) {
+    				System.out.println(lab.getName() + "\t:" + a.getSlot().getDay() + "," + a.getSlot().getStartTime());
+    			}
+    			else {
+    				System.out.println(lab.getName() + "\t:" + a.getSlot().getDay() + "," + a.getSlot().getStartTime());
+    			}
+        		
     		}
 
     	}
@@ -118,7 +162,7 @@ class Start {
     // directly under the lecture section it belongs to, and place all labs for each section
     // before the next section.
     public static Comparator<Assignment> assignmentCompare = new Comparator<Assignment>() {
-    	
+		//Returns 1 if a1 should be placed before a2, -1 otherwise
     	public int compare (Assignment a1, Assignment a2) {
     		int cmp = a1.getElement().getDepartment().compareTo(a2.getElement().getDepartment());
     		
@@ -134,18 +178,18 @@ class Start {
     			// If they are the same course, sort by section number
     			if (c1.getNumber() == c2.getNumber()) {
     				if (c1.getSection() < c2.getSection()) {
-    					return 1;
+    					return -1;
     				}
     				else {
-    					return -1;
+    					return 1;
     				}
     			}
     			//Place the lower course number first
     			else if (c1.getNumber() < c2.getNumber()) {
-    				return 1;
+    				return -1;
     			}
     			else {
-    				return -1;
+    				return 1;
     			}
     		}
     		//If both assignments are labs
@@ -158,31 +202,31 @@ class Start {
     					//If they are part of the same section, sort by lab number
     					if (l1.getNumber() == l2.getNumber()) {
     						if (l1.getName().compareTo("TUT") == 0) {
-    							return -1;
+    							return 1;
     						}
     						else {
-    							return 1;
+    							return -1;
     						}
     					}
     					else if (l1.getNumber() < l2.getNumber()) {
-    						return 1;
+    						return -1;
     					}
     					else {
-    						return -1;
+    						return 1;
     					}
     				}
     				else if (l1.getCourse().getSection() < l2.getCourse().getSection()) {
-    					return 1;
+    					return -1;
     				}
     				else {
-    					return -1;
+    					return 1;
     				}
     			}
     			else if (l1.getCourse().getNumber() < l1.getCourse().getNumber()){
-    				return 1;
+    				return -1;
     			}
     			else {
-    				return -1;
+    				return 1;
     			}
     		}
     		//If a1 is a course and a2 is a lab
@@ -201,10 +245,10 @@ class Start {
     				
     			}
     			else if (c1.getNumber() < l2.getCourse().getNumber()) {
-    				return 1;
+    				return -1;
     			}
     			else {
-    				return -1;
+    				return 1;
     			}
     		}
     		//If a2 is a course and a1 is a lab
@@ -212,13 +256,18 @@ class Start {
     			Lab l1 = (Lab) a1.getElement();
     			Course c2 = (Course) a2.getElement();
     			if (l1.getCourse().getNumber() == c2.getNumber()) {
-    				
+    				if (l1.getCourse().getSection() < c2.getSection()) {
+    					return -1;
+    				}
+    				else {
+    					return 1;
+    				}
     			}
     			else if (l1.getCourse().getNumber() < c2.getNumber()) {
-    				return 1;
+    				return -1;
     			}
     			else {
-    				return -1;
+    				return 1;
     			}
     		}
 			System.out.println("Error comparing assignments");

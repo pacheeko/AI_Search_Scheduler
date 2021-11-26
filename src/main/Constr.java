@@ -147,22 +147,15 @@ public class Constr {
     private boolean failsTuesdayCourseRestriction(Assignment a) {
     	if (a.getElement() instanceof Lab) return false;
     	
+    	Course course = (Course) a.getElement();  	
+    	if (!course.getDepartment().equals("CPSC")) return false;
+    	
         Slot slot = a.getSlot();
+        if (slot.getDay() != Day.TU) return false;
 
-        if (slot.getDay() != Day.TU)
-            return false;
-
-        LocalTime ten59 = LocalTime.of(10, 59);
-        LocalTime twelve31 = LocalTime.of(12, 31);
-
-        boolean start_between = slot.getStartTime().isAfter(ten59) && slot.getStartTime().isBefore(twelve31);
-
-        if (start_between)
-            return true;
-
-        boolean end_between = slot.getEndTime().isAfter(ten59) && slot.getEndTime().isBefore(twelve31);
-
-        return end_between;
+        LocalTime eleven = LocalTime.of(11, 00);
+        return slot.getStartTime().compareTo(eleven) == 0;
+        
     }
 
     private boolean failsPlacementOf813And913(Assignment assignment) {

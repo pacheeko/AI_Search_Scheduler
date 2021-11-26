@@ -14,30 +14,51 @@ import problem.*;
 
 class Start {
 	
-	public final static long ONE_MINUTE = 60000000000L;
+	public final static long ONE_MINUTE = 60000000000L;//OL
 	public final static long TWO_MINUTES = ONE_MINUTE*2;
 	public final static long FIVE_MINUTES = ONE_MINUTE*5;
 	
-    public static void main(String args[]) throws Exception {
-    	//Check if file path was passed
-    	
-    	//System.out.println(System.getProperty("user.dir"));
-    	
-    	if (args.length == 0) {
-    		throw new FileNotFoundException("Please provide the path of a valid input file.");
-    	}
+    public static void main(String args[]) {    	
     	if (args.length < 5) {
-    		throw new IllegalArgumentException("Please provide 4 integer values after the input file, representing the weights for the soft constraints: minfilled pref pair secdiff");
+			System.out.println("Missing input file and evaluation weights.");
+    		printUsage();
+			return;
     	}
+
+		String file = args[0];
+
+		int min_filled_weight;
+		int pre_filled_weight;
+		int pair_weight;
+		int sec_diff_weight;
+
+		try {
+			min_filled_weight = Integer.valueOf(args[1]);
+			pre_filled_weight = Integer.valueOf(args[2]);
+			pair_weight = Integer.valueOf(args[3]);
+			sec_diff_weight = Integer.valueOf(args[4]);
+
+		} catch (Exception e) {
+			System.out.println("Evaluation weights but be valid numbers.");
+			return;
+		}
+
+
     	//Instantiate Parser, parse file passed in arg[0]
-    	Parser.parseFile(args[0]);
-    	Parser.printParsedInput();
+		try {
+			Parser.parseFile(file);
+		} catch (Exception e) {
+			System.out.println("Errors parsing file " + file + ".");
+			return;
+		}		
+
     	
+		Parser.printParsedInput();
     	//Set the weights of each soft constraint in the static Env class
-    	Env.setMinfilledWeight(Integer.valueOf(args[1]));
-    	Env.setPrefWeight(Integer.valueOf(args[2]));
-    	Env.setPairWeight(Integer.valueOf(args[3]));
-    	Env.setSecdiffWeight(Integer.valueOf(args[4]));
+    	Env.setMinfilledWeight(min_filled_weight);
+    	Env.setPrefWeight(pre_filled_weight);
+    	Env.setPairWeight(pair_weight);
+    	Env.setSecdiffWeight(sec_diff_weight);
     	
     	ProblemState initialState = initialize();
     	
@@ -46,7 +67,11 @@ class Start {
     	printAssignments(solution);
     }
     
-    public static ProblemState initialize() {
+    private static void printUsage() {
+		System.out.println("Usage: command  file_path minfilled pref pair secdiff");
+	}
+
+	public static ProblemState initialize() {
     	//Set up the initial problem with the elements to add
     	Problem initialProblem = new Problem();
     	Parser.getCourses().forEach((course) ->

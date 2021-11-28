@@ -2,6 +2,7 @@ package control;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.TreeSet;
 
 import main.Eval;
 import model.SearchModel;
@@ -16,6 +17,8 @@ class LeafComparator implements Comparator<ProblemState> {
 
     @Override
     public int compare(ProblemState node1, ProblemState node2) {
+        if (node1.equals(node2)) 
+            return 0;
         if (!node1.getChildren().isEmpty() && !node2.getChildren().isEmpty())
             return 0;
         if (!node1.getChildren().isEmpty())
@@ -31,7 +34,7 @@ class LeafComparator implements Comparator<ProblemState> {
 public class Control {
 
     ProblemState root;
-    ArrayList<ProblemState> leafs;
+    TreeSet<ProblemState> leafs;
     ProblemState current_leaf;
     LeafComparator leaf_comparer;
     ArrayList<Slot> slots;
@@ -41,10 +44,10 @@ public class Control {
     public Control(ProblemState root, ArrayList<Slot> slots) {
         this.slots = slots;
         this.root = root;
-        this.leafs = new ArrayList<ProblemState>();
-        this.leafs.add(root);
-        this.current_leaf = leafs.get(0);
         this.leaf_comparer = new LeafComparator();
+        this.leafs = new TreeSet<ProblemState>(this.leaf_comparer);
+        this.leafs.add(root);
+        this.current_leaf = leafs.first();        
     }
 
     public void next() {
@@ -56,7 +59,7 @@ public class Control {
     public void fleaf() {
         if (leafs.isEmpty())
             return;
-        current_leaf = leafs.get(0);
+        current_leaf = leafs.first();
     }
 
     public void ftrans() {
@@ -76,7 +79,7 @@ public class Control {
     	}
 
     	//Check if the current leaf should be discarded, make current_leaf null if so
-        if (current_leaf.getSol() || current_leaf.discardLeaf()) {
+        if (current_leaf.getSol() || current_leaf.discardLeaf()) {            
         	if(!leafs.remove(current_leaf)) {
         		System.out.println("Failed to remove leaf from leafs");
         		System.exit(1);
@@ -113,7 +116,6 @@ public class Control {
 
         leafs.remove(current_leaf);
         current_leaf = null;
-        leafs.sort(leaf_comparer);
         return;
     }
 
@@ -125,7 +127,7 @@ public class Control {
         return root;
     }
 
-    public ArrayList<ProblemState> getLeafs() {
+    public TreeSet<ProblemState> getLeafs() {
         return leafs;
     }
 

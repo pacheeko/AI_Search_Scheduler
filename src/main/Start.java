@@ -1,12 +1,8 @@
 package main;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
-
-import javax.lang.model.util.Elements;
+import java.util.Scanner;
 
 import control.Control;
 import problem.*;
@@ -102,12 +98,13 @@ class Start {
 		
     	long StartTime = System.nanoTime();
 		long running_time = TWO_MINUTES;
-		System.out.print("Running for " + (running_time/ONE_MINUTE) + " minute");
+		System.out.print("Running for a max of " + (running_time/ONE_MINUTE) + " minutes");
 		if(running_time != ONE_MINUTE){
 			System.out.print("s");
 		}
 		System.out.println("...");
-    	while ((System.nanoTime() - StartTime < running_time) && (!control.getLeafs().isEmpty())) {
+		Scanner scanner = new Scanner(System.in);
+    	while (!scanner.hasNext() && (System.nanoTime() - StartTime < running_time) && (!control.getLeafs().isEmpty())) {
     		//Select the best leaf to work on
     		control.fleaf();
     		//Decide what to do with the current leaf
@@ -118,8 +115,8 @@ class Start {
     		if (!(currentState == null)) {
     			bestState = currentState;
     		}
-    		
     	}
+		scanner.close();
     	if (bestState == null) {
     		System.out.println("No solution found.");
     		System.exit(1);

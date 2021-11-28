@@ -102,13 +102,14 @@ class Start {
 		if(running_time != ONE_MINUTE){
 			System.out.print("s");
 		}
-		System.out.println("...");
-		Scanner scanner = new Scanner(System.in);
-    	while (!scanner.hasNext() && (System.nanoTime() - StartTime < running_time) && (!control.getLeafs().isEmpty())) {
+		System.out.println("...");		
+    	while ((System.nanoTime() - StartTime < running_time) && (!control.getLeafs().isEmpty())) {
     		//Select the best leaf to work on
     		control.fleaf();
+
     		//Decide what to do with the current leaf
     		control.ftrans();
+
     		currentState = control.getSelectedLeaf();
     		//If the solution is complete and it has a better eval value than the current best state,
     		//then update the best state to the current state
@@ -116,7 +117,7 @@ class Start {
     			bestState = currentState;
     		}
     	}
-		scanner.close();
+		
     	if (bestState == null) {
     		System.out.println("No solution found.");
     		System.exit(1);

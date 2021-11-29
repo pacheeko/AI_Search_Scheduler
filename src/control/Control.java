@@ -47,19 +47,13 @@ public class Control {
         this.leaf_comparer = new LeafComparator();
         this.leafs = new TreeSet<ProblemState>(this.leaf_comparer);
         this.leafs.add(root);
-        this.current_leaf = leafs.first();        
-    }
-
-    public void next() {
-        fleaf();
-        if (current_leaf == null) return;
-        ftrans();        
+        this.current_leaf = null;       
     }
 
     public void fleaf() {
         if (leafs.isEmpty())
             return;
-        current_leaf = leafs.first();
+        current_leaf = leafs.pollFirst();
     }
 
     public void ftrans() {
@@ -79,22 +73,16 @@ public class Control {
     	}
 
     	//Check if the current leaf should be discarded, make current_leaf null if so
-        if (current_leaf.getSol() || current_leaf.discardLeaf()) {            
-        	if(!leafs.remove(current_leaf)) {
-        		System.out.println("Failed to remove leaf from leafs");
-        		System.exit(1);
-        	}
+        if (current_leaf.getSol() || current_leaf.discardLeaf()) {               
         	current_leaf = null;
             return;
         }
         
         if (current_leaf.getProblem().getElements().isEmpty()) {
         	if (current_leaf.isBestSolution()) {
-        		leafs.remove(current_leaf);
         		return;
         	}
         	else {
-        		leafs.remove(current_leaf);
         		current_leaf = null;
         		return;
         	}
@@ -103,7 +91,6 @@ public class Control {
         ArrayList<Problem> subProblems = SearchModel.Div(current_leaf.getProblem(), slots);
         //If the node cannot be divided into more leaves, discard it
         if (subProblems.isEmpty()) {
-        	leafs.remove(current_leaf);
         	current_leaf = null;
             return;
         }
@@ -113,8 +100,7 @@ public class Control {
             new_leaf.setEval(eval.partialEvaluate(new_leaf.getProblem().getAssignments(), new_leaf.getParent().getEval()));
             leafs.add(new_leaf);
         }
-
-        leafs.remove(current_leaf);
+        
         current_leaf = null;
         return;
     }

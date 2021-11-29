@@ -52,7 +52,7 @@ public class ControlTest {
     void populateSlots() {
         slots = new ArrayList<Slot>();
         populateCourseSlots();
-        populateLabSlots();        
+        populateLabSlots();
     }
 
     private void populateLabSlots() {
@@ -68,28 +68,31 @@ public class ControlTest {
     public void setup() {
         populateElements();
         populateSlots();
-        
+
         Problem problem = new Problem(elements);
         ProblemState root = new ProblemState(problem, null);
 
-        control = new Control(root, slots);        
+        control = new Control(root, slots);
     }
 
     @Test
-    public void testInitial() {           
+    public void testInitial() {
         assertEquals(1, control.getLeafs().size());
     }
 
     @Test
     public void testAfterOneRun() {
-        control.next();        
+        control.fleaf();
+        control.ftrans();
         assertEquals(control.getRoot().getChildren(), control.getLeafs());
     }
 
     @Test
     public void testAfterTwoRuns() {
-        control.next();        
-        control.next();
+        control.fleaf();
+        control.ftrans();
+        control.fleaf();
+        control.ftrans();
         assertEquals(control.getRoot().getChildren(), control.getLeafs());
     }
 }

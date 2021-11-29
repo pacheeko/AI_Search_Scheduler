@@ -20,9 +20,8 @@ public class ProblemState {
 		this.problem = problem;
 		this.parent = parent;
 		this.children = new ArrayList<ProblemState>();
-
 		if (parent == null) return;
-
+		this.myConstr = parent.getConstr();
 		parent.addChild(this);
 	}
 	
@@ -107,5 +106,41 @@ public class ProblemState {
 		this.eval = eval;
 	}
 	
+	public Constr getConstr() {
+		return myConstr;
+	}
+	
+	public Assignment getMostRecentAssignment() {
+		if (!this.getProblem().assignments.isEmpty()) {
+			return this.getProblem().getAssignments().get(this.getProblem().getAssignments().size()-1);
+		}
+		return null;
+	}
+	
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (!(obj instanceof ProblemState)) {
+			return false;
+		}
+		ProblemState state = (ProblemState) obj;
+		if (this.getProblem().getAssignments().size() == state.getProblem().getAssignments().size()) {
+			if (this.getProblem().getElements().size() == state.getProblem().getElements().size()) {
+				for (Assignment assign : this.getProblem().getAssignments()) {
+					if (!state.getProblem().getAssignments().contains(assign)) {
+						return false;
+					}
+				}
+				for (Element element : this.getProblem().getElements()) {
+					if (!state.getProblem().getElements().contains(element)) {
+						return false;
+					}
+				}
+				return true;
+			}
+		}
+		return false;
+	}
 	
 }

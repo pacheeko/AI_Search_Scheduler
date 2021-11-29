@@ -98,7 +98,7 @@ class Start {
 		
     	long StartTime = System.nanoTime();
 		long running_time = TWO_MINUTES;
-		System.out.print("Running for a max of " + (running_time/ONE_MINUTE) + " minutes");
+		System.out.print("Running for a max of " + (running_time/ONE_MINUTE) + " minute");
 		if(running_time != ONE_MINUTE){
 			System.out.print("s");
 		}

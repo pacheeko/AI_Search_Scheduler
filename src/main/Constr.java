@@ -91,12 +91,14 @@ public class Constr {
         Slot slot = assignment.getSlot();
         if (slot instanceof CourseSlot) {
             incrementElementCount(courses_in_slot, slot);
-            if (courses_in_slot.get(slot) > slot.getMax())
+            if (courses_in_slot.get(slot) > slot.getMax()) {
                 return true;
+            }
         } else {
             incrementElementCount(labs_in_slot, slot);
-            if (labs_in_slot.get(slot) > slot.getMax())
+            if (labs_in_slot.get(slot) > slot.getMax()) {
                 return true;
+            }
         }
         return false;
     }
@@ -104,8 +106,9 @@ public class Constr {
     private void incrementElementCount(Hashtable<Slot, Integer> elements_in_slot, Slot slot) {
         if (elements_in_slot.containsKey(slot))
             elements_in_slot.put(slot, elements_in_slot.get(slot) + 1);
-        else
-            elements_in_slot.put(slot, 1);
+        else {
+        	elements_in_slot.put(slot, 1);
+        }
     }
 
     private boolean failsUnwanted(Assignment assignment) {

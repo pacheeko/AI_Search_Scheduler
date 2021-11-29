@@ -17,16 +17,27 @@ class LeafComparator implements Comparator<ProblemState> {
 
     @Override
     public int compare(ProblemState node1, ProblemState node2) {
-        if (node1.equals(node2)) 
+        if (node1.equals(node2)) {
+        	return 0;
+        }
+        
+        if (!node1.getChildren().isEmpty() && !node2.getChildren().isEmpty()) {
             return 0;
-        if (!node1.getChildren().isEmpty() && !node2.getChildren().isEmpty())
-            return 0;
-        if (!node1.getChildren().isEmpty())
+        }
+        
+        if (!node1.getChildren().isEmpty()) {
             return 1;
-        if (!node2.getChildren().isEmpty())
+        }
+        if (!node2.getChildren().isEmpty()) {
             return -1;   
+        }
 
-        return Integer.compare(node1.getEval(), node2.getEval());        
+        int result = Integer.compare(node1.getEval(), node2.getEval());
+        
+        if (result == 0) {
+        	return 1;
+        }
+        return result;
     }
 
 }
@@ -68,21 +79,26 @@ public class Control {
         	}
         	else {
         		Lab lab = (Lab) currAssign.getElement();
-        		System.out.println("curr lab: " + lab.getDepartment() + " " + lab.getNumber());
+        		System.out.println("curr lab: " + lab.getDepartment() + " " + lab.getCourse().getNumber() + " " + lab.getNumber());
         	}
     	}
 
     	//Check if the current leaf should be discarded, make current_leaf null if so
-        if (current_leaf.getSol() || current_leaf.discardLeaf()) {               
+        if (current_leaf.getSol() || current_leaf.discardLeaf()) {
+        	if (leafs.remove(current_leaf) == false) {;
+        		System.out.println("Failed to remove leaf");
+        	}
         	current_leaf = null;
             return;
         }
         
         if (current_leaf.getProblem().getElements().isEmpty()) {
         	if (current_leaf.isBestSolution()) {
+        		leafs.remove(current_leaf);
         		return;
         	}
         	else {
+        		leafs.remove(current_leaf);
         		current_leaf = null;
         		return;
         	}
@@ -91,6 +107,7 @@ public class Control {
         ArrayList<Problem> subProblems = SearchModel.Div(current_leaf.getProblem(), slots);
         //If the node cannot be divided into more leaves, discard it
         if (subProblems.isEmpty()) {
+        	leafs.remove(current_leaf);
         	current_leaf = null;
             return;
         }
@@ -100,7 +117,7 @@ public class Control {
             new_leaf.setEval(eval.partialEvaluate(new_leaf.getProblem().getAssignments(), new_leaf.getParent().getEval()));
             leafs.add(new_leaf);
         }
-        
+        leafs.remove(current_leaf);
         current_leaf = null;
         return;
     }

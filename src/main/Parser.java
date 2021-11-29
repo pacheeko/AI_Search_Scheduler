@@ -106,30 +106,40 @@ public class Parser {
     // with the same properties as the inputs
     // INPUT: the slot's day and time
     // RETURNS: A slot object from the courseSlots arraylists, if one is found
-    private static Slot getCourseSlot(Day day, LocalTime time){
+    private static Slot getCourseSlot(Day day, LocalTime time, boolean strict){
         for (Slot slot : courseSlots) {
             if (slot.getDay().equals(day) && slot.getStartTime().equals(time)) {
                 return slot;
             }
         }
-        System.out.println("ERROR: Invalid course slot in input file! " + "<" + day + ", " + time + ">" + "\nExiting program...");
-        System.exit(1);
-        return null;
+        if (strict) {
+		    System.out.println("ERROR: Invalid course slot in input file! " + "<" + day + ", " + time + ">" + "\nExiting program...");
+		    System.exit(1);
+		    return null;
+        }
+        else {
+        	return null;
+        }
     }
 
     // getLabSlot - Returns a slot object contained in the labSlots arraylist with
     // the same properties as the inputs
     // INPUT: the slot's day and time
     // RETURNS: A slot object from the labSlots arraylists, if one is found
-    private static Slot getLabSlot(Day day, LocalTime time) {
+    private static Slot getLabSlot(Day day, LocalTime time, boolean strict) {
         for (Slot slot : labSlots) {
             if (slot.getDay().equals(day) && slot.getStartTime().equals(time)) {
                 return slot;
             }
         }
-        System.out.println("ERROR: Invalid lab slot in input file! " + "<" + day + ", " + time + ">" + "\nExiting program...");
-        System.exit(1);
-        return null;
+        if(strict) {
+	        System.out.println("ERROR: Invalid lab slot in input file! " + "<" + day + ", " + time + ">" + "\nExiting program...");
+	        System.exit(1);
+	        return null;
+        }
+        else {
+        	return null;
+        }
     }
 
     // isCourse - Returns if a given input string represents a course
@@ -405,7 +415,7 @@ public class Parser {
                         if (isCourse(elementStr)) {
                             element = getCourse(
                                     elementStr[0] + " " + elementStr[1] + " " + Integer.parseInt(elementStr[3]), true);
-                            slots.add(new Assignment(element, getCourseSlot(day, time)));
+                            slots.add(new Assignment(element, getCourseSlot(day, time, true)));
                         }
                         // Element is a lab
                         else {
@@ -420,7 +430,7 @@ public class Parser {
                             	System.exit(1);
                             	return null;
                             }
-                            slots.add(new Assignment(element, getLabSlot(day, time)));
+                            slots.add(new Assignment(element, getLabSlot(day, time, true)));
                         }
 
                         if (scanner.hasNextLine() == false) {
@@ -469,8 +479,8 @@ public class Parser {
                     if (isCourse(elementStr)) {
                         element = getCourse(
                                 elementStr[0] + " " + elementStr[1] + " " + Integer.parseInt(elementStr[3]), false);
-                        if (getCourseSlot(day, time) != null && element != null) {
-                        	slots.add(new Preference(element, getCourseSlot(day, time), Integer.parseInt(parts[3])));
+                        if (getCourseSlot(day, time, false) != null && element != null) {
+                        	slots.add(new Preference(element, getCourseSlot(day, time, false), Integer.parseInt(parts[3])));
                         }
                         else {
                         	System.out.println("WARNING: Invalid preference will not be considered: " + "<" + lineStr + ">");
@@ -490,8 +500,8 @@ public class Parser {
                         	return null;
                         }
                         
-                        if (getLabSlot(day, time) != null && element != null) {
-                        	slots.add(new Preference(element, getLabSlot(day, time), Integer.parseInt(parts[3])));
+                        if (getLabSlot(day, time, false) != null && element != null) {
+                        	slots.add(new Preference(element, getLabSlot(day, time, false), Integer.parseInt(parts[3])));
                         }
                         else {
                         	System.out.println("WARNING: Invalid preference will not be considered: " + "<" + lineStr + ">");

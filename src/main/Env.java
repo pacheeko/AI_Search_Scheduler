@@ -2,7 +2,7 @@ package main;
 
 //Static class which keeps track of 
 public class Env {
-    private static float minPenalty = Integer.MAX_VALUE;
+    private static float minPenalty = Float.MAX_VALUE;
     private static float minfilledWeight;
     private static float prefWeight;
     private static float pairWeight;

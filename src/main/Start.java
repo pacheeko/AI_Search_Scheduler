@@ -32,7 +32,6 @@ class Start {
 			pre_filled_weight = Float.valueOf(args[2]);
 			pair_weight = Float.valueOf(args[3]);
 			sec_diff_weight = Float.valueOf(args[4]);
-
 		} catch (Exception e) {
 			System.out.println("Evaluation weights but be valid numbers.");
 			return;
@@ -96,7 +95,7 @@ class Start {
 		Control control = new Control(initialState, slots);
 		
     	long StartTime = System.nanoTime();
-		long running_time = TWO_MINUTES;
+		long running_time = FIVE_MINUTES;
 		System.out.print("Running for a max of " + (running_time/ONE_MINUTE) + " minute");
 		if(running_time != ONE_MINUTE){
 			System.out.print("s");

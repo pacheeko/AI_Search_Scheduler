@@ -92,7 +92,7 @@ public class ProblemState {
 		return this.parent_eval;
 	}
 
-	public void setParentEval(int parent_eval) {
+	public void setParentEval(float parent_eval) {
 		this.parent_eval = parent_eval;
 	}
 

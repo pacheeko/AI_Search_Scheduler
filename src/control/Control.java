@@ -85,9 +85,7 @@ public class Control {
 
     	//Check if the current leaf should be discarded, make current_leaf null if so
         if (current_leaf.getSol() || current_leaf.discardLeaf()) {
-        	if (leafs.remove(current_leaf) == false) {;
-        		System.out.println("Failed to remove leaf");
-        	}
+        	leafs.remove(current_leaf);
         	current_leaf = null;
             return;
         }

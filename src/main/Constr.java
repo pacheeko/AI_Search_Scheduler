@@ -8,8 +8,8 @@ import java.util.Hashtable;
 
 public class Constr {
 
-    Hashtable<Slot, Integer> courses_in_slot;
-    Hashtable<Slot, Integer> labs_in_slot;
+    private Hashtable<Slot, Integer> courses_in_slot;
+    private Hashtable<Slot, Integer> labs_in_slot;
 
     private final boolean DEBUG = false;
     
@@ -17,13 +17,22 @@ public class Constr {
         courses_in_slot = new Hashtable<Slot, Integer>();
         labs_in_slot = new Hashtable<Slot, Integer>();
     }
+    
+    //Copy constructor
+    public Constr(Constr toCopy) {
+        courses_in_slot = new Hashtable<Slot, Integer>();
+        labs_in_slot = new Hashtable<Slot, Integer>();
+    	toCopy.get_course_slot_list().forEach((slot, integer) ->
+    	courses_in_slot.put(slot, integer));
+    	toCopy.get_lab_slot_list().forEach((slot, integer) ->
+    	labs_in_slot.put(slot, integer));
+    }
 
     public boolean checkConstraints(ArrayList<Assignment> assignments) {
     	if (assignments == null || assignments.size() == 0) return true;
         int last_index = assignments.size() - 1;
 
         Assignment new_addition = assignments.get(last_index);
-
         if (assignmentFails(new_addition))
             return false;
 
@@ -104,8 +113,9 @@ public class Constr {
     }
 
     private void incrementElementCount(Hashtable<Slot, Integer> elements_in_slot, Slot slot) {
-        if (elements_in_slot.containsKey(slot))
+        if (elements_in_slot.containsKey(slot)) {
             elements_in_slot.put(slot, elements_in_slot.get(slot) + 1);
+        }
         else {
         	elements_in_slot.put(slot, 1);
         }
@@ -268,4 +278,13 @@ public class Constr {
 
         return slotsOverlap(firstSlot, secondSlot);
     }
+    
+    public Hashtable<Slot, Integer> get_course_slot_list() {
+    	return courses_in_slot;
+    }
+    
+    public Hashtable<Slot, Integer> get_lab_slot_list() {
+    	return labs_in_slot;
+    }
+    
 }

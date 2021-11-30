@@ -21,7 +21,7 @@ public class ProblemState {
 		this.parent = parent;
 		this.children = new ArrayList<ProblemState>();
 		if (parent == null) return;
-		this.myConstr = parent.getConstr();
+		this.myConstr = new Constr(parent.getConstr());
 		parent.addChild(this);
 	}
 	

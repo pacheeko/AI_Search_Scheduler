@@ -536,6 +536,10 @@ public class Parser {
         unwanted = parseUnwantedOrPartialAssignments("Unwanted:");
         partialAssignments = parseUnwantedOrPartialAssignments("Partial assignments:");
         preferences = parsePreferences();
+        
+        makeSpecialCourseNotCompatibles("CPSC", 813, "CPSC", 313);
+        makeSpecialCourseNotCompatibles("CPSC", 913, "CPSC", 413);
+        
         System.out.println("Input file parsing complete!");
         System.out.println("-----------------------------------------------");
 
@@ -585,27 +589,79 @@ public class Parser {
         return preferences;
     }
 
-    // getNotCompatibleWithCourse - Given a course number, returns all elements that
-    // are not compatible with this course and its labs
+    
+    //
+    // SPECIAL CASE HANDLERS
+    //
+    
+    
+    // getNotCompatibleWithCourse - Given a course, returns all elements that are not compatible with that course and its labs
     // INPUT: Course number (ex. 313, 413, etc)
     // RETURNS: Returns an arraylist of elements that are incompatible with the
     // input course
-    public static ArrayList<Element> getNotCompatibleWithCourse(String course) {
+    private static ArrayList<Element> getNotCompatibleWithElement(Element course) {
         ArrayList<Element> incompatibles = new ArrayList<Element>();
 
         for (Element[] tuple : notCompatible) {
-            String courseNum = tuple[0].getName().split(" ")[1];
-            if (courseNum.equals(course)) {
+            Element element = tuple[0];
+            if (element.getName().equals(course.getName())) {
                 incompatibles.add(tuple[1]);
             }
-            courseNum = tuple[1].getName().split(" ")[1];
-            if (courseNum.equals(course)) {
+            element = tuple[1];
+            if (element.getName().equals(course.getName())) {
                 incompatibles.add(tuple[0]);
             }
         }
         return incompatibles;
     }
 
+    
+    //
+    //
+    //
+    private static void makeSpecialCourseNotCompatibles(String specialDepartment, int specialNum, String otherDepartment, int otherNum) {
+    	boolean noteHeader = true;
+    	for (Course special : courses) {
+    		if(special.getNumber() == specialNum && special.getDepartment().equals(specialDepartment)) { //Find special course object
+    			for(Course other : courses) {
+    				if(other.getNumber() == otherNum && other.getDepartment().equals(otherDepartment)) { //Find other course object
+    					if(noteHeader) {
+    						System.out.println("NOTE: Courses prohibited to overlap with " + specialDepartment + " " + specialNum + " found. Adding the following to \"Not compatible\": ");
+    						noteHeader = false;
+    					}
+    					//Add all elements not compatible with other
+    					for(Element e : getNotCompatibleWithElement(other)) {
+    						Element[] tuple1 = {special, e};
+    						notCompatible.add(tuple1);
+    						System.out.println("- (" + tuple1[0].getName() + ", " + tuple1[1].getName() + ")");
+    					}
+    					
+    					//Add special and any labs of other to notCompatible
+    					for(Lab l : labs) {
+    						if(l.getDepartment().equals(other.getDepartment()) && l.getCourse().getNumber() == other.getNumber() && l.getCourse().getSection() == other.getSection()) {
+    							Element[] tuple2 = {special, l};
+    							notCompatible.add(tuple2);
+    							System.out.println("- (" + tuple2[0].getName() + ", " + tuple2[1].getName() + ")");
+    							//Add all elements not compatible with lab of other
+    	    					for(Element e : getNotCompatibleWithElement(l)) {
+    	    						if (!(e.equals(special))) {
+        	    						Element[] tuple1 = {special, e};
+        	    						notCompatible.add(tuple1);
+        	    						System.out.println("- (" + tuple1[0].getName() + ", " + tuple1[1].getName() + ")");
+    	    						}
+    	    					}
+    						}
+    					}
+    					
+    					//Add special and other to notCompatible (done after everything else is added)
+    					Element[] tuple3 = {special, other};
+    					System.out.println("- (" + tuple3[0].getName() + ", " + tuple3[1].getName() + ")");
+    					notCompatible.add(tuple3);
+    				}
+    			}
+    		}
+    	}
+    }
     
     
     //

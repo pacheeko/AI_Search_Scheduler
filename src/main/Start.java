@@ -14,7 +14,7 @@ class Start {
 	public final static long TWO_MINUTES = ONE_MINUTE*2;
 	public final static long FIVE_MINUTES = ONE_MINUTE*5;
 	
-    public static void main(String args[]) {    	
+    public static void main(String args[]) throws Exception{    	
     	if (args.length < 5) {
 			System.out.println("Missing input file and evaluation weights.");
     		printUsage();
@@ -41,12 +41,12 @@ class Start {
 
 
     	//Instantiate Parser, parse file passed in arg[0]
-		try {
+		//try {
 			Parser.parseFile(file);
-		} catch (Exception e) {
-			System.out.println("Errors parsing file " + file + ".");
-			return;
-		}		
+		//} catch (Exception e) {
+			//System.out.println("Errors parsing file " + file + ".");
+			//return;
+		//}		
 
     	
 		Parser.printParsedInput();

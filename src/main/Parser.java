@@ -621,8 +621,26 @@ public class Parser {
     //RETURNS: None. Modifies notCompatible arraylist during execution
     private static void makeSpecialCourseNotCompatibles(String specialDepartment, int specialNum, String otherDepartment, int otherNum) {
     	boolean noteHeader = true;
-    	for (Course special : courses) {
-    		if(special.getNumber() == specialNum && special.getDepartment().equals(specialDepartment)) { //Find special course object
+    	ArrayList<Element> coursesAndLabs = new ArrayList<Element>();
+    	coursesAndLabs.addAll(courses);
+    	coursesAndLabs.addAll(labs);
+    	for (Element special : coursesAndLabs) {
+    		boolean isTarget = false;
+    		//Special is a course
+    		if (special.getType() == 0) {
+    			Course specialC = (Course)special;
+    			if(specialC.getNumber() == specialNum && specialC.getDepartment().equals(specialDepartment)) {
+    				isTarget = true;
+    			}
+    		}
+    		if (special.getType() == 1) {
+    			Lab specialL = (Lab)special;
+    			if(specialL.getCourse().getNumber() == specialNum && specialL.getDepartment().equals(specialDepartment)) {
+    				isTarget = true;
+    			}
+    		}
+    		//Found element that matches the special department and number
+    		if(isTarget) {
     			for(Course other : courses) {
     				if(other.getNumber() == otherNum && other.getDepartment().equals(otherDepartment)) { //Find other course object
     					if(noteHeader) {
@@ -631,9 +649,11 @@ public class Parser {
     					}
     					//Add all elements not compatible with other
     					for(Element e : getNotCompatibleWithElement(other)) {
-    						Element[] tuple1 = {special, e};
-    						notCompatible.add(tuple1);
-    						System.out.println("- (" + tuple1[0].getName() + ", " + tuple1[1].getName() + ")");
+    						if (!(e.getName().split(" ")[0].equals(specialDepartment) && e.getName().split(" ")[1].equals(String.valueOf(specialNum)))) {
+	    						Element[] tuple1 = {special, e};
+	    						notCompatible.add(tuple1);
+	    						System.out.println("- (" + tuple1[0].getName() + ", " + tuple1[1].getName() + ")");
+    						}
     					}
     					
     					//Add special and any labs of other to notCompatible
@@ -644,7 +664,7 @@ public class Parser {
     							System.out.println("- (" + tuple2[0].getName() + ", " + tuple2[1].getName() + ")");
     							//Add all elements not compatible with lab of other
     	    					for(Element e : getNotCompatibleWithElement(l)) {
-    	    						if (!(e.equals(special))) {
+    	    						if (!(e.getName().split(" ")[0].equals(specialDepartment) && e.getName().split(" ")[1].equals(String.valueOf(specialNum)))) {
         	    						Element[] tuple1 = {special, e};
         	    						notCompatible.add(tuple1);
         	    						System.out.println("- (" + tuple1[0].getName() + ", " + tuple1[1].getName() + ")");

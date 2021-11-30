@@ -2,7 +2,6 @@ package main;
 
 import problem.*;
 
-import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,10 +15,10 @@ public class Eval {
 	//the problem is solved. The evaluate function then adds the penalties for minFilled to the eval
 	//of the problemState
 
-    private boolean DEBUG = true;
+    // private boolean DEBUG = true;
     ArrayList<Assignment> myAssignments;
-    private ArrayList<Assignment> checkedCourseMin;
-    private ArrayList<Assignment> checkedLabMin;
+    // private ArrayList<Assignment> checkedCourseMin;
+    // private ArrayList<Assignment> checkedLabMin;
     PrintStream output;
     
     /* Old code, did not want to delete
@@ -142,7 +141,7 @@ public class Eval {
     to the preference * the weight that preferences are given in the given search
      * 
      */
-    private int partialPref(ArrayList<Assignment> assignments, Assignment mostRecent) {
+    private float partialPref(ArrayList<Assignment> assignments, Assignment mostRecent) {
     	ArrayList<Preference> preferences = Parser.getPreferences();
     	if (mostRecent.getElement() instanceof Course) {
     		Course c = (Course) mostRecent.getElement();

@@ -1,7 +1,5 @@
 package problem;
 
-import java.util.ArrayList;
-
 import main.Constr;
 import main.Env;
 import main.Eval;

@@ -2,7 +2,6 @@ package main;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Scanner;
 
 import control.Control;
 import problem.*;
@@ -23,16 +22,16 @@ class Start {
 
 		String file = args[0];
 
-		int min_filled_weight;
-		int pre_filled_weight;
-		int pair_weight;
-		int sec_diff_weight;
+		float min_filled_weight;
+		float pre_filled_weight;
+		float pair_weight;
+		float sec_diff_weight;
 
 		try {
-			min_filled_weight = Integer.valueOf(args[1]);
-			pre_filled_weight = Integer.valueOf(args[2]);
-			pair_weight = Integer.valueOf(args[3]);
-			sec_diff_weight = Integer.valueOf(args[4]);
+			min_filled_weight = Float.valueOf(args[1]);
+			pre_filled_weight = Float.valueOf(args[2]);
+			pair_weight = Float.valueOf(args[3]);
+			sec_diff_weight = Float.valueOf(args[4]);
 
 		} catch (Exception e) {
 			System.out.println("Evaluation weights but be valid numbers.");

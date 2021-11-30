@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import main.Constr;
-import main.Eval;
+
 import main.Parser;
 import problem.Assignment;
 import problem.Course;

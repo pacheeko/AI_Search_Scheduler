@@ -20,11 +20,10 @@ class LeafComparator implements Comparator<ProblemState> {
         if (node1.equals(node2))
             return 0;
 
-        int result = Integer.compare(node1.getEval(), node2.getEval());
-
+        int result = Integer.compare(node1.getProblem().getElements().size(),
+                        node2.getProblem().getElements().size());
         if (result == 0)
-            result = Integer.compare(node1.getProblem().getElements().size(),
-                    node2.getProblem().getElements().size());
+            result = Integer.compare(node1.getEval(), node2.getEval());
 
         if (result == 0)
             result = Integer.compare(node1.hashCode(), node2.hashCode());
@@ -98,13 +97,14 @@ public class Control {
             return;
         }
 
+
         for (Problem subProblem : subProblems) {
             ProblemState new_leaf = new ProblemState(subProblem, current_leaf);
             new_leaf.setEval(
                     eval.partialEvaluate(new_leaf.getProblem().getAssignments(), new_leaf.getParentEval()));
             leafs.add(new_leaf);
         }
-        current_leaf = null;
+        current_leaf = null;        
         return;
     }
 

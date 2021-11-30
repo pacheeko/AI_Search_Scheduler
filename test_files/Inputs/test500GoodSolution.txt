@@ -1,0 +1,24 @@
+Name:
+test500NoSolution
+
+Course slots:
+MO, 8:00, 3, 2
+TU, 9:30, 3, 2
+
+Lab slots:
+
+Courses:
+CPSC 513 LEC 01
+CPSC 501 LEC 01
+
+Labs:
+
+Not compatible:
+
+Unwanted:
+
+Preferences:
+
+Pair:
+
+Partial assignments:

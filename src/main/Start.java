@@ -213,14 +213,14 @@ class Start {
     						return 1;
     					}
     				}
-    				else if (l1.getCourse().getSection() < l2.getCourse().getSection()) {
+    				else if (l1.getCourse().getNumber() < l2.getCourse().getNumber()) {
     					return -1;
     				}
     				else {
     					return 1;
     				}
     			}
-    			else if (l1.getCourse().getNumber() < l1.getCourse().getNumber()){
+    			else if (l1.getCourse().getNumber() < l2.getCourse().getNumber()){
     				return -1;
     			}
     			else {
@@ -269,7 +269,7 @@ class Start {
     			}
     		}
 			System.out.println("Error comparing assignments");
-    		return 1;
+    		return -1;
     	}
     	
     };

@@ -1,0 +1,26 @@
+Name:
+testTuesNoSolution
+
+Course slots:
+MO, 8:00, 1, 1
+TU, 11:00, 1, 1
+
+Lab slots:
+MO, 8:00, 4, 2
+
+Courses:
+CPSC 313 LEC 01
+CPSC 433 LEC 01
+
+Labs:
+CPSC 313 LEC 01 TUT 01
+
+Not compatible:
+
+Unwanted:
+
+Preferences:
+
+Pair:
+
+Partial assignments:

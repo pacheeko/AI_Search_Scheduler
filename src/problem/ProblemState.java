@@ -7,12 +7,12 @@ import main.Eval;
 public class ProblemState {
 
 	private Problem problem;
-	private int eval;
+	private float eval;
 	// private ArrayList<ProblemState> children;
 	// private ProblemState parent;
 	private Constr myConstr = new Constr();
 	private Eval myEval = new Eval();
-	private int parent_eval;
+	private float parent_eval;
 
 	public ProblemState(Problem problem, ProblemState parent) {
 		this.problem = problem;		
@@ -88,7 +88,7 @@ public class ProblemState {
 		this.problem = problem;
 	}
 
-	public int getParentEval() {
+	public float getParentEval() {
 		return this.parent_eval;
 	}
 
@@ -96,11 +96,11 @@ public class ProblemState {
 		this.parent_eval = parent_eval;
 	}
 
-	public int getEval() {
+	public float getEval() {
 		return eval;
 	}
 
-	public void setEval(int eval) {
+	public void setEval(float eval) {
 		this.eval = eval;
 	}
 

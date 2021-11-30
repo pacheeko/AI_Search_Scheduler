@@ -23,7 +23,7 @@ class LeafComparator implements Comparator<ProblemState> {
         int result = Integer.compare(node1.getProblem().getElements().size(),
                         node2.getProblem().getElements().size());
         if (result == 0)
-            result = Integer.compare(node1.getEval(), node2.getEval());
+            result = Float.compare(node1.getEval(), node2.getEval());
 
         if (result == 0)
             result = Integer.compare(node1.hashCode(), node2.hashCode());

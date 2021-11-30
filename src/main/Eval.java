@@ -49,7 +49,7 @@ public class Eval {
      * Adds the penalty for each CourseSlot and LabSlot that does not meet the minimum number
      * to the total eval, and returns that eval
      */
-    public int evaluate(ArrayList<Assignment> assignments, int eval) {
+    public float evaluate(ArrayList<Assignment> assignments, float eval) {
             
             eval += Env.getMinfilledWeight() * getCourseSlotPenalties(Parser.getCourseSlots(), assignments);
             eval += Env.getMinfilledWeight() * getLabSlotPenalties(Parser.getlabSlots(), assignments);
@@ -101,7 +101,7 @@ public class Eval {
      * Called after every assignment to calculate the penalty added to the 
      * problemState based on the most recent assignment
      */
-    public int partialEvaluate(ArrayList<Assignment> assignments, int eval) {
+    public float partialEvaluate(ArrayList<Assignment> assignments, float eval) {
     	if (assignments.isEmpty()) {
     		return eval;
     	}

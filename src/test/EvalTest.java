@@ -415,7 +415,7 @@ class EvalTest {
     	Env.setPrefWeight(2);
     	Env.setSecdiffWeight(5);
     	Env.setMinfilledWeight(7);
-    	int i = 0;
+    	float i = 0;
     	
     	assignments.add(new Assignment(cpsc433_1, tues930));
     	i = eval.partialEvaluate(assignments, i);
@@ -442,7 +442,7 @@ class EvalTest {
     	Env.setPrefWeight(2);
     	Env.setSecdiffWeight(5);
     	Env.setMinfilledWeight(7);
-    	int i = 0;
+    	float i = 0;
     	
     	assignments.add(new Assignment(cpsc433_1, tues1400));
     	i = eval.partialEvaluate(assignments, i);

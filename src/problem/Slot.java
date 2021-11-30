@@ -2,10 +2,10 @@ package problem;
 
 import java.time.LocalTime;
 
-public abstract class Slot {
+public abstract class Slot implements Cloneable {
     Day day;
     LocalTime startTime;
-    int min;
+/*  */    int min;
     int max;
 
     public Slot(Day day, LocalTime startTime, int max, int min) {
@@ -56,7 +56,24 @@ public abstract class Slot {
         return info + ")";
     }
 
-    public abstract LocalTime getEndTime();
+    public abstract LocalTime getEndTime();    
+
+    @Override
+    public abstract boolean equals(Object other);
+
+    @Override
+    public abstract int hashCode();
+
+    @Override
+    protected Slot clone() {
+        Slot clone = null;
+        try {
+            clone = (Slot) super.clone();
+        } catch (CloneNotSupportedException e) {
+            
+        }
+        return clone;
+    }
 }
 
 

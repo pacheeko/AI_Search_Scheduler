@@ -1,17 +1,11 @@
 package problem;
 
-import main.Constr;
-import main.Env;
-import main.Eval;
-import main.Parser;
-
 import java.util.ArrayList;
 
 public class Problem {
 
     ArrayList<Element> elements;
     ArrayList<Assignment> assignments;
-    Env environment;
 
     public Problem() {
         this.elements = new ArrayList<Element>();
@@ -21,11 +15,13 @@ public class Problem {
     public Problem(Problem problem) {
     	elements = new ArrayList<Element>();
     	assignments = new ArrayList<Assignment>();
-    	
-    	problem.elements.forEach((element) ->
-    		this.elements.add(element));
-    	problem.assignments.forEach((assignment) ->
-    		this.assignments.add(assignment));
+    	for(Element element : problem.getElements()) {            
+            this.elements.add(element.clone());
+        }
+    	for(Assignment assignment : problem.getAssignments()) {
+            Assignment copy = new Assignment(assignment);
+            this.assignments.add(copy);
+        }    	    		
     }
 
     public Problem(ArrayList<Element> elements) {
@@ -38,6 +34,13 @@ public class Problem {
         this.assignments = assignments;
     }
 
+    public boolean elementAssigned(Element element) {        
+        for(Assignment assignment : assignments) {
+            if ( element.equals(assignment.getElement()) ) 
+                return true;
+        }    
+        return false;
+    }
     
     /** 
      * Add a new element to the element list.
@@ -49,7 +52,7 @@ public class Problem {
      */
     public boolean addElement(Element newElement) {
         if (elements.contains(newElement) 
-            || assignments.contains(newElement))
+            || elementAssigned(newElement))
             return false;
         elements.add(newElement);
         return true;
@@ -78,5 +81,43 @@ public class Problem {
         elements.remove(element);
         return true;
     }    
+
+    @Override
+    public boolean equals(Object other) {
+        if(!(other instanceof Problem))
+            return false;
+        Problem prob = (Problem)other;
+        if (this.assignments.size() == prob.getAssignments().size()) {
+			if (this.elements.size() == prob.getElements().size()) {
+				for (Assignment assign : this.getAssignments()) {
+					if (!prob.getAssignments().contains(assign)) {
+						return false;
+					}
+				}
+				for (Element element : this.getElements()) {
+					if (!prob.getElements().contains(element)) {
+						return false;
+					}
+				}
+				return true;
+			}
+		}
+		return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 1;
+		
+		for (Assignment assign : this.assignments) {
+			result = 31 * result + assign.hashCode();
+		}
+
+		for (Element element : this.elements) {
+			result = 31 * result + element.hashCode();
+		}
+
+        return result;
+    }
 
 }

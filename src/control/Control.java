@@ -17,26 +17,17 @@ class LeafComparator implements Comparator<ProblemState> {
 
     @Override
     public int compare(ProblemState node1, ProblemState node2) {
-        if (node1.equals(node2)) {
-        	return 0;
-        }
-        
-        if (!node1.getChildren().isEmpty() && !node2.getChildren().isEmpty()) {
+        if (node1.equals(node2))
             return 0;
-        }
-        
-        if (!node1.getChildren().isEmpty()) {
-            return 1;
-        }
-        if (!node2.getChildren().isEmpty()) {
-            return -1;   
-        }
 
         int result = Integer.compare(node1.getEval(), node2.getEval());
-        
-        if (result == 0) {
-        	return 1;
-        }
+
+        if (result == 0)
+            result = Integer.compare(node1.getProblem().getElements().size(),
+                    node2.getProblem().getElements().size());
+
+        if (result == 0)
+            result = Integer.compare(node1.hashCode(), node2.hashCode());
         return result;
     }
 
@@ -58,64 +49,61 @@ public class Control {
         this.leaf_comparer = new LeafComparator();
         this.leafs = new TreeSet<ProblemState>(this.leaf_comparer);
         this.leafs.add(root);
-        this.current_leaf = null;       
+        this.current_leaf = null;
     }
 
     public void fleaf() {
         if (leafs.isEmpty())
             return;
-        current_leaf = leafs.pollFirst();
+        current_leaf = leafs.pollFirst(); // Pop the first leaf
     }
 
     public void ftrans() {
-    	//Testing, print current assignment
-    	if (DEBUG && current_leaf.getProblem().getAssignments().size() > 0) {
-    		Assignment currAssign = current_leaf.getProblem().getAssignments().get(current_leaf.getProblem().getAssignments().size()-1);
-        	//Testing, print current slot
-        	System.out.println("curr slot: " + currAssign.getSlot().getInfo());
-        	if (currAssign.getElement() instanceof Course) {
-        		Course course = (Course) currAssign.getElement();
-        		System.out.println("curr course: " + course.getDepartment() + " " + course.getNumber() + " " + course.getSection());
-        	}
-        	else {
-        		Lab lab = (Lab) currAssign.getElement();
-        		System.out.println("curr lab: " + lab.getDepartment() + " " + lab.getCourse().getNumber() + " " + lab.getNumber());
-        	}
-    	}
+        // Testing, print current assignment
+        if (DEBUG && current_leaf.getProblem().getAssignments().size() > 0) {
+            Assignment currAssign = current_leaf.getProblem().getAssignments()
+                    .get(current_leaf.getProblem().getAssignments().size() - 1);
+            // Testing, print current slot
+            System.out.println("curr slot: " + currAssign.getSlot().getInfo());
+            if (currAssign.getElement() instanceof Course) {
+                Course course = (Course) currAssign.getElement();
+                System.out.println("curr course: " + course.getDepartment() + " " + course.getNumber() + " "
+                        + course.getSection());
+            } else {
+                Lab lab = (Lab) currAssign.getElement();
+                System.out.println(
+                        "curr lab: " + lab.getDepartment() + " " + lab.getCourse().getNumber() + " " + lab.getNumber());
+            }
+        }
 
-    	//Check if the current leaf should be discarded, make current_leaf null if so
-        if (current_leaf.getSol() || current_leaf.discardLeaf()) {
-        	leafs.remove(current_leaf);
-        	current_leaf = null;
+        // Check if the current leaf should be discarded, make current_leaf null if so
+        if (current_leaf.discardLeaf()) {
+            current_leaf = null;
             return;
         }
-        
+
         if (current_leaf.getProblem().getElements().isEmpty()) {
-        	if (current_leaf.isBestSolution()) {
-        		leafs.remove(current_leaf);
-        		return;
-        	}
-        	else {
-        		leafs.remove(current_leaf);
-        		current_leaf = null;
-        		return;
-        	}
+            if (current_leaf.isBestSolution()) {
+                return;
+            } else {
+                current_leaf = null;
+                return;
+            }
         }
 
         ArrayList<Problem> subProblems = SearchModel.Div(current_leaf.getProblem(), slots);
-        //If the node cannot be divided into more leaves, discard it
+        // If the node cannot be divided into more leaves, discard it
         if (subProblems.isEmpty()) {
-        	leafs.remove(current_leaf);
-        	current_leaf = null;
+            current_leaf = null;
             return;
         }
 
-        for(Problem subProblem : subProblems) {
+        for (Problem subProblem : subProblems) {
             ProblemState new_leaf = new ProblemState(subProblem, current_leaf);
-            new_leaf.setEval(eval.partialEvaluate(new_leaf.getProblem().getAssignments(), new_leaf.getParent().getEval()));
+            new_leaf.setEval(
+                    eval.partialEvaluate(new_leaf.getProblem().getAssignments(), new_leaf.getParentEval()));
             leafs.add(new_leaf);
         }
-        leafs.remove(current_leaf);
         current_leaf = null;
         return;
     }

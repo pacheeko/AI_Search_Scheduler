@@ -5,6 +5,7 @@ import problem.*;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Set;
 
 public class Constr {
 
@@ -22,10 +23,16 @@ public class Constr {
     public Constr(Constr toCopy) {
         courses_in_slot = new Hashtable<Slot, Integer>();
         labs_in_slot = new Hashtable<Slot, Integer>();
-    	toCopy.get_course_slot_list().forEach((slot, integer) ->
-    	courses_in_slot.put(slot, integer));
-    	toCopy.get_lab_slot_list().forEach((slot, integer) ->
-    	labs_in_slot.put(slot, integer));
+
+        Set<Slot> courses_in_slots_keys = toCopy.get_course_slot_list().keySet();
+        for(Slot slot : courses_in_slots_keys) {
+            this.courses_in_slot.put(slot, toCopy.get_course_slot_list().get(slot));
+        }
+        
+        Set<Slot> labs_in_slots_keys = toCopy.get_lab_slot_list().keySet();
+        for(Slot slot : labs_in_slots_keys) {
+            this.labs_in_slot.put(slot, toCopy.get_lab_slot_list().get(slot));
+        }
     }
 
     public boolean checkConstraints(ArrayList<Assignment> assignments) {

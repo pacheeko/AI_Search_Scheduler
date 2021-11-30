@@ -37,8 +37,27 @@ public class LabSlot extends Slot {
     	else if (!(obj instanceof LabSlot)) return false;
     	else {
     		LabSlot slot = (LabSlot) obj;
-    		return (slot.getDay().equals(this.day) && slot.getStartTime().equals(this.getStartTime()));
+            Boolean result = slot.day.equals(this.day);
+            result = result && slot.getStartTime().equals(this.getStartTime());
+            result = result && slot.min == this.min; 
+            result = result && slot.max == this.max;
+    		return result;
     	}
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (min ^ (min >>> 32));
+        result = 31 * result + (max ^ (max >>> 32));
+        result = 31 * result + day.hashCode();
+        result = 31 * result + startTime.hashCode();
+        return result;
+    }
+
+    @Override
+    public LabSlot clone() {        
+        LabSlot clone = (LabSlot) super.clone();
+        return (LabSlot) clone;
     }
 
 }

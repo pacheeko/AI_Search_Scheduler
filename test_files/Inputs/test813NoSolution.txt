@@ -1,0 +1,25 @@
+Name:
+test813NoSolution
+
+Course slots:
+TU, 18:00, 3, 2
+
+Lab slots:
+TU, 18:00, 4, 2
+
+Courses:
+CPSC 313 LEC 01
+CPSC 813 LEC 09
+
+Labs:
+CPSC 313 LEC 01 TUT 01
+
+Not compatible:
+
+Unwanted:
+
+Preferences:
+
+Pair:
+
+Partial assignments:

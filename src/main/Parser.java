@@ -597,8 +597,7 @@ public class Parser {
     
     // getNotCompatibleWithCourse - Given a course, returns all elements that are not compatible with that course and its labs
     // INPUT: Course number (ex. 313, 413, etc)
-    // RETURNS: Returns an arraylist of elements that are incompatible with the
-    // input course
+    // RETURNS: Returns an arraylist of elements that are incompatible with the input course
     private static ArrayList<Element> getNotCompatibleWithElement(Element course) {
         ArrayList<Element> incompatibles = new ArrayList<Element>();
 
@@ -616,9 +615,10 @@ public class Parser {
     }
 
     
-    //
-    //
-    //
+    //makeSpecialCourseNotCompatibles - Given a special course and other course, updates notCompatible with these two being incompatible
+    	// As well as anything incompatible with other becoming incompatible with special as well
+    //INPUT: special course department, special course number, other course department, other course number
+    //RETURNS: None. Modifies notCompatible arraylist during execution
     private static void makeSpecialCourseNotCompatibles(String specialDepartment, int specialNum, String otherDepartment, int otherNum) {
     	boolean noteHeader = true;
     	for (Course special : courses) {

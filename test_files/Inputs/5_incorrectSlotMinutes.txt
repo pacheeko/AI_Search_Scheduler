@@ -1,0 +1,22 @@
+Name:
+incorrectSlotMinutes
+
+Course slots:
+TU, 12:41, 2, 1
+
+Lab slots:
+
+Courses:
+CPSC 333 LEC 01
+
+Labs:
+
+Not compatible:
+
+Unwanted:
+
+Preferences:
+
+Pair:
+
+Partial assignments:

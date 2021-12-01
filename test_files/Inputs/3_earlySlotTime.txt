@@ -1,0 +1,23 @@
+Name:
+earlySlotTime
+
+Course slots:
+MO,  7:00, 2, 1
+
+Lab slots:
+
+Courses:
+CPSC 333 LEC 01
+
+Labs:
+
+Not compatible:
+
+Unwanted:
+
+Preferences:
+
+Pair:
+
+Partial assignments:
+

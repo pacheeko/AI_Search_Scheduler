@@ -537,8 +537,8 @@ public class Parser {
         partialAssignments = parseUnwantedOrPartialAssignments("Partial assignments:");
         preferences = parsePreferences();
         
-        makeSpecialCourseNotCompatibles("CPSC", 813, "CPSC", 313);
-        makeSpecialCourseNotCompatibles("CPSC", 913, "CPSC", 413);
+        handleSpecialCourse("CPSC", 813, "CPSC", 313);
+        handleSpecialCourse("CPSC", 913, "CPSC", 413);
         
         System.out.println("Input file parsing complete!");
         System.out.println("-----------------------------------------------");
@@ -595,9 +595,9 @@ public class Parser {
     //
     
     
-    // getNotCompatibleWithCourse - Given a course, returns all elements that are not compatible with that course and its labs
-    // INPUT: Course number (ex. 313, 413, etc)
-    // RETURNS: Returns an arraylist of elements that are incompatible with the input course
+    // getNotCompatibleWithElement - Given an element, returns all elements that are not compatible
+    // INPUT: Element (course or lab)
+    // RETURNS: Returns an arraylist of elements that are incompatible with the input element
     private static ArrayList<Element> getNotCompatibleWithElement(Element course) {
         ArrayList<Element> incompatibles = new ArrayList<Element>();
 
@@ -615,37 +615,20 @@ public class Parser {
     }
 
     
-    //makeSpecialCourseNotCompatibles - Given a special course and other course, updates notCompatible with these two being incompatible
+    //handleSpecialCourse - Given a special course and other course, updates notCompatible with these two being incompatible
     	// As well as anything incompatible with other becoming incompatible with special as well
     //INPUT: special course department, special course number, other course department, other course number
     //RETURNS: None. Modifies notCompatible arraylist during execution
-    private static void makeSpecialCourseNotCompatibles(String specialDepartment, int specialNum, String otherDepartment, int otherNum) {
-    	boolean noteHeader = true;
-    	ArrayList<Element> coursesAndLabs = new ArrayList<Element>();
-    	coursesAndLabs.addAll(courses);
-    	coursesAndLabs.addAll(labs);
-    	for (Element special : coursesAndLabs) {
-    		boolean isTarget = false;
-    		//Special is a course
-    		if (special.getType() == 0) {
-    			Course specialC = (Course)special;
-    			if(specialC.getNumber() == specialNum && specialC.getDepartment().equals(specialDepartment)) {
-    				isTarget = true;
-    			}
-    		}
-    		if (special.getType() == 1) {
-    			Lab specialL = (Lab)special;
-    			if(specialL.getCourse().getNumber() == specialNum && specialL.getDepartment().equals(specialDepartment)) {
-    				isTarget = true;
-    			}
-    		}
+    private static void handleSpecialCourse(String specialDepartment, int specialNum, String otherDepartment, int otherNum) {
+    	boolean foundOther = false;
+    	for (Course special : courses) {
     		//Found element that matches the special department and number
-    		if(isTarget) {
+    		if(special.getNumber() == specialNum && special.getDepartment().equals(specialDepartment)) {
     			for(Course other : courses) {
     				if(other.getNumber() == otherNum && other.getDepartment().equals(otherDepartment)) { //Find other course object
-    					if(noteHeader) {
+    					if(!foundOther) {
     						System.out.println("NOTE: Courses prohibited to overlap with " + specialDepartment + " " + specialNum + " found. Adding the following to \"Not compatible\": ");
-    						noteHeader = false;
+    						foundOther = true;
     					}
     					//Add all elements not compatible with other
     					for(Element e : getNotCompatibleWithElement(other)) {
@@ -679,6 +662,12 @@ public class Parser {
     					notCompatible.add(tuple3);
     				}
     			}
+    			//Add special course at the TU/TH 18:00-19:00 time slot to partial assignments
+            	if(foundOther) {
+            		LabSlot labSlot = new LabSlot(Day.TU, LocalTime.parse("18:00",  DateTimeFormatter.ofPattern("H:m")), 1, 1);
+                	Assignment assign = new Assignment(special, labSlot);
+                	partialAssignments.add(assign);
+            	}
     		}
     	}
     }
@@ -688,8 +677,7 @@ public class Parser {
     //DEBUG/DISPLAY METHODS
     //
     
-    // printParsedInput - Loosely echos the input file using the data stored by
-    // Parser
+    // printParsedInput - Loosely echos the input file using the data stored by Parser
     // INPUT: None
     // RETURNS: None
     public static void printParsedInput() {

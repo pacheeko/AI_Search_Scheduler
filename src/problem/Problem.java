@@ -8,13 +8,13 @@ public class Problem {
     ArrayList<Assignment> assignments;
 
     public Problem() {
-        this.elements = new ArrayList<Element>();
-        this.assignments = new ArrayList<Assignment>();
+        this.elements = new ArrayList<>();
+        this.assignments = new ArrayList<>();
     }
 
     public Problem(Problem problem) {
-    	elements = new ArrayList<Element>();
-    	assignments = new ArrayList<Assignment>();
+    	elements = new ArrayList<>();
+    	assignments = new ArrayList<>();
     	for(Element element : problem.getElements()) {            
             this.elements.add(element.clone());
         }
@@ -26,7 +26,7 @@ public class Problem {
 
     public Problem(ArrayList<Element> elements) {
         this.elements = elements;
-        this.assignments = new ArrayList<Assignment>();
+        this.assignments = new ArrayList<>();
     }
 
     public Problem(ArrayList<Element> elements, ArrayList<Assignment> assignments) {
@@ -74,8 +74,11 @@ public class Problem {
     }
 
     public boolean assign(Element element, Slot slot) {
-        if (!elements.contains(element))        
+        if (!elements.contains(element))      {
+            System.out.println(element.getName() + " does not exist");
             return false;
+        }
+
         Assignment newAssignment = new Assignment(element, slot);
         assignments.add(newAssignment);
         elements.remove(element);

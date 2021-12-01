@@ -46,7 +46,7 @@ public class Control {
         this.slots = slots;
         this.root = root;
         this.leaf_comparer = new LeafComparator();
-        this.leafs = new TreeSet<ProblemState>(this.leaf_comparer);
+        this.leafs = new TreeSet<>(this.leaf_comparer);
         this.leafs.add(root);
         this.current_leaf = null;
     }
@@ -81,13 +81,13 @@ public class Control {
             return;
         }
 
+        //no more elements are left to assign
         if (current_leaf.getProblem().getElements().isEmpty()) {
-            if (current_leaf.isBestSolution()) {
-                return;
-            } else {
+            if (!current_leaf.isBestSolution()) {
+                //no solution found
                 current_leaf = null;
-                return;
             }
+            return;
         }
 
         ArrayList<Problem> subProblems = SearchModel.Div(current_leaf.getProblem(), slots);
@@ -97,18 +97,17 @@ public class Control {
             return;
         }
 
-
         for (Problem subProblem : subProblems) {
             ProblemState new_leaf = new ProblemState(subProblem, current_leaf);
-            new_leaf.setEval(
-                    eval.partialEvaluate(new_leaf.getProblem().getAssignments(), new_leaf.getParentEval()));
+            //updating eval score of new leaf
+            new_leaf.setEval(eval.partialEvaluate(new_leaf.getProblem().getAssignments(), new_leaf.getParentEval()));
             leafs.add(new_leaf);
         }
         current_leaf = null;        
         return;
     }
 
-    public ProblemState getSelectedLeaf() {
+    public ProblemState getCurrentLeaf() {
         return current_leaf;
     }
 

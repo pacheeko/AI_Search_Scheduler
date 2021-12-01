@@ -230,7 +230,8 @@ public class Constr {
         Day dayOne = one.getDay();
         Day dayTwo = two.getDay();
 
-        if (dayOne == dayTwo) {
+        if(dayOne == dayTwo || (dayOne == Day.MO && dayTwo == Day.FR)
+                || (dayTwo == Day.MO && dayOne == Day.FR)){
             LocalTime startOne = one.getStartTime();
             LocalTime startTwo = two.getStartTime();
             if (startOne.equals(startTwo)) {

@@ -2,6 +2,7 @@ package control;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.TreeSet;
 
 import main.Eval;
 import model.SearchModel;
@@ -16,14 +17,17 @@ class LeafComparator implements Comparator<ProblemState> {
 
     @Override
     public int compare(ProblemState node1, ProblemState node2) {
-        if (!node1.getChildren().isEmpty() && !node2.getChildren().isEmpty())
+        if (node1.equals(node2))
             return 0;
-        if (!node1.getChildren().isEmpty())
-            return 1;
-        if (!node2.getChildren().isEmpty())
-            return -1;   
 
-        return Integer.compare(node1.getEval(), node2.getEval());        
+        int result = Integer.compare(node1.getProblem().getElements().size(),
+                        node2.getProblem().getElements().size());
+        if (result == 0)
+            result = Float.compare(node1.getEval(), node2.getEval());
+
+        if (result == 0)
+            result = Integer.compare(node1.hashCode(), node2.hashCode());
+        return result;
     }
 
 }
@@ -31,7 +35,7 @@ class LeafComparator implements Comparator<ProblemState> {
 public class Control {
 
     ProblemState root;
-    ArrayList<ProblemState> leafs;
+    TreeSet<ProblemState> leafs;
     ProblemState current_leaf;
     LeafComparator leaf_comparer;
     ArrayList<Slot> slots;
@@ -41,83 +45,69 @@ public class Control {
     public Control(ProblemState root, ArrayList<Slot> slots) {
         this.slots = slots;
         this.root = root;
-        this.leafs = new ArrayList<ProblemState>();
-        this.leafs.add(root);
-        this.current_leaf = leafs.get(0);
         this.leaf_comparer = new LeafComparator();
-    }
-
-    public void next() {
-        fleaf();
-        if (current_leaf == null) return;
-        ftrans();        
+        this.leafs = new TreeSet<>(this.leaf_comparer);
+        this.leafs.add(root);
+        this.current_leaf = null;
     }
 
     public void fleaf() {
         if (leafs.isEmpty())
             return;
-        current_leaf = leafs.get(0);
+        current_leaf = leafs.pollFirst(); // Pop the first leaf
     }
 
     public void ftrans() {
-    	//Testing, print current assignment
-    	if (DEBUG && current_leaf.getProblem().getAssignments().size() > 0) {
-    		Assignment currAssign = current_leaf.getProblem().getAssignments().get(current_leaf.getProblem().getAssignments().size()-1);
-        	//Testing, print current slot
-        	System.out.println("curr slot: " + currAssign.getSlot().getInfo());
-        	if (currAssign.getElement() instanceof Course) {
-        		Course course = (Course) currAssign.getElement();
-        		System.out.println("curr course: " + course.getDepartment() + " " + course.getNumber() + " " + course.getSection());
-        	}
-        	else {
-        		Lab lab = (Lab) currAssign.getElement();
-        		System.out.println("curr lab: " + lab.getDepartment() + " " + lab.getNumber());
-        	}
-    	}
+        // Testing, print current assignment
+        if (DEBUG && current_leaf.getProblem().getAssignments().size() > 0) {
+            Assignment currAssign = current_leaf.getProblem().getAssignments()
+                    .get(current_leaf.getProblem().getAssignments().size() - 1);
+            // Testing, print current slot
+            System.out.println("curr slot: " + currAssign.getSlot().getInfo());
+            if (currAssign.getElement() instanceof Course) {
+                Course course = (Course) currAssign.getElement();
+                System.out.println("curr course: " + course.getDepartment() + " " + course.getNumber() + " "
+                        + course.getSection());
+            } else {
+                Lab lab = (Lab) currAssign.getElement();
+                System.out.println(
+                        "curr lab: " + lab.getDepartment() + " " + lab.getCourse().getNumber() + " " + lab.getNumber());
+            }
+        }
 
-    	//Check if the current leaf should be discarded, make current_leaf null if so
-        if (current_leaf.getSol() || current_leaf.discardLeaf()) {
-        	if(!leafs.remove(current_leaf)) {
-        		System.out.println("Failed to remove leaf from leafs");
-        		System.exit(1);
-        	}
-        	current_leaf = null;
+        // Check if the current leaf should be discarded, make current_leaf null if so
+        if (current_leaf.discardLeaf()) {
+            current_leaf = null;
             return;
         }
-        
+
+        //no more elements are left to assign
         if (current_leaf.getProblem().getElements().isEmpty()) {
-        	if (current_leaf.isBestSolution()) {
-        		leafs.remove(current_leaf);
-        		return;
-        	}
-        	else {
-        		leafs.remove(current_leaf);
-        		current_leaf = null;
-        		return;
-        	}
+            if (!current_leaf.isBestSolution()) {
+                //no solution found
+                current_leaf = null;
+            }
+            return;
         }
 
         ArrayList<Problem> subProblems = SearchModel.Div(current_leaf.getProblem(), slots);
-        //If the node cannot be divided into more leaves, discard it
+        // If the node cannot be divided into more leaves, discard it
         if (subProblems.isEmpty()) {
-        	leafs.remove(current_leaf);
-        	current_leaf = null;
+            current_leaf = null;
             return;
         }
 
-        for(Problem subProblem : subProblems) {
+        for (Problem subProblem : subProblems) {
             ProblemState new_leaf = new ProblemState(subProblem, current_leaf);
-            new_leaf.setEval(eval.partialEvaluate(new_leaf.getProblem().getAssignments(), new_leaf.getParent().getEval()));
+            //updating eval score of new leaf
+            new_leaf.setEval(eval.partialEvaluate(new_leaf.getProblem().getAssignments(), new_leaf.getParentEval()));
             leafs.add(new_leaf);
         }
-
-        leafs.remove(current_leaf);
-        current_leaf = null;
-        leafs.sort(leaf_comparer);
+        current_leaf = null;        
         return;
     }
 
-    public ProblemState getSelectedLeaf() {
+    public ProblemState getCurrentLeaf() {
         return current_leaf;
     }
 
@@ -125,7 +115,7 @@ public class Control {
         return root;
     }
 
-    public ArrayList<ProblemState> getLeafs() {
+    public TreeSet<ProblemState> getLeafs() {
         return leafs;
     }
 

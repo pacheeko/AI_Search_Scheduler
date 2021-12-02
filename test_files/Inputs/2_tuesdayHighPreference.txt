@@ -1,0 +1,26 @@
+Name:
+tuesdayHighPreference
+
+Course slots:
+MO,  8:00, 2, 1
+TU,  11:00, 2, 0
+
+Lab slots:
+
+Courses:
+CPSC 333 LEC 01
+SENG 511 LEC 01
+
+Labs:
+
+Not compatible:
+
+Unwanted:
+
+Preferences:
+TU, 11:00, CPSC 333 LEC 01, 20
+TU, 11:00, SENG 511 LEC 01, 10
+
+Pair:
+
+Partial assignments:

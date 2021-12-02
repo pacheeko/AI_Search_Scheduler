@@ -4,7 +4,7 @@ import problem.*;
 
 import java.util.ArrayList;
 import java.io.File;
-import java.io.FileNotFoundException;
+
 import java.time.LocalTime;
 import java.time.format.*;
 import java.util.Scanner;
@@ -106,30 +106,40 @@ public class Parser {
     // with the same properties as the inputs
     // INPUT: the slot's day and time
     // RETURNS: A slot object from the courseSlots arraylists, if one is found
-    private static Slot getCourseSlot(Day day, LocalTime time){
+    private static Slot getCourseSlot(Day day, LocalTime time, boolean strict){
         for (Slot slot : courseSlots) {
             if (slot.getDay().equals(day) && slot.getStartTime().equals(time)) {
                 return slot;
             }
         }
-        System.out.println("ERROR: Invalid course slot in input file! " + "<" + day + ", " + time + ">" + "\nExiting program...");
-        System.exit(1);
-        return null;
+        if (strict) {
+		    System.out.println("ERROR: Invalid course slot in input file! " + "<" + day + ", " + time + ">" + "\nExiting program...");
+		    System.exit(1);
+		    return null;
+        }
+        else {
+        	return null;
+        }
     }
 
     // getLabSlot - Returns a slot object contained in the labSlots arraylist with
     // the same properties as the inputs
     // INPUT: the slot's day and time
     // RETURNS: A slot object from the labSlots arraylists, if one is found
-    private static Slot getLabSlot(Day day, LocalTime time) {
+    private static Slot getLabSlot(Day day, LocalTime time, boolean strict) {
         for (Slot slot : labSlots) {
             if (slot.getDay().equals(day) && slot.getStartTime().equals(time)) {
                 return slot;
             }
         }
-        System.out.println("ERROR: Invalid lab slot in input file! " + "<" + day + ", " + time + ">" + "\nExiting program...");
-        System.exit(1);
-        return null;
+        if(strict) {
+	        System.out.println("ERROR: Invalid lab slot in input file! " + "<" + day + ", " + time + ">" + "\nExiting program...");
+	        System.exit(1);
+	        return null;
+        }
+        else {
+        	return null;
+        }
     }
 
     // isCourse - Returns if a given input string represents a course
@@ -405,7 +415,7 @@ public class Parser {
                         if (isCourse(elementStr)) {
                             element = getCourse(
                                     elementStr[0] + " " + elementStr[1] + " " + Integer.parseInt(elementStr[3]), true);
-                            slots.add(new Assignment(element, getCourseSlot(day, time)));
+                            slots.add(new Assignment(element, getCourseSlot(day, time, true)));
                         }
                         // Element is a lab
                         else {
@@ -420,7 +430,7 @@ public class Parser {
                             	System.exit(1);
                             	return null;
                             }
-                            slots.add(new Assignment(element, getLabSlot(day, time)));
+                            slots.add(new Assignment(element, getLabSlot(day, time, true)));
                         }
 
                         if (scanner.hasNextLine() == false) {
@@ -469,8 +479,8 @@ public class Parser {
                     if (isCourse(elementStr)) {
                         element = getCourse(
                                 elementStr[0] + " " + elementStr[1] + " " + Integer.parseInt(elementStr[3]), false);
-                        if (getCourseSlot(day, time) != null && element != null) {
-                        	slots.add(new Preference(element, getCourseSlot(day, time), Integer.parseInt(parts[3])));
+                        if (getCourseSlot(day, time, false) != null && element != null) {
+                        	slots.add(new Preference(element, getCourseSlot(day, time, false), Integer.parseInt(parts[3])));
                         }
                         else {
                         	System.out.println("WARNING: Invalid preference will not be considered: " + "<" + lineStr + ">");
@@ -490,8 +500,8 @@ public class Parser {
                         	return null;
                         }
                         
-                        if (getLabSlot(day, time) != null && element != null) {
-                        	slots.add(new Preference(element, getLabSlot(day, time), Integer.parseInt(parts[3])));
+                        if (getLabSlot(day, time, false) != null && element != null) {
+                        	slots.add(new Preference(element, getLabSlot(day, time, false), Integer.parseInt(parts[3])));
                         }
                         else {
                         	System.out.println("WARNING: Invalid preference will not be considered: " + "<" + lineStr + ">");
@@ -526,6 +536,10 @@ public class Parser {
         unwanted = parseUnwantedOrPartialAssignments("Unwanted:");
         partialAssignments = parseUnwantedOrPartialAssignments("Partial assignments:");
         preferences = parsePreferences();
+        
+        handleSpecialCourse("CPSC", 313);
+        handleSpecialCourse("CPSC", 413);
+        
         System.out.println("Input file parsing complete!");
         System.out.println("-----------------------------------------------");
 
@@ -575,35 +589,158 @@ public class Parser {
         return preferences;
     }
 
-    // getNotCompatibleWithCourse - Given a course number, returns all elements that
-    // are not compatible with this course and its labs
-    // INPUT: Course number (ex. 313, 413, etc)
-    // RETURNS: Returns an arraylist of elements that are incompatible with the
-    // input course
-    public static ArrayList<Element> getNotCompatibleWithCourse(String course) {
+    
+    //
+    // SPECIAL CASE HANDLERS
+    //
+    
+    
+    // getNotCompatibleWithElement - Given an element, returns all elements that are not compatible
+    // INPUT: Element (course or lab)
+    // RETURNS: Returns an arraylist of elements that are incompatible with the input element
+    private static ArrayList<Element> getNotCompatibleWithElement(Element course) {
         ArrayList<Element> incompatibles = new ArrayList<Element>();
 
         for (Element[] tuple : notCompatible) {
-            String courseNum = tuple[0].getName().split(" ")[1];
-            if (courseNum.equals(course)) {
+            Element element = tuple[0];
+            if (element.getName().equals(course.getName())) {
                 incompatibles.add(tuple[1]);
             }
-            courseNum = tuple[1].getName().split(" ")[1];
-            if (courseNum.equals(course)) {
+            element = tuple[1];
+            if (element.getName().equals(course.getName())) {
                 incompatibles.add(tuple[0]);
             }
         }
         return incompatibles;
     }
 
+    //handleSpecialCourse - Given a special course, updates notCompatible, courses, and partialAssignments with a new "quiz" course corresponding to the special course
+	//INPUT: special course department, special course number
+	//RETURNS: None. Modifies notCompatible, courses, and partialAssignments arraylists during execution (fulfills 813/913 specific hard constraints)
+    private static void handleSpecialCourse(String specialDepartment, int specialNum) {
+    	for (Course special : courses) {
+    		//Found element that matches the special department and number
+    		if(special.getNumber() == specialNum && special.getDepartment().equals(specialDepartment)) {
+    			System.out.println("NOTE: Special course " + specialDepartment + " " + specialNum + " found. Adding course and constraints related to " + specialDepartment + " " + (specialNum + 500));
+    			
+    			//Add quiz course to courses, and create partial assignment at 18:00
+    			LabSlot labSlot = new LabSlot(Day.MO, LocalTime.parse("18:00",  DateTimeFormatter.ofPattern("H:m")), 1, 1);
+    			//Look for correct lab slot in Lab_Slots, if it doesn't exist, exit
+    			for (LabSlot slot : labSlots) {
+    				if (slot.getDay().equals(Day.TU) && (slot.getStartTime().compareTo(LocalTime.parse("18:00")) == 0)) {
+    					labSlot = slot;
+    					break;
+    				}
+    			}
+    			if (labSlot.getDay().equals(Day.MO)) {
+    				System.out.println("The special quiz course " + specialDepartment + " " + (specialNum + 500) + " could not be added because there is no lab slot on tuesdays at 18:00");
+    				System.exit(1);
+    			}
+    			
+    			Course quizCourse = new Course(specialDepartment, specialNum + 500, special.getSection());
+    			partialAssignments.add(new Assignment(quizCourse, labSlot));
+    			courses.add(quizCourse);
+    			
+    			//Quiz course and all sections of special course aren't compatible
+    			for (Course specialCourse : courses) {
+    				if(specialCourse.getNumber() == specialNum && specialCourse.getDepartment().equals(specialDepartment)) {
+    	    			Element[] tupleC = {quizCourse, specialCourse};
+    	    			notCompatible.add(tupleC);
+    	    			
+    					//Transitively, everything not compatible with section of special course is not compatible with quiz course
+    					for (Element n : getNotCompatibleWithElement(specialCourse)) {
+    						if (!(n.equals(quizCourse) || (n.getDepartment().equals(specialDepartment) && n.getName().split(" ")[1].equals(String.valueOf(specialNum))))) {
+    							Element[] tupleN = {quizCourse, n};
+    							notCompatible.add(tupleN);
+    						}
+    					}
+    					
+    	    			//Quiz course and special labs aren't compatible
+    	    			for (Lab specialLab : labs) {
+    	    				if(specialLab.getCourse().equals(specialCourse)) {
+    	    					Element[] tupleL = {quizCourse, specialLab};
+    	    					notCompatible.add(tupleL);
+    	    					
+    	        				//Transitively, everything not compatible with special lab is not compatible with quiz course
+    	        				for (Element n : getNotCompatibleWithElement(specialLab)) {
+    	        					if (!(n.equals(quizCourse) || (n.getDepartment().equals(specialDepartment) && n.getName().split(" ")[1].equals(String.valueOf(specialNum))))) {
+    	    	    					Element[] tupleN = {quizCourse, n};
+    	    	    					notCompatible.add(tupleN);
+    	        					}
+    	        				}
+    	    				}
+    	    			}
+    					
+    				}
+    			}
+    			
+    		//All incompatible entries made, new course added to partial assignments, so we're done
+    		break;
+    		}
+    	}
+    }
     
+    //OLD VERSION OF handleSpecialCourse! Works assuming that 813/913 are in the input file (99% sure they aren't, but are implied by the existence of 313/413 in the input file)
+    /*
+    private static void handleSpecialCourse(String specialDepartment, int specialNum, String otherDepartment, int otherNum) {
+    	boolean foundOther = false;
+    	for (Course special : courses) {
+    		//Found element that matches the special department and number
+    		if(special.getNumber() == specialNum && special.getDepartment().equals(specialDepartment)) {
+    			for(Course other : courses) {
+    				if(other.getNumber() == otherNum && other.getDepartment().equals(otherDepartment)) { //Find other course object
+    					if(!foundOther) {
+    						System.out.println("NOTE: Courses prohibited to overlap with " + specialDepartment + " " + specialNum + " found. Adding the following to \"Not compatible\": ");
+    						foundOther = true;
+    					}
+    					//Add all elements not compatible with other
+    					for(Element e : getNotCompatibleWithElement(other)) {
+    						if (!(e.getName().split(" ")[0].equals(specialDepartment) && e.getName().split(" ")[1].equals(String.valueOf(specialNum)))) {
+	    						Element[] tuple1 = {special, e};
+	    						notCompatible.add(tuple1);
+	    						System.out.println("- (" + tuple1[0].getName() + ", " + tuple1[1].getName() + ")");
+    						}
+    					}
+    					
+    					//Add special and any labs of other to notCompatible
+    					for(Lab l : labs) {
+    						if(l.getDepartment().equals(other.getDepartment()) && l.getCourse().getNumber() == other.getNumber() && l.getCourse().getSection() == other.getSection()) {
+    							Element[] tuple2 = {special, l};
+    							notCompatible.add(tuple2);
+    							System.out.println("- (" + tuple2[0].getName() + ", " + tuple2[1].getName() + ")");
+    							//Add all elements not compatible with lab of other
+    	    					for(Element e : getNotCompatibleWithElement(l)) {
+    	    						if (!(e.getName().split(" ")[0].equals(specialDepartment) && e.getName().split(" ")[1].equals(String.valueOf(specialNum)))) {
+        	    						Element[] tuple1 = {special, e};
+        	    						notCompatible.add(tuple1);
+        	    						System.out.println("- (" + tuple1[0].getName() + ", " + tuple1[1].getName() + ")");
+    	    						}
+    	    					}
+    						}
+    					}
+    					
+    					//Add special and other to notCompatible (done after everything else is added)
+    					Element[] tuple3 = {special, other};
+    					System.out.println("- (" + tuple3[0].getName() + ", " + tuple3[1].getName() + ")");
+    					notCompatible.add(tuple3);
+    				}
+    			}
+    			//Add special course at the TU/TH 18:00-19:00 time slot to partial assignments
+            	if(foundOther) {
+            		LabSlot labSlot = new LabSlot(Day.TU, LocalTime.parse("18:00",  DateTimeFormatter.ofPattern("H:m")), 1, 1);
+                	Assignment assign = new Assignment(special, labSlot);
+                	partialAssignments.add(assign);
+            	}
+    		}
+    	}
+    }
+    */
     
     //
     //DEBUG/DISPLAY METHODS
     //
     
-    // printParsedInput - Loosely echos the input file using the data stored by
-    // Parser
+    // printParsedInput - Loosely echos the input file using the data stored by Parser
     // INPUT: None
     // RETURNS: None
     public static void printParsedInput() {

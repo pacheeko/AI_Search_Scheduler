@@ -1,0 +1,22 @@
+Name:
+incorrectFridayLabTime
+
+Course slots:
+
+Lab slots:
+FR, 9:00, 2, 1
+
+Courses:
+
+Labs:
+CPSC 333 TUT 01
+
+Not compatible:
+
+Unwanted:
+
+Preferences:
+
+Pair:
+
+Partial assignments:

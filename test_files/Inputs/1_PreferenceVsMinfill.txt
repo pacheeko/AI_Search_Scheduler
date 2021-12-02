@@ -1,0 +1,24 @@
+Name:
+Preference vs MinFill
+
+Course slots:
+MO,  8:00, 2, 1
+MO, 11:00, 5, 0
+
+Lab slots:
+
+Courses:
+CPSC 231 LEC 01
+
+Labs:
+
+Not compatible:
+
+Unwanted:
+
+Preferences:
+MO, 11:00, CPSC 231 LEC 01, 1
+
+Pair:
+
+Partial assignments:

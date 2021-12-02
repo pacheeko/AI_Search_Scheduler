@@ -9,8 +9,11 @@ public class Assignment {
         this.slot = slot;
     }
 
+    public Assignment(Assignment assignment) {
+        this.element = assignment.element.clone();
+        this.slot = assignment.slot.clone();
+    }
 
-    
     /** 
      * 
      * @param o Object to compare with
@@ -19,13 +22,17 @@ public class Assignment {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if(o instanceof Element) {
-            Element other = (Element) o;
-            return this.element.equals(other);
-        }
         if (!(o instanceof Assignment)) return false;
         Assignment other = (Assignment) o;
-        return this.element.equals(other.element) && this.slot.equals(other.getSlot());
+        return this.element.equals(other.element)
+         && this.slot.equals(other.getSlot());
+    }
+
+    @Override
+    public int hashCode() {    
+        int result = slot.hashCode();
+        result = 31 * result + element.hashCode();
+        return result;
     }
     
     public Element getElement() {

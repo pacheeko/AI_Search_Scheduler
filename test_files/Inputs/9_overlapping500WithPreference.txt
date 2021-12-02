@@ -1,0 +1,26 @@
+Name:
+overlapping500WithPreference
+
+Course slots:
+MO,  8:00, 2, 1
+MO,  9:00, 2, 1
+
+Lab slots:
+
+Courses:
+CPSC 501 LEC 01
+CPSC 502 LEC 01
+
+Labs:
+
+Not compatible:
+
+Unwanted:
+
+Preferences:
+MO, 8:00, CPSC 501 LEC 01, 10
+MO, 8:00, CPSC 502 LEC 01, 10
+
+Pair:
+
+Partial assignments:

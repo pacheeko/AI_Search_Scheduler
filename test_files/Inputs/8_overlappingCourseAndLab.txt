@@ -1,0 +1,24 @@
+Name:
+overlappingCourseAndLab
+
+Course slots:
+MO,  8:00, 2, 1
+
+Lab slots:
+FR, 8:00, 2, 1
+
+Courses:
+CPSC 501 LEC 01
+
+Labs:
+CPSC 501 TUT 01
+
+Not compatible:
+
+Unwanted:
+
+Preferences:
+
+Pair:
+
+Partial assignments:

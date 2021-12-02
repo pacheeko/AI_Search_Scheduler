@@ -50,13 +50,18 @@ public class Eval {
 
 	private int getLabSlotPenalties(ArrayList<LabSlot> slots, ArrayList<Assignment> assignments) {
 		int penalty = 0;
-		HashMap<LabSlot, Integer> slotNums = new HashMap<LabSlot, Integer>();
+		HashMap<LabSlot, Integer> slotNums = new HashMap<>();
 		for (LabSlot slot : slots) {
 			slotNums.put(slot, 0);
 		}
 		for (Assignment assign : assignments) {
 			if (assign.getSlot() instanceof LabSlot) {
-				slotNums.put((LabSlot) assign.getSlot(), slotNums.get(assign.getSlot()) + 1);
+				Integer value;
+				if(slotNums.get(assign.getSlot()) != null)
+					value = slotNums.get(assign.getSlot());
+				else
+					value = 0;
+				slotNums.put((LabSlot) assign.getSlot(), value + 1);
 			}
 		}
 		for (Map.Entry<LabSlot, Integer> entry : slotNums.entrySet()) {
@@ -87,10 +92,10 @@ public class Eval {
 		return eval;
 	}
 	/*
-    Compares the mostRecent assignment to each assignment in the problemState. Returns true 
+    Compares the mostRecent assignment to each assignment in the problemState. Returns true
     if there is another course with the same name, number, and slot in the assignments as the
     most recent assignment has.
-     * 
+     *
      */
 	private boolean partialSecDiff(ArrayList<Assignment> assignments, Assignment mostRecent) {
 		for (Assignment a : assignments) {
@@ -110,7 +115,7 @@ public class Eval {
     then checks if the assignment and the preference have the same slot.
     If they do have the same slot, it returns 0. If they do not, it returns the weight given
     to the preference * the weight that preferences are given in the given search
-     * 
+     *
      */
 	private float partialPref(ArrayList<Assignment> assignments, Assignment mostRecent) {
 		ArrayList<Preference> preferences = Parser.getPreferences();
@@ -151,7 +156,7 @@ public class Eval {
 	/*
     Iterates through the pairs located in the parser class. Checks to see if the most recent
     assignment is located in the set of pairs. If it is, then checks to see if the other pair
-    is also in the right slot or if it's in another slot. Returns false only if the two elements 
+    is also in the right slot or if it's in another slot. Returns false only if the two elements
     in the pair are both in assignments and are located in different slots
     */
 	private boolean partialPairs(ArrayList<Assignment> assignments, Assignment mostRecent) {

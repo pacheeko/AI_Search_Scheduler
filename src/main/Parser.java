@@ -537,8 +537,8 @@ public class Parser {
         partialAssignments = parseUnwantedOrPartialAssignments("Partial assignments:");
         preferences = parsePreferences();
         
-        handleSpecialCourse("CPSC", 813, "CPSC", 313);
-        handleSpecialCourse("CPSC", 913, "CPSC", 413);
+        handleSpecialCourse("CPSC", 313);
+        handleSpecialCourse("CPSC", 413);
         
         System.out.println("Input file parsing complete!");
         System.out.println("-----------------------------------------------");
@@ -614,11 +614,62 @@ public class Parser {
         return incompatibles;
     }
 
+    //handleSpecialCourse - Given a special course, updates notCompatible, courses, and partialAssignments with a new "quiz" course corresponding to the special course
+	//INPUT: special course department, special course number
+	//RETURNS: None. Modifies notCompatible, courses, and partialAssignments arraylists during execution (fulfills 813/913 specific hard constraints)
+    private static void handleSpecialCourse(String specialDepartment, int specialNum) {
+    	for (Course special : courses) {
+    		//Found element that matches the special department and number
+    		if(special.getNumber() == specialNum && special.getDepartment().equals(specialDepartment)) {
+    			System.out.println("NOTE: Special course " + specialDepartment + " " + specialNum + " found. Adding course and constraints related to " + specialDepartment + " " + (specialNum + 500));
+    			
+    			//Add quiz course to courses, and create partial assignment at 18:00
+    			LabSlot labSlot = new LabSlot(Day.TU, LocalTime.parse("18:00",  DateTimeFormatter.ofPattern("H:m")), 1, 1);
+    			Course quizCourse = new Course(specialDepartment, specialNum + 500, special.getSection());
+    			partialAssignments.add(new Assignment(quizCourse, labSlot));
+    			courses.add(quizCourse);
+    			
+    			//Quiz course and all sections of special course aren't compatible
+    			for (Course specialCourse : courses) {
+    				if(specialCourse.getNumber() == specialNum && specialCourse.getDepartment().equals(specialDepartment)) {
+    	    			Element[] tupleC = {quizCourse, specialCourse};
+    	    			notCompatible.add(tupleC);
+    	    			
+    					//Transitively, everything not compatible with section of special course is not compatible with quiz course
+    					for (Element n : getNotCompatibleWithElement(specialCourse)) {
+    						if (!(n.equals(quizCourse) || (n.getDepartment().equals(specialDepartment) && n.getName().split(" ")[1].equals(String.valueOf(specialNum))))) {
+    							Element[] tupleN = {quizCourse, n};
+    							notCompatible.add(tupleN);
+    						}
+    					}
+    					
+    	    			//Quiz course and special labs aren't compatible
+    	    			for (Lab specialLab : labs) {
+    	    				if(specialLab.getCourse().equals(specialCourse)) {
+    	    					Element[] tupleL = {quizCourse, specialLab};
+    	    					notCompatible.add(tupleL);
+    	    					
+    	        				//Transitively, everything not compatible with special lab is not compatible with quiz course
+    	        				for (Element n : getNotCompatibleWithElement(specialLab)) {
+    	        					if (!(n.equals(quizCourse) || (n.getDepartment().equals(specialDepartment) && n.getName().split(" ")[1].equals(String.valueOf(specialNum))))) {
+    	    	    					Element[] tupleN = {quizCourse, n};
+    	    	    					notCompatible.add(tupleN);
+    	        					}
+    	        				}
+    	    				}
+    	    			}
+    					
+    				}
+    			}
+    			
+    		//All incompatible entries made, new course added to partial assignments, so we're done
+    		break;
+    		}
+    	}
+    }
     
-    //handleSpecialCourse - Given a special course and other course, updates notCompatible with these two being incompatible
-    	// As well as anything incompatible with other becoming incompatible with special as well
-    //INPUT: special course department, special course number, other course department, other course number
-    //RETURNS: None. Modifies notCompatible arraylist during execution
+    //OLD VERSION OF handleSpecialCourse! Works assuming that 813/913 are in the input file (99% sure they aren't, but are implied by the existence of 313/413 in the input file)
+    /*
     private static void handleSpecialCourse(String specialDepartment, int specialNum, String otherDepartment, int otherNum) {
     	boolean foundOther = false;
     	for (Course special : courses) {
@@ -671,7 +722,7 @@ public class Parser {
     		}
     	}
     }
-    
+    */
     
     //
     //DEBUG/DISPLAY METHODS

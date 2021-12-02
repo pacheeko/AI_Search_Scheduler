@@ -38,12 +38,12 @@ class Start {
 
 		String file = args[0];
     	//Instantiate Parser, parse file passed in arg[0]
-		//try {
+		try {
 			Parser.parseFile(file);
-		//} catch (Exception e) {
-			//System.out.println("Errors parsing file " + file + ".");
-			//return;
-		//}		
+		} catch (Exception e) {
+			System.out.println("Errors parsing file " + file + ".");
+			return;
+		}		
 
 		Parser.printParsedInput();
     	//Set the weights of each soft constraint in the static Env class

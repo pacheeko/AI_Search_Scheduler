@@ -72,7 +72,7 @@ public class Parser {
             }
         }
         if(strict) {
-            System.out.println("ERROR: Invalid course in input file: " + "<" + string + ">" + "\nExiting program...");
+            System.out.println("ERROR: Course: " + "<" + string + ">" + "not found in courses array! \nExiting program...");
             System.exit(1);
             return null;
         }
@@ -92,7 +92,7 @@ public class Parser {
             }
         }
         if(strict) {
-            System.out.println("ERROR: Invalid lab in input file: " + "<" + string + ">" + "\nExiting program...");
+            System.out.println("ERROR: Lab: " + "<" + string + ">" + "not found in labs array! \nExiting program...");
             System.exit(1);
             return null;
         }
@@ -113,7 +113,7 @@ public class Parser {
             }
         }
         if (strict) {
-		    System.out.println("ERROR: Invalid course slot in input file! " + "<" + day + ", " + time + ">" + "\nExiting program...");
+		    System.out.println("ERROR: Course slot: " + "<" + day + ", " + time + ">" + "not found in course slots array! \nExiting program...");
 		    System.exit(1);
 		    return null;
         }
@@ -133,7 +133,7 @@ public class Parser {
             }
         }
         if(strict) {
-	        System.out.println("ERROR: Invalid lab slot in input file! " + "<" + day + ", " + time + ">" + "\nExiting program...");
+	        System.out.println("ERROR: Lab slot: " + "<" + day + ", " + time + ">" + "not found in lab slot array! \nExiting program...");
 	        System.exit(1);
 	        return null;
         }

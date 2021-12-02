@@ -109,9 +109,9 @@ public class Constr {
         Element element = assignment.getElement();
 
         if (element instanceof Course) {
-            Course course = (Course) element;            
+            Course course = (Course) element;
             if (course.getDepartment() == "CPSC" &&
-                ( course.getNumber() == 913 || course.getNumber() == 813 ))
+                    ( course.getNumber() == 913 || course.getNumber() == 813 ))
                 return slot instanceof CourseSlot;
         }
 
@@ -280,7 +280,7 @@ public class Constr {
             if ((firstElement.equals(elem[0]) && secondElement.equals(elem[1])
                     && slotsOverlap(first.getSlot(), second.getSlot()))
                     || (secondElement.equals(elem[0]) && firstElement.equals(elem[1])
-                            && slotsOverlap(first.getSlot(), second.getSlot()))) {
+                    && slotsOverlap(first.getSlot(), second.getSlot()))) {
                 return true;
             }
         }

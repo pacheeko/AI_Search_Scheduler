@@ -137,7 +137,7 @@ public class Constr {
     }
 
     private void incrementElementCount(Hashtable<Slot, Integer> elements_in_slot, Slot slot) {
-        if (elements_in_slot.containsKey(slot)) {
+    	 if (elements_in_slot.containsKey(slot)) {
             elements_in_slot.put(slot, elements_in_slot.get(slot) + 1);
         } else {
             elements_in_slot.put(slot, 1);

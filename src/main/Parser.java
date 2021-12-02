@@ -624,7 +624,19 @@ public class Parser {
     			System.out.println("NOTE: Special course " + specialDepartment + " " + specialNum + " found. Adding course and constraints related to " + specialDepartment + " " + (specialNum + 500));
     			
     			//Add quiz course to courses, and create partial assignment at 18:00
-    			LabSlot labSlot = new LabSlot(Day.TU, LocalTime.parse("18:00",  DateTimeFormatter.ofPattern("H:m")), 1, 1);
+    			LabSlot labSlot = new LabSlot(Day.MO, LocalTime.parse("18:00",  DateTimeFormatter.ofPattern("H:m")), 1, 1);
+    			//Look for correct lab slot in Lab_Slots, if it doesn't exist, exit
+    			for (LabSlot slot : labSlots) {
+    				if (slot.getDay().equals(Day.TU) && (slot.getStartTime().compareTo(LocalTime.parse("18:00")) == 0)) {
+    					labSlot = slot;
+    					break;
+    				}
+    			}
+    			if (labSlot.getDay().equals(Day.MO)) {
+    				System.out.println("The special quiz course " + specialDepartment + " " + (specialNum + 500) + " could not be added because there is no lab slot on tuesdays at 18:00");
+    				System.exit(1);
+    			}
+    			
     			Course quizCourse = new Course(specialDepartment, specialNum + 500, special.getSection());
     			partialAssignments.add(new Assignment(quizCourse, labSlot));
     			courses.add(quizCourse);

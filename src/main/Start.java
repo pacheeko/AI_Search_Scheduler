@@ -67,10 +67,12 @@ class Start {
     	Problem initialProblem = new Problem();
     	Parser.getCourses().forEach(initialProblem::addElement);
     	Parser.getLabs().forEach(initialProblem::addElement);
-
+    	ProblemState initialPS = new ProblemState(initialProblem, null);
+    	
     	//Add partial assignments to initial problem
     	for (Assignment assignment : Parser.getPartialAssignments()) {
-			if (!initialProblem.assign(assignment.getElement(), assignment.getSlot())) {
+			if (!initialPS.getProblem().assign(assignment.getElement(), assignment.getSlot()) ||
+				!initialPS.getConstr().checkConstraints(initialPS.getProblem().getAssignments())) {
 				System.out.println("Failed to assign partial assignments.");
 				System.exit(1);
 			}

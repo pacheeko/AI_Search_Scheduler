@@ -208,7 +208,7 @@ public class Constr {
         Course course = (Course) element;
         int course_number = course.getNumber();
 
-        if (course_number != 813 && course_number != 913)
+        if (course.getDepartment() != "CPSC" || (course_number != 813 && course_number != 913))
             return false;
 
         Slot slot = assignment.getSlot();

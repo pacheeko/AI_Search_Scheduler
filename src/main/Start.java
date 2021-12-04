@@ -14,16 +14,20 @@ class Start {
 	
     public static void main(String args[]) throws Exception{
 
-    	if (args.length < 6) {
-			System.out.println("Missing input file, evaluation weights, or running time.");
+        running_time = ONE_MINUTE;
+
+    	if (args.length < 5) {
+			System.out.println("Missing input file or evaluation weights.");
     		printUsage();
 			return;
     	} else if(args.length > 6){
 			System.out.println("Too many arguments.");
 			return;
-		}
+		} else if(args.length == 6){
+            running_time *=  Long.valueOf(args[5]);
+        }
 
-    	running_time = ONE_MINUTE * Long.valueOf(args[5]);
+
 
 		float min_filled_weight;
 		float pre_filled_weight;
@@ -119,7 +123,6 @@ class Start {
     		if (!(currentState == null)) {
     			bestState = currentState;
     		}
-
     	}
 		
     	if (bestState == null) {
@@ -131,7 +134,6 @@ class Start {
     	return bestState;
     }
 
-    
     public static void printAssignments(ProblemState state) {
     	System.out.println("Eval-Value: " + state.getEval());
     	ArrayList<Assignment> assignments = state.getProblem().getAssignments();

@@ -10,16 +10,20 @@ import problem.*;
 class Start {
 	
 	public final static long ONE_MINUTE = 60000000000L;//OL
-	public final static long TWO_MINUTES = ONE_MINUTE*2;
-	public final static long FIVE_MINUTES = ONE_MINUTE*5;
+	private static long running_time;
 	
     public static void main(String args[]) throws Exception{
 
-    	if (args.length < 5) {
-			System.out.println("Missing input file and evaluation weights.");
+    	if (args.length < 6) {
+			System.out.println("Missing input file, evaluation weights, or running time.");
     		printUsage();
 			return;
-    	}
+    	} else if(args.length > 6){
+			System.out.println("Too many arguments.");
+			return;
+		}
+
+    	running_time = ONE_MINUTE * Long.valueOf(args[5]);
 
 		float min_filled_weight;
 		float pre_filled_weight;
@@ -45,7 +49,7 @@ class Start {
 			return;
 		}		
 
-		Parser.printParsedInput();
+		//Parser.printParsedInput();
     	//Set the weights of each soft constraint in the static Env class
     	Env.setMinfilledWeight(min_filled_weight);
     	Env.setPrefWeight(pre_filled_weight);
@@ -82,7 +86,7 @@ class Start {
     	return new ProblemState(initialProblem, null);
     }
     
-    public static ProblemState run(ProblemState initialState) {
+    public static ProblemState run(ProblemState initialState)  {
 
 		ProblemState bestState = null;
 		ProblemState currentState;
@@ -94,7 +98,7 @@ class Start {
 		Control control = new Control(initialState, slots);
 		
     	long StartTime = System.nanoTime();
-		long running_time = ONE_MINUTE;
+
 		System.out.print("Running for a max of " + (running_time/ONE_MINUTE) + " minute");
 		if(running_time != ONE_MINUTE){
 			System.out.print("s");
@@ -115,6 +119,7 @@ class Start {
     		if (!(currentState == null)) {
     			bestState = currentState;
     		}
+
     	}
 		
     	if (bestState == null) {
@@ -124,7 +129,8 @@ class Start {
 
 		System.out.println("\nBest Solution Found:");
     	return bestState;
-    }   
+    }
+
     
     public static void printAssignments(ProblemState state) {
     	System.out.println("Eval-Value: " + state.getEval());

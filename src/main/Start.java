@@ -39,7 +39,7 @@ class Start {
 			sec_diff_weight = Integer.valueOf(args[4]);
 
 		} catch (Exception e) {
-			System.out.println("Evaluation weights but be valid numbers.");
+			System.out.println("Evaluation weights must be valid numbers.");
 			return;
 		}
 

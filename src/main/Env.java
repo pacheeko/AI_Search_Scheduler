@@ -8,10 +8,21 @@ public class Env {
     private static float prefWeight;
     private static float pairWeight;
     private static float secdiffWeight;
+
     private static float pen_coursemin;
     private static float pen_labmin;
     private static float pen_section;
     private static float pen_not_paired;
+
+    
+    public static float getMinPenalty() {
+        return minPenalty;
+    }
+
+    public static void setMinPenalty(float minPen) {
+        minPenalty = minPen;
+    }
+
 
 	public static float getMinfilledWeight() {
 		return minfilledWeight;

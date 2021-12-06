@@ -186,8 +186,6 @@ public class Constr {
             return false;
 
         Course course = (Course) a.getElement();
-        if (!course.getDepartment().equals("CPSC"))
-            return false;
 
         Slot slot = a.getSlot();
         if (slot.getDay() != Day.TU)

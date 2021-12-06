@@ -2,6 +2,7 @@ package main;
 
 //Static class which keeps track of 
 public class Env {
+
     private static float minPenalty = Float.MAX_VALUE;
     private static float minfilledWeight;
     private static float prefWeight;
@@ -11,16 +12,6 @@ public class Env {
     private static float pen_labmin;
     private static float pen_section;
     private static float pen_not_paired;
-    
-    
-    
-    public static float getMinPenalty() {
-        return minPenalty;
-    }
-
-    public static void setMinPenalty(float minPen) {
-        minPenalty = minPen;
-    }
 
 	public static float getMinfilledWeight() {
 		return minfilledWeight;
@@ -85,6 +76,5 @@ public class Env {
 	public static void setPen_not_paired(float pen_not_paired) {
 		Env.pen_not_paired = pen_not_paired;
 	}
-    
     
 }

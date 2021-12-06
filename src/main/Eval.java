@@ -118,6 +118,7 @@ public class Eval {
      *
      */
 	private float partialPref(ArrayList<Assignment> assignments, Assignment mostRecent) {
+		int penalty = 0;
 		ArrayList<Preference> preferences = Parser.getPreferences();
 		if (mostRecent.getElement() instanceof Course) {
 			Course c = (Course) mostRecent.getElement();
@@ -126,10 +127,10 @@ public class Eval {
 					Course prefCourse = (Course) p.getElement();
 					if (compareCourses(c, prefCourse)) {
 						if (compareSlot(mostRecent.getSlot(), p.getSlot())) {
-							return 0;
+							
 						}
 						else {
-							return p.getWeight() * Env.getPrefWeight();
+							penalty += (p.getWeight() * Env.getPrefWeight());
 						}
 					}
 				}
@@ -141,16 +142,16 @@ public class Eval {
 					Lab prefLab = (Lab) p.getElement();
 					if (compareLabs(l, prefLab)) {
 						if (compareSlot(mostRecent.getSlot(), p.getSlot())) {
-							return 0;
+							
 						}
 						else {
-							return p.getWeight() * Env.getPrefWeight();
+							penalty += (p.getWeight() * Env.getPrefWeight());
 						}
 					}
 				}
 			}
 		}
-		return 0;
+		return penalty;
 	}
 
 	/*

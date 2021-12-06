@@ -68,6 +68,10 @@ class Start {
     	Env.setPrefWeight(pre_filled_weight);
     	Env.setPairWeight(pair_weight);
     	Env.setSecdiffWeight(sec_diff_weight);
+    	Env.setPen_coursemin(pen_coursemin);
+    	Env.setPen_labmin(pen_labmin);
+    	Env.setPen_section(pen_section);
+    	Env.setPen_not_paired(pen_not_paired);
 
     	ProblemState initialState = initialize();
     	//Run the search

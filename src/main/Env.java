@@ -7,6 +7,12 @@ public class Env {
     private static float prefWeight;
     private static float pairWeight;
     private static float secdiffWeight;
+    private static float pen_coursemin;
+    private static float pen_labmin;
+    private static float pen_section;
+    private static float pen_not_paired;
+    
+    
     
     public static float getMinPenalty() {
         return minPenalty;
@@ -46,6 +52,38 @@ public class Env {
 
 	public static void setSecdiffWeight(float secdiffWeight) {
 		Env.secdiffWeight = secdiffWeight;
+	}
+
+	public static float getPen_coursemin() {
+		return pen_coursemin;
+	}
+
+	public static void setPen_coursemin(float pen_coursemin) {
+		Env.pen_coursemin = pen_coursemin;
+	}
+
+	public static float getPen_labmin() {
+		return pen_labmin;
+	}
+
+	public static void setPen_labmin(float pen_labmin) {
+		Env.pen_labmin = pen_labmin;
+	}
+
+	public static float getPen_section() {
+		return pen_section;
+	}
+
+	public static void setPen_section(float pen_section) {
+		Env.pen_section = pen_section;
+	}
+
+	public static float getPen_not_paired() {
+		return pen_not_paired;
+	}
+
+	public static void setPen_not_paired(float pen_not_paired) {
+		Env.pen_not_paired = pen_not_paired;
 	}
     
     

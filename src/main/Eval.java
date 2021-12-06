@@ -22,8 +22,8 @@ public class Eval {
 	 */
 	public float evaluate(ArrayList<Assignment> assignments, float eval) {
 
-		eval += Env.getMinfilledWeight() * getCourseSlotPenalties(Parser.getCourseSlots(), assignments);
-		eval += Env.getMinfilledWeight() * getLabSlotPenalties(Parser.getlabSlots(), assignments);
+		eval += (Env.getPen_coursemin() * Env.getMinfilledWeight() * getCourseSlotPenalties(Parser.getCourseSlots(), assignments));
+		eval += (Env.getPen_labmin() * Env.getMinfilledWeight() * getLabSlotPenalties(Parser.getlabSlots(), assignments));
 
 		return eval;
 	}
@@ -83,10 +83,10 @@ public class Eval {
 		}
 		Assignment mostRecent = assignments.get(assignments.size()-1);
 		if (partialSecDiff(assignments, mostRecent)) {
-			eval += (1 * Env.getSecdiffWeight());
+			eval += (1 * Env.getSecdiffWeight() * Env.getPen_section());
 		}
 		if (!partialPairs(assignments, mostRecent)) {
-			eval += (1 * Env.getPairWeight());
+			eval += (1 * Env.getPairWeight() * Env.getPen_not_paired());
 		}
 		eval += partialPref(assignments, mostRecent);
 		return eval;

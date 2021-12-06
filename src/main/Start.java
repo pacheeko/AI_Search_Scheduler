@@ -20,10 +20,10 @@ class Start {
 			System.out.println("Missing input file or evaluation weights.");
     		printUsage();
 			return;
-    	} else if(args.length > 6){
+    	} else if(args.length > 10){
 			System.out.println("Too many arguments.");
 			return;
-		} else if(args.length == 6){
+		} else if(args.length == 9){
             running_time *=  Long.valueOf(args[5]);
         }
 
@@ -33,12 +33,21 @@ class Start {
 		float pre_filled_weight;
 		float pair_weight;
 		float sec_diff_weight;
+		float pen_coursemin;
+		float pen_labmin;
+		float pen_section;
+		float pen_not_paired;
 
 		try {
 			min_filled_weight = Float.valueOf(args[1]);
 			pre_filled_weight = Float.valueOf(args[2]);
 			pair_weight = Float.valueOf(args[3]);
 			sec_diff_weight = Float.valueOf(args[4]);
+			pen_coursemin = Float.valueOf(args[5]);
+			pen_labmin = Float.valueOf(args[6]);
+			pen_section = Float.valueOf(args[7]);
+			pen_not_paired = Float.valueOf(args[8]);
+			
 		} catch (Exception e) {
 			System.out.println("Evaluation weights but be valid numbers.");
 			return;

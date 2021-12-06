@@ -234,9 +234,9 @@ class Start {
                 //If the lab course number is less than the course number, place the lab first,
                 //otherwise place the course first
                 if (c1.getSection() > l2.getCourse().getSection()) {
-                    return -1;
-                } else {
                     return 1;
+                } else {
+                    return -1;
                 }
 
             } else if (c1.getNumber() < l2.getCourse().getNumber()) {

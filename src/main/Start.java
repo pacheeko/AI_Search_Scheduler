@@ -80,7 +80,7 @@ class Start {
     }
     
     private static void printUsage() {
-		System.out.println("Usage: command  file_path minfilled pref pair secdiff");
+		System.out.println("Arguments: FILE_PATH MIN_FILL_WEIGHT PREF_WEIGHT PAIR_WEIGHT SEC_DIFF_WEIGHT PEN_COURSEMIN PEN_LABMIN PEN_SECTION PEN_NOT_PAIRED");
 	}
 
 	public static ProblemState initialize() {

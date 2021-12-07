@@ -24,7 +24,7 @@ class Start {
 			System.out.println("Too many arguments.");
 			return;
 		} else if(args.length == 9){
-            running_time *=  Long.valueOf(args[5]);
+            running_time *=  Long.valueOf(args[9]);
         }
 
 

@@ -57,6 +57,7 @@ public class Parser {
             return Day.FR;
         }
         System.out.println("ERROR: Invalid day in input file: " + "<" + string + ">" + "\nExiting program...");
+        System.out.println("No Solution Found");
         System.exit(1);
         return null;
     }
@@ -73,6 +74,7 @@ public class Parser {
         }
         if(strict) {
             System.out.println("ERROR: Course: " + "<" + string + ">" + "not found in courses array! \nExiting program...");
+            System.out.println("No Solution Found");
             System.exit(1);
             return null;
         }
@@ -93,6 +95,7 @@ public class Parser {
         }
         if(strict) {
             System.out.println("ERROR: Lab: " + "<" + string + ">" + "not found in labs array! \nExiting program...");
+            System.out.println("No Solution Found");
             System.exit(1);
             return null;
         }
@@ -114,6 +117,7 @@ public class Parser {
         }
         if (strict) {
 		    System.out.println("ERROR: Course slot: " + "<" + day + ", " + time + ">" + "not found in course slots array! \nExiting program...");
+		    System.out.println("No Solution Found");
 		    System.exit(1);
 		    return null;
         }
@@ -134,6 +138,7 @@ public class Parser {
         }
         if(strict) {
 	        System.out.println("ERROR: Lab slot: " + "<" + day + ", " + time + ">" + "not found in lab slot array! \nExiting program...");
+	        System.out.println("No Solution Found");
 	        System.exit(1);
 	        return null;
         }
@@ -176,6 +181,7 @@ public class Parser {
         }
         if (name.equals("")) {
             System.out.println("ERROR: No name specified\nExiting program...");
+            System.out.println("No Solution Found");
             System.exit(1);
             return null;
         }
@@ -200,6 +206,7 @@ public class Parser {
                     String[] parts = lineStr.split(",");
                     if (parts.length != 4) {
                         System.out.println("ERROR: Course slot with invalid number of parameters: " + "<" + lineStr + ">" + "\nExiting program...");
+                        System.out.println("No Solution Found");
                         System.exit(1);
                     }
                     CourseSlot slot = new CourseSlot(getDay(parts[0]),
@@ -211,6 +218,7 @@ public class Parser {
                     }
                     else {
                     	System.out.println("ERROR: Invalid course slot: " + "<" + slot.getDay() + ", " + slot.getStartTime() + ">" + " Only course slots from the problem description are permitted!\nExiting program...");
+                    	System.out.println("No Solution Found");
                     	System.exit(1);
                     }
                     lineStr = scanner.nextLine();
@@ -238,6 +246,7 @@ public class Parser {
                     String[] parts = lineStr.split(",");
                     if (parts.length != 4) {
                         System.out.println("ERROR: Lab slot with invalid number of parameters: " + "<" + lineStr + ">" + "\nExiting program...");
+                        System.out.println("No Solution Found");
                         System.exit(1);
                     }
 
@@ -250,6 +259,7 @@ public class Parser {
                     }
                     else {
                     	System.out.println("ERROR: Invalid lab slot: " + "<" + slot.getDay() + ", " + slot.getStartTime() + ">" + " Only lab slots from the problem description are permitted!\nExiting program...");
+                    	System.out.println("No Solution Found");
                     	System.exit(1);
                     }
                     lineStr = scanner.nextLine();
@@ -277,6 +287,7 @@ public class Parser {
                     String[] parts = lineStr.split(" ");
                     if (parts.length != 4) {
                     	System.out.println("ERROR: Course with invalid number of parameters: " + "<" + lineStr + ">" + "\nExiting program...");
+                    	System.out.println("No Solution Found");
                     	System.exit(1);
                     }
                     slots.add(new Course(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[3])));
@@ -314,6 +325,7 @@ public class Parser {
                         slots.add(new Lab(course, Integer.parseInt(parts[3]), true));
                     } else {
                     	System.out.println("ERROR: Lab with invalid number of parameters: " + "<" + lineStr + ">" + "\nExiting program...");
+                    	System.out.println("No Solution Found");
                     	System.exit(1);
                     }
                     lineStr = scanner.nextLine();
@@ -345,6 +357,7 @@ public class Parser {
                     // If not exactly two comma-seperated elements were found, invalid entry
                     if (parts.length != 2) {
                     	System.out.println("ERROR: Input line: " + "<" + lineStr + ">" + " is not a tuple of elements!" + "\nExiting program...");
+                    	System.out.println("No Solution Found");
                     	System.exit(1);
                     }
 
@@ -403,6 +416,7 @@ public class Parser {
                         // If not exactly three comma-seperated values were found, invalid entry
                         if (parts.length != 3) {
                         	System.out.println("ERROR: Input line: " + "<" + lineStr + ">" + " is not a comma-separated triple!" + "\nExiting program...");
+                        	System.out.println("No Solution Found");
                         	System.exit(1);
                         }
 
@@ -427,6 +441,7 @@ public class Parser {
                                         + Integer.parseInt(elementStr[3]), true);
                             } else {
                             	System.out.println("ERROR: Input line: " + "<" + lineStr + ">" + " is not a comma-separated triple!" + "\nExiting program...");
+                            	System.out.println("No Solution Found");
                             	System.exit(1);
                             	return null;
                             }
@@ -467,6 +482,7 @@ public class Parser {
                     // If not exactly four comma-seperated values were found, invalid entry
                     if (parts.length != 4) {
                     	System.out.println("ERROR: Input line: " + "<" + lineStr + ">" + " is not 4 comma-separated values!" + "\nExiting program...");
+                    	System.out.println("No Solution Found");
                     	System.exit(1);
                     }
 
@@ -496,6 +512,7 @@ public class Parser {
                                     + Integer.parseInt(elementStr[3]), false);
                         } else {
                         	System.out.println("ERROR: Input line: " + "<" + lineStr + ">" + " is not 4 comma-separated values!" + "\nExiting program...");
+                        	System.out.println("No Solution Found");
                         	System.exit(1);
                         	return null;
                         }
@@ -634,6 +651,7 @@ public class Parser {
     			}
     			if (labSlot.getDay().equals(Day.MO)) {
     				System.out.println("The special quiz course " + specialDepartment + " " + (specialNum + 500) + " could not be added because there is no lab slot on tuesdays at 18:00");
+    				System.out.println("No Solution Found");
     				System.exit(1);
     			}
     			
@@ -679,62 +697,6 @@ public class Parser {
     		}
     	}
     }
-    
-    //OLD VERSION OF handleSpecialCourse! Works assuming that 813/913 are in the input file (99% sure they aren't, but are implied by the existence of 313/413 in the input file)
-    /*
-    private static void handleSpecialCourse(String specialDepartment, int specialNum, String otherDepartment, int otherNum) {
-    	boolean foundOther = false;
-    	for (Course special : courses) {
-    		//Found element that matches the special department and number
-    		if(special.getNumber() == specialNum && special.getDepartment().equals(specialDepartment)) {
-    			for(Course other : courses) {
-    				if(other.getNumber() == otherNum && other.getDepartment().equals(otherDepartment)) { //Find other course object
-    					if(!foundOther) {
-    						System.out.println("NOTE: Courses prohibited to overlap with " + specialDepartment + " " + specialNum + " found. Adding the following to \"Not compatible\": ");
-    						foundOther = true;
-    					}
-    					//Add all elements not compatible with other
-    					for(Element e : getNotCompatibleWithElement(other)) {
-    						if (!(e.getName().split(" ")[0].equals(specialDepartment) && e.getName().split(" ")[1].equals(String.valueOf(specialNum)))) {
-	    						Element[] tuple1 = {special, e};
-	    						notCompatible.add(tuple1);
-	    						System.out.println("- (" + tuple1[0].getName() + ", " + tuple1[1].getName() + ")");
-    						}
-    					}
-    					
-    					//Add special and any labs of other to notCompatible
-    					for(Lab l : labs) {
-    						if(l.getDepartment().equals(other.getDepartment()) && l.getCourse().getNumber() == other.getNumber() && l.getCourse().getSection() == other.getSection()) {
-    							Element[] tuple2 = {special, l};
-    							notCompatible.add(tuple2);
-    							System.out.println("- (" + tuple2[0].getName() + ", " + tuple2[1].getName() + ")");
-    							//Add all elements not compatible with lab of other
-    	    					for(Element e : getNotCompatibleWithElement(l)) {
-    	    						if (!(e.getName().split(" ")[0].equals(specialDepartment) && e.getName().split(" ")[1].equals(String.valueOf(specialNum)))) {
-        	    						Element[] tuple1 = {special, e};
-        	    						notCompatible.add(tuple1);
-        	    						System.out.println("- (" + tuple1[0].getName() + ", " + tuple1[1].getName() + ")");
-    	    						}
-    	    					}
-    						}
-    					}
-    					
-    					//Add special and other to notCompatible (done after everything else is added)
-    					Element[] tuple3 = {special, other};
-    					System.out.println("- (" + tuple3[0].getName() + ", " + tuple3[1].getName() + ")");
-    					notCompatible.add(tuple3);
-    				}
-    			}
-    			//Add special course at the TU/TH 18:00-19:00 time slot to partial assignments
-            	if(foundOther) {
-            		LabSlot labSlot = new LabSlot(Day.TU, LocalTime.parse("18:00",  DateTimeFormatter.ofPattern("H:m")), 1, 1);
-                	Assignment assign = new Assignment(special, labSlot);
-                	partialAssignments.add(assign);
-            	}
-    		}
-    	}
-    }
-    */
     
     //
     //DEBUG/DISPLAY METHODS

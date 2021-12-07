@@ -14,7 +14,7 @@ class Start {
 	
     public static void main(String args[]) throws Exception{
 
-        running_time = ONE_MINUTE;
+        running_time = ONE_MINUTE*1440;
 
     	if (args.length < 5) {
 			System.out.println("Missing input file or evaluation weights.");
@@ -135,6 +135,7 @@ class Start {
     		//then update the best state to the current state
     		if (!(currentState == null)) {
     			bestState = currentState;
+    			printAssignments(bestState);
     		}
     	}
 		

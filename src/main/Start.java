@@ -1,3 +1,12 @@
+// CPSC 433 Project - Source Code
+	// Peter Bignold
+	// JP Lozano Sarmiento
+	// Mitchell Goertzen
+	// Braydon Pacheco
+	// Aiden Eyre
+	// Chris Thibodeau
+	// Evan Wong
+
 package main;
 
 import java.util.ArrayList;

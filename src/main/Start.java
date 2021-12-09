@@ -23,7 +23,7 @@ class Start {
     	} else if(args.length > 10){
 			System.out.println("Too many arguments.");
 			return;
-		} else if(args.length == 9){
+		} else if(args.length == 10){
             running_time *=  Long.valueOf(args[9]);
         }
 

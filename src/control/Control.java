@@ -8,6 +8,7 @@ import main.Eval;
 import model.SearchModel;
 import problem.Assignment;
 import problem.Course;
+import problem.Element;
 import problem.Lab;
 import problem.Problem;
 import problem.ProblemState;
@@ -40,8 +41,19 @@ public class Control {
     LeafComparator leaf_comparer;
     ArrayList<Slot> slots;
     Eval eval = new Eval();
+    
     boolean DEBUG = false;
-
+    int temp;
+    int dif = 1;
+    int lgn = 4;
+    int sDepth = 45;
+    boolean grab;
+    boolean slotTest = false;
+    boolean nameTest = false;
+    int i;
+    String list;
+    ProblemState testLeaf;
+    
     public Control(ProblemState root, ArrayList<Slot> slots) {
         this.slots = slots;
         this.root = root;
@@ -49,13 +61,76 @@ public class Control {
         this.leafs = new TreeSet<>(this.leaf_comparer);
         this.leafs.add(root);
         this.current_leaf = null;
+        this.grab = true;
     }
 
     public void fleaf() {
         if (leafs.isEmpty())
             return;
         current_leaf = leafs.pollFirst(); // Pop the first leaf
+        
+        //(temp >= current_leaf.getDepth() + dif || temp <= current_leaf.getDepth() - dif) &&
+        
+        //System.out.println();
+        
+        if(testLeaf != null) {
+        	if (testLeaf.equals(current_leaf)) {
+        		System.out.println("True");
+        	}
+        	
+        }
+        
+        
+        if (current_leaf.getDepth() == sDepth && grab) {
+        	testLeaf = current_leaf;
+        	grab = false;
+        }
+        
+        
+        
+        
+        if( (current_leaf.getDepth() >= sDepth && nameTest)) {
+        	temp = current_leaf.getDepth();
+        	list = "";
+        	i = 0;
+        	for (Element ele : current_leaf.getProblem().getElements()) {
+        		i++;
+        		if(i == 0 || i >= current_leaf.getProblem().getElements().size() - lgn) {
+        			list += " |" + ele.getName();
+        		}
+        		
+        		
+        	}
+        	int left = current_leaf.getProblem().getElements().size() - lgn;
+        	System.out.println("Depth: " + left + current_leaf.getDepth() + " |..." + list);
+            
+        }
+        
+        
+        if( slotTest &&(current_leaf.getDepth() >= 40)) {
+        	temp = current_leaf.getDepth();
+        	
+        	list = "";
+        	i = 0;
+        	
+        	for (Assignment ass : current_leaf.getProblem().getAssignments()) {
+        		i++;
+        		if(i >= current_leaf.getProblem().getAssignments().size() - lgn) {
+        			list += " |"+ ass.getSlot().getInfo();
+        		}
+        		
+        		
+        	}
+        	System.out.println("Depth: " + current_leaf.getDepth() + " |..." + list);
+            
+        }
+        
+        
+        
     }
+    
+    
+    
 
     public void ftrans() {
         // Testing, print current assignment
@@ -95,7 +170,7 @@ public class Control {
         if (subProblems.isEmpty()) {
             current_leaf = null;
             return;
-        }
+        }        
 
         for (Problem subProblem : subProblems) {
             ProblemState new_leaf = new ProblemState(subProblem, current_leaf);

@@ -107,6 +107,7 @@ class Start {
 
 		ProblemState bestState = null;
 		ProblemState currentState;
+		int count = 0;
 
 		//Initialize the control with the slots provided in the input file
 		ArrayList<Slot> slots = new ArrayList<>();
@@ -123,13 +124,16 @@ class Start {
 		System.out.println("...");
 
     	while ((System.nanoTime() - StartTime < running_time) && (!control.getLeafs().isEmpty())) {
-
+    		
     		//Select the best leaf to work on
     		control.fleaf();
 
     		//Decide what to do with the current leaf
     		control.ftrans();
     		currentState = control.getCurrentLeaf();
+    		
+    		
+    		
 
     		//If the solution is complete and it has a better eval value than the current best state,
     		//then update the best state to the current state

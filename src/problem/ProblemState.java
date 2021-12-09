@@ -13,15 +13,21 @@ public class ProblemState {
 	private Constr myConstr = new Constr();
 	private Eval myEval = new Eval();
 	private float parent_eval;
+	private int depth = 0;
 
 	public ProblemState(Problem problem, ProblemState parent) {
-		this.problem = problem;		
+		this.problem = problem;
 		// this.parent = parent;
 		// this.children = new ArrayList<ProblemState>();
-		if (parent == null)
+		if (parent == null) {
+			this.depth = 0;
 			return;
-		this.parent_eval = parent.getEval();
-		this.myConstr = new Constr(parent.getConstr());
+		} else {
+			this.depth = parent.getDepth() + 1;
+			this.parent_eval = parent.getEval();
+			this.myConstr = new Constr(parent.getConstr());
+		}
+		
 		// parent.addChild(this);
 	}
 
@@ -86,6 +92,14 @@ public class ProblemState {
 
 	public void setProblem(Problem problem) {
 		this.problem = problem;
+	}
+
+	public int getDepth() {
+		return depth;
+	}
+
+	public void setDepth(int depth) {
+		this.depth = depth;
 	}
 
 	public float getParentEval() {

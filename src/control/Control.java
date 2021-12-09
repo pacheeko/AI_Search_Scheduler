@@ -50,6 +50,7 @@ public class Control {
     boolean grab;
     boolean slotTest = true;
     boolean nameTest = true;
+    boolean evalTest = true;
     int i;
     int left;
     String list;
@@ -128,7 +129,7 @@ public class Control {
             
         }
         
-        
+        if(evalTest) System.out.println(current_leaf.getEval());
         
     }
     

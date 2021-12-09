@@ -129,7 +129,7 @@ public class Control {
             
         }
         
-        if(evalTest) System.out.println(current_leaf.getEval());
+        if(evalTest) System.out.println("Eval: " + current_leaf.getEval());
         
     }
     

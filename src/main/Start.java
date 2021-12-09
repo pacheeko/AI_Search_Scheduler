@@ -161,10 +161,10 @@ class Start {
     		if (a.getElement() instanceof Course) {
     			Course course = (Course) a.getElement();
     			if (course.getSection() == 0) {
-    				System.out.println(course.getName() + "\t:" + a.getSlot().getDay() + "," + a.getSlot().getStartTime());
+    				System.out.println(course.getName() + "\t\t:" + a.getSlot().getDay() + "," + a.getSlot().getStartTime());
     			}
     			else {
-    				System.out.println(course.getName() + "\t:" + a.getSlot().getDay() + "," + a.getSlot().getStartTime());
+    				System.out.println(course.getName() + "\t\t:" + a.getSlot().getDay() + "," + a.getSlot().getStartTime());
     			}
         		
     		}

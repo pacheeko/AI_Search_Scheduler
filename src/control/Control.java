@@ -45,7 +45,7 @@ public class Control {
     boolean DEBUG = false;
     int temp;
     int dif = 1;
-    int lgn = 4;
+    int lgn = 3;
     int sDepth = 1;
     boolean grab;
     boolean slotTest = true;
@@ -71,12 +71,11 @@ public class Control {
             return;
         current_leaf = leafs.pollFirst(); // Pop the first leaf
         
-        //(temp >= current_leaf.getDepth() + dif || temp <= current_leaf.getDepth() - dif) &&
-        
         if (nameTest && slotTest) System.out.println();
         
         
-        if(!grab) {
+        
+        if (!grab) {
         	if (testLeaf.equals(current_leaf)) {
         		System.out.println("True");
         	}
@@ -92,25 +91,25 @@ public class Control {
         
         
         
-        if( (current_leaf.getDepth() >= sDepth && nameTest)) {
+        if (nameTest && current_leaf.getDepth() >= sDepth) {
         	temp = current_leaf.getDepth();
         	list = "";
         	i = 0;
         	for (Element ele : current_leaf.getProblem().getElements()) {
         		i++;
-        		if(i == 0 || i >= current_leaf.getProblem().getElements().size() - lgn) {
+        		if(i == 0 || i >= current_leaf.getProblem().getElements().size() - lgn + 1) {
         			list += " |" + ele.getName();
         		}
         		
         		
         	}
-        	left = current_leaf.getProblem().getElements().size() - lgn;
-        	System.out.println("Depth: " + current_leaf.getDepth() +" |" + left + "..." + list);
+        	left = current_leaf.getProblem().getElements().size() - lgn + 1;
+        	System.out.println("Name: " + current_leaf.getDepth() +" |" + left + "..." + list);
             
         }
         
         
-        if( slotTest &&(current_leaf.getDepth() >= sDepth)) {
+        if (slotTest && current_leaf.getDepth() >= sDepth) {
         	temp = current_leaf.getDepth();
         	
         	list = "";
@@ -118,14 +117,14 @@ public class Control {
         	
         	for (Assignment ass : current_leaf.getProblem().getAssignments()) {
         		i++;
-        		if(i >= current_leaf.getProblem().getAssignments().size() - lgn) {
+        		if(i >= current_leaf.getProblem().getAssignments().size() - lgn + 1) {
         			list += " |"+ ass.getSlot().getInfo();
         		}
         		
         		
         	}
-        	left = current_leaf.getProblem().getAssignments().size() - lgn;
-        	System.out.println("Depth: " + current_leaf.getDepth() +" |" + left + "..." + list);
+        	left = current_leaf.getProblem().getAssignments().size() - lgn + 1;
+        	System.out.println("Slots: " + current_leaf.getDepth() +" |" + left + "..." + list);
             
         }
         

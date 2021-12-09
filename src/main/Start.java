@@ -23,7 +23,7 @@ class Start {
 	
     public static void main(String args[]) throws Exception{
 
-        running_time = ONE_MINUTE*1440;
+        running_time = ONE_MINUTE;
 
     	if (args.length < 5) {
 			System.out.println("Missing input file or evaluation weights.");

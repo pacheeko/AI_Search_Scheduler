@@ -11,7 +11,7 @@ public class ParserTest {
     @BeforeEach
     public void init() {
         try {
-        	Parser.parseFile("test_inputs/test_input.txt");
+        	Parser.parseFile("test_files/Inputs/junitTestExample.txt");
         } catch (Exception e) {
             //fail();
         }
@@ -24,7 +24,7 @@ public class ParserTest {
 
     @Test
     public void testParseCourses() {
-        assertEquals(4, Parser.getCourses().size());
+        assertEquals(9, Parser.getCourses().size());
         assertEquals("CPSC", Parser.getCourses().get(0).getDepartment());
         assertEquals(433, Parser.getCourses().get(0).getNumber());
         assertEquals(1, Parser.getCourses().get(0).getSection());

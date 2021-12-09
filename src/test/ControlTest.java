@@ -80,6 +80,7 @@ public class ControlTest {
         assertEquals(1, control.getLeafs().size());
     }
 
+    /*
     @Test
     public void testAfterOneRun() {
         control.fleaf();
@@ -95,4 +96,5 @@ public class ControlTest {
         control.ftrans();
        // assertEquals(control.getRoot().getChildren(), control.getLeafs());
     }
+    */
 }
